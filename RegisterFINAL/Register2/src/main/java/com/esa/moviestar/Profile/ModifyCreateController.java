@@ -21,6 +21,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import com.esa.moviestar.Profile.IconSVG;
 
+import static com.esa.moviestar.Profile.IconSVG.copyGroup;
+
 
 public class ModifyCreateController {
     @FXML
@@ -61,9 +63,9 @@ public class ModifyCreateController {
         errorText.setText("");
 
 
-        defaultImagine = IconSVG.takeElement(1);
-        defaultImagine.setScaleX(6);
-        defaultImagine.setScaleY(6);
+        defaultImagine = IconSVG.takeElement(0);
+        defaultImagine.setScaleX(10);
+        defaultImagine.setScaleY(10);
         elementContainer.getChildren().add(0, defaultImagine);
 
 // Clona davvero l'immagine come copia iniziale
@@ -128,22 +130,22 @@ public class ModifyCreateController {
         });
 
 
-        for (int i = 0; i < 16; i++) {  // Aggiungi le 16 icone (da 1 a 16)
+        for (int i = 0; i <= 16; i++) {  // Aggiungi le 16 icone (da 1 a 16)
             Group g = new Group();
             g.setScaleX(3.8);
             g.setScaleY(3.8);
 
             // Usa IconSVG.takeElement(i + 1) per ottenere tutte le icone
-            g.getChildren().add(IconSVG.takeElement(i + 1));  // Aggiungi l'elemento SVG al gruppo g
+            g.getChildren().add(IconSVG.takeElement(i));  // Aggiungi l'elemento SVG al gruppo g
 
             // Aggiungi il gruppo all'HBox, distribuendo le icone tra imageScroll1, imageScroll2, imageScroll3
-            if (i < 4) {
+            if (i>=0 && i <= 3) {
                 imageScroll1.getChildren().add(g);  // Aggiungi il gruppo a imageScroll1
-            } else if (i < 8) {
+            } else if (i>=4 && i <= 7) {
                 imageScroll2.getChildren().add(g);  // Aggiungi il gruppo a imageScroll2
-            } else if (i<12){
+            } else if (i>=8 && i<=11){
                 imageScroll3.getChildren().add(g);  // Aggiungi il gruppo a imageScroll3
-            }else{
+            }else if (i>=12 && i<=15) {
                 imageScroll4.getChildren().add(g);
             }
         }
@@ -168,10 +170,11 @@ public class ModifyCreateController {
             scrollImage.setOnMouseClicked(event -> {
                 // Copia l'immagine SVG dal gruppo selezionato
                 Group originalGroup = (Group) scrollImage;
-                Node selectedImage = originalGroup.getChildren().get(0);  // Ottieni l'immagine SVG effettiva
 
                 // Crea un nuovo gruppo che contiene l'immagine SVG
-                Group clonedGroup = new Group(selectedImage);  // Crea una copia del gruppo con l'immagine
+                Group clonedGroup = copyGroup(originalGroup);  // Crea una copia del gruppo con l'immagine
+                clonedGroup.setScaleY(10);
+                clonedGroup.setScaleX(10);
 
                 // Aggiungi il clone al container principale
                 elementContainer.getChildren().removeFirst();  // Rimuovi la precedente immagine
