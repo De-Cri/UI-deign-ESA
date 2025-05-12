@@ -8,6 +8,7 @@ import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import com.esa.moviestar.Profile.IconSVG;
+
+import static com.esa.moviestar.Profile.IconSVG.copyGroup;
 
 
 public class ModifyCreateController {
@@ -28,7 +32,7 @@ public class ModifyCreateController {
     @FXML
     VBox elementContainer;
     @FXML
-    Pane imagPane;
+    Group defaultImagine;
     @FXML
     Label creationTitle;
     @FXML
@@ -40,6 +44,8 @@ public class ModifyCreateController {
     @FXML
     HBox imageScroll3;
     @FXML
+    HBox imageScroll4;
+    @FXML
     VBox scrollContainer;
     @FXML
     Button saveButton;
@@ -49,20 +55,23 @@ public class ModifyCreateController {
     Label warningText;
     @FXML
     private Label errorText;
-    private Pane originalProfilePane;
+    private Group originalProfileImage;
 
     public void initialize() {
 
 
         errorText.setText("");
-        imagPane.setMaxSize(300,300);  //Immagine principale
 
-        imagPane.setStyle("-fx-background-color:red;");//modifica di stile dell'immagine principale
 
-        // Salva una copia dell'immagine iniziale come "originale"
-        originalProfilePane = new Pane();
-        originalProfilePane.setPrefSize(imagPane.getPrefWidth(), imagPane.getPrefHeight());
-        originalProfilePane.setStyle(imagPane.getStyle());
+        defaultImagine = IconSVG.takeElement(0);
+        defaultImagine.setScaleX(10);
+        defaultImagine.setScaleY(10);
+        elementContainer.getChildren().add(0, defaultImagine);
+
+// Clona davvero l'immagine come copia iniziale
+//        originalProfileImage = IconSVG.takeElement(1); // Ottieni un nuovo oggetto identico
+//        originalProfileImage.setScaleX(1);
+//        originalProfileImage.setScaleY(1);
 
 
         creationTitle.setText("Crea il nome utente:"); //label per sopra il textfield per farci capire che stiamo creando un nuovo utente
@@ -74,15 +83,9 @@ public class ModifyCreateController {
         elementContainer.setSpacing(30);
 
 
-
-        //metto lo spazio tra ogni scroll di immagini
-        imageScroll1.setSpacing(20);
-        imageScroll2.setSpacing(20);
-        imageScroll3.setSpacing(20);
-
         //metto lo stile per ogni scroll di immagini
 
-        scrollContainer.setSpacing(30);
+        scrollContainer.setSpacing(90);
 
         saveButton.setText("Salva"); //setting del bottone di salvataggio
 
@@ -90,8 +93,7 @@ public class ModifyCreateController {
 
         cancelButton.setOnMouseClicked(e -> {//Se cliccato è un evento irreversibile
             textName.setText(""); //elimina la stringa che scrivo da input se non mi piace
-            elementContainer.getChildren().set(0, originalProfilePane); // ripristina  l'immagine originale
-
+           // elementContainer.getChildren().set(0, originalProfileImage); // ripristina  l'immagine originale
 
         });
         saveButton.setOnMouseClicked(event -> {  //Se clicco sul bottone di salvataggio / dovrà poi ritornare alla pagina di scelta dei profili con il profilo creato
@@ -128,26 +130,34 @@ public class ModifyCreateController {
         });
 
 
-        for (int i = 0; i < 5; i++) {  // for che crea e inserisce ogni pannello nel suo apposito scroll di immagine e setta lo stile
-            Pane p1 = new Pane();
-            p1.setPrefSize(100, 100);
-            p1.setStyle("-fx-background-color:purple;");
-            imageScroll1.getChildren().addAll(p1);
+        for (int i = 0; i <= 16; i++) {  // Aggiungi le 16 icone (da 1 a 16)
+            Group g = new Group();
+            g.setScaleX(3.8);
+            g.setScaleY(3.8);
 
-            Pane p2 = new Pane();
-            p2.setPrefSize(100, 100);
-            p2.setStyle("-fx-background-color:green;");
-            imageScroll2.getChildren().addAll(p2);
+            // Usa IconSVG.takeElement(i + 1) per ottenere tutte le icone
+            g.getChildren().add(IconSVG.takeElement(i));  // Aggiungi l'elemento SVG al gruppo g
 
-            Pane p3 = new Pane();
-            p3.setPrefSize(100, 100);
-            p3.setStyle("-fx-background-color:blue;");
-            imageScroll3.getChildren().addAll(p3);
+            // Aggiungi il gruppo all'HBox, distribuendo le icone tra imageScroll1, imageScroll2, imageScroll3
+            if (i>=0 && i <= 3) {
+                imageScroll1.getChildren().add(g);  // Aggiungi il gruppo a imageScroll1
+            } else if (i>=4 && i <= 7) {
+                imageScroll2.getChildren().add(g);  // Aggiungi il gruppo a imageScroll2
+            } else if (i>=8 && i<=11){
+                imageScroll3.getChildren().add(g);  // Aggiungi il gruppo a imageScroll3
+            }else if (i>=12 && i<=15) {
+                imageScroll4.getChildren().add(g);
+            }
         }
+        imageScroll1.setSpacing(120);
+        imageScroll2.setSpacing(120);
+        imageScroll3.setSpacing(120);
+        imageScroll4.setSpacing(120);
         // Inizializza tutti gli HBox di immagini
         setupImageProfile(imageScroll1);
         setupImageProfile(imageScroll2);
         setupImageProfile(imageScroll3);
+        setupImageProfile(imageScroll4);
     }
 
     private void setupImageProfile(HBox imageScroll) {
@@ -156,30 +166,22 @@ public class ModifyCreateController {
             // prendo un'immagine che ce all'interno dello scrollImage
             Node scrollImage = imageScroll.getChildren().get(i);
 
-            Pane originalPane = (Pane) scrollImage;
-
-            // Crea un nuovo Pane che farà da clone dell'originale
-            Pane clonedPane = new Pane();
-
             // ogni volta che clicco un immagine all'interno di un imageScroll allora succede qualcosa
             scrollImage.setOnMouseClicked(event -> {
+                // Copia l'immagine SVG dal gruppo selezionato
+                Group originalGroup = (Group) scrollImage;
 
-                // Copia le dimensioni dal pane originale al clone
-                clonedPane.setPrefSize(imagPane.getPrefWidth(), imagPane.getPrefHeight());
+                // Crea un nuovo gruppo che contiene l'immagine SVG
+                Group clonedGroup = copyGroup(originalGroup);  // Crea una copia del gruppo con l'immagine
+                clonedGroup.setScaleY(10);
+                clonedGroup.setScaleX(10);
 
-                // Copia lo stile (colore di sfondo, bordi, ecc.) dal pane originale al clone
-                clonedPane.setStyle(originalPane.getStyle());
+                // Aggiungi il clone al container principale
+                elementContainer.getChildren().removeFirst();  // Rimuovi la precedente immagine
+                elementContainer.getChildren().add(0, clonedGroup);  // Aggiungi la nuova immagine
 
-                // Ottiene l'immagine profilo attualmente visualizzata (primo elemento dell'elementContainer)
-                Node currentImageProfile = elementContainer.getChildren().get(0);
-
-                // Rimuove l'immagine profilo corrente dall'elementContainer
-                elementContainer.getChildren().remove(currentImageProfile);
-
-                // Aggiunge il clone dell'immagine selezionata come nuova immagine profilo
-                // La posizione 0 garantisce che sia sempre il primo elemento dell'elementContainer
-                elementContainer.getChildren().add(0, clonedPane);
-
+                // Salva il riferimento dell'immagine selezionata
+                originalProfileImage = clonedGroup;  // Salva il clone come immagine originale
             });
 
         }
