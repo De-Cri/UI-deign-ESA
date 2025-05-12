@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="1548.0" prefWidth="941.0" styleClass="bg-color" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="1548.0" prefWidth="941.0" styleClass="bg-color" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.movie_view.FilmInterfaceController">
     <children>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="1565.0" prefWidth="805.0" style="-fx-fit-to-width: true;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <content>
@@ -93,19 +93,19 @@
                                     <styleClass>
                                         <String fx:value="large-item" />
                                         <String fx:value="surface-dim-opaque" />
-                              <String fx:value="large-item" />
+                                        <String fx:value="large-item" />
                                     </styleClass>
                                 </AnchorPane>
                                 <HBox fx:id="hBoxActors" minWidth="100.0" prefHeight="133.0" prefWidth="876.0">
-                           <styleClass>
-                              <String fx:value="surface-dim-opaque" />
-                              <String fx:value="large-item" />
-                           </styleClass></HBox>
+                                    <styleClass>
+                                        <String fx:value="surface-dim-opaque" />
+                                        <String fx:value="large-item" />
+                                    </styleClass></HBox>
                                 <FlowPane fx:id="flowPaneCategories" prefHeight="68.0">
-                           <styleClass>
-                              <String fx:value="large-item" />
-                              <String fx:value="surface-dim-opaque" />
-                           </styleClass></FlowPane>
+                                    <styleClass>
+                                        <String fx:value="large-item" />
+                                        <String fx:value="surface-dim-opaque" />
+                                    </styleClass></FlowPane>
                                 <VBox minWidth="100.0" prefHeight="304.0">
                                     <styleClass>
                                         <String fx:value="large-item" />
