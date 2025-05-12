@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<StackPane fx:id="cardContainer" maxHeight="300.0" maxWidth="450.0" prefHeight="300.0" prefWidth="450.0" styleClass="medium-item" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.movie_view.FilmCardController">
+<StackPane fx:id="cardContainer" maxHeight="300.0" maxWidth="450.0" prefHeight="300.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.movie_view.FilmCardController">
     <ImageView fx:id="imgView" fitHeight="300.0" fitWidth="450.0" pickOnBounds="true">         <clip>
         <Rectangle arcHeight="48" arcWidth="48" height="${imgView.fitHeight}" width="${imgView.fitWidth}" />
     </clip></ImageView>
@@ -70,8 +70,12 @@
                 <String fx:value="medium-text" />
             </styleClass></Label>
     </VBox>
-   <stylesheets>
-      <URL value="@../styles/FilmCard.css" />
-      <URL value="@../styles/General.css" />
-   </stylesheets>
+    <stylesheets>
+        <URL value="@../styles/FilmCard.css" />
+        <URL value="@../styles/General.css" />
+    </stylesheets>
+    <styleClass>
+        <String fx:value="medium-item" />
+        <String fx:value="surface-dim" />
+    </styleClass>
 </StackPane>

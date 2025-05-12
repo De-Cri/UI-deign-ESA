@@ -21,7 +21,7 @@
                 <styleClass>
                     <String fx:value="medium-item" />
                     <String fx:value="surface-transparent" />
-               <String fx:value="surface-dim-border" />
+                    <String fx:value="surface-dim-border" />
                 </styleClass>
             </StackPane>
 
@@ -37,7 +37,7 @@
                     <String fx:value="chips" />
                     <String fx:value="surface-transparent" />
                     <String fx:value="medium-item" />
-               <String fx:value="surface-dim-border" />
+                    <String fx:value="surface-dim-border" />
                 </styleClass>
             </HBox>
 
@@ -53,7 +53,7 @@
                     <String fx:value="chips" />
                     <String fx:value="surface-transparent" />
                     <String fx:value="medium-item" />
-               <String fx:value="surface-dim-border" />
+                    <String fx:value="surface-dim-border" />
                 </styleClass>
             </HBox>
 
@@ -65,14 +65,14 @@
                         <String fx:value="search-field" />
                         <String fx:value="medium-text" />
                         <String fx:value="on-primary" />
-                  <String fx:value="surface-transparent" />
+                        <String fx:value="surface-transparent" />
                     </styleClass>
                 </TextField>
                 <styleClass>
                     <String fx:value="surface-dim-border" />
                     <String fx:value="surface-transparent" />
                     <String fx:value="chips" />
-               <String fx:value="medium-item" />
+                    <String fx:value="medium-item" />
                 </styleClass>
             </HBox>
         </HBox>
@@ -84,24 +84,20 @@
         </HBox>
         <HBox HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_RIGHT" prefHeight="${navContainer.width}" prefWidth="512.0" HBox.hgrow="ALWAYS">
-            <children>
-               <StackPane fx:id="profileImage" maxHeight="64.0" maxWidth="64.0" minHeight="64.0" minWidth="64.0" prefHeight="64.0" prefWidth="64.0">
-                  <styleClass>
-                     <String fx:value="surface-dim-border" />
-                     <String fx:value="medium-item" />
-                  </styleClass>
-                  <children>
-                     <SVGPath content="M0 26C0 10 10 0 23 0L40 0C54 0 64 10 64 24L64 40C64 54 54 64 40 64L24 64C10 64 0 54 0 40L0 26" fill="RED" />
-                  </children></StackPane>
-            </children></HBox>
+                <children>
+                    <StackPane fx:id="profileImage" maxHeight="64.0" maxWidth="64.0" minHeight="64.0" minWidth="64.0" prefHeight="64.0" prefWidth="64.0" styleClass="medium-item">
+                        <children>
+                            <SVGPath />
+                        </children></StackPane>
+                </children></HBox>
         </HBox>
     </HBox>
     <styleClass>
         <String fx:value="root-header" />
         <String fx:value="surface-opaque" />
     </styleClass>
-   <stylesheets>
-      <URL value="@../styles/Header.css" />
-      <URL value="@../styles/General.css" />
-   </stylesheets>
+    <stylesheets>
+        <URL value="@../styles/Header.css" />
+        <URL value="@../styles/General.css" />
+    </stylesheets>
 </StackPane>

@@ -62,7 +62,7 @@ public class WindowCardController {
         titleLabel.setText(film.getTitle());
         descriptionLabel.setText(film.getSubtitle());
         ratingLabel.setText(String.valueOf(film.getRating()));
-        imgView.setImage(new Image(film.getImageUrl()));
+        imgView.setImage(new Image(film.getImageUrl(),true));
     }
 
     public long getCardId() {
