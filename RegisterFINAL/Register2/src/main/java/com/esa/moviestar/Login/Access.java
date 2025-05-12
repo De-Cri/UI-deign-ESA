@@ -183,13 +183,10 @@ public class Access {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/registrazione.fxml"));
             Parent registerContent = loader.load();
 
-            // Ottieni la scena corrente
             Scene currentScene = ContenitorePadre.getScene();
 
-            // Crea una nuova scena con il nuovo contenuto
             Scene newScene = new Scene(registerContent, currentScene.getWidth(), currentScene.getHeight());
 
-            // Ottieni lo Stage corrente e imposta la nuova scena
             Stage stage = (Stage) ContenitorePadre.getScene().getWindow();
             stage.setScene(newScene);
         } catch (IOException e) {

@@ -145,7 +145,7 @@ Button {
 
 /* Button hover effect */
 .button-text:hover {
-    -fx-background-color: linear-gradient(to bottom right, #7341BE, #262626);
+    -fx-background-color: linear-gradient(to bottom right, #7341BE, #432570);
     -fx-text-fill: #F0ECFD;
 }
 
