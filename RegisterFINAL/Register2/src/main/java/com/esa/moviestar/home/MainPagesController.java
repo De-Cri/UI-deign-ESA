@@ -114,6 +114,8 @@ public class MainPagesController {
                 body.getChildren().clear();
                 body.getChildren().add(homeBody);
             });
+            headerController.getTbxSearch().textProperty().addListener((observableValue, s1, t1)
+                    ->{loadDynamicBody("search.fxml");});
             // homeBodyController.carousel.start();
         } catch (IOException e) {
             System.out.println(e.getMessage());

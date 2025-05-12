@@ -67,7 +67,9 @@ public class HeaderController {
         }
         setupPopupMenu(l);
     }
-
+    public TextField getTbxSearch(){
+        return tbxSearch;
+    }
 
     /**
      * Sets the visual style for the active button and resets the previous one.
