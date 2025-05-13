@@ -27,7 +27,7 @@ public class MainPagesController {
     public void  initialize()  {
         loadHeader();
         homeBody =loadDynamicBody("home.fxml");
-        Profile p = new Profile(1,"eden","FF1C2A0B3D4E1F00112233445566778009");
+        Profile p = new Profile(1,"eden","FF1C2A0B3D4E1F00112233445566778009",6);
         List<Content> c = new ArrayList<>(Arrays.asList(
                         new Content(1L, "SPiderman", "un ragazzo viene punto da un ragno", "1h 57m", 4.6, "https://via.assets.so/img.jpg?w=400&h=150&tc=blue&bg=#cecece", 88935L, "2012, 05, 28", false, new ArrayList<>(Arrays.asList(1, 15))), // action, superheros
                         new Content(2L, "Avengers: Endgame", "I Vendicatori rimasti cercano di annullare le azioni di Thanos.", "3h 1m", 4.8, "https://via.assets.so/img.jpg?w=400&h=150&tc=blue&bg=#cecece", 157896L, "2019, 04, 24", true, new ArrayList<>(Arrays.asList(1, 14, 15))), // action, sci-fy, superheros
