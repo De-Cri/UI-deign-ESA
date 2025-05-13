@@ -21,6 +21,7 @@ public class MainPagesController {
     private HeaderController headerController;
     private Node homeBody;
     private Node s;
+    private Node searchNode;
     private HomeController homeBodyController;
 
     public void  initialize()  {
@@ -115,8 +116,12 @@ public class MainPagesController {
                 body.getChildren().add(homeBody);
             });
             headerController.getTbxSearch().textProperty().addListener((observableValue, s1, t1)
-                    ->{loadDynamicBody("search.fxml");});
-            // homeBodyController.carousel.start();
+                    ->{if(body.getChildren().contains(searchNode))
+                        return;
+                    if(searchNode == null)
+                        searchNode=loadDynamicBody("search.fxml");
+                    body.getChildren().clear();
+                    body.getChildren().add(searchNode);});
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -126,12 +131,11 @@ public class MainPagesController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(bodySource));
             Node body = loader.load();
-            this.body.getChildren().add(body);
             AnchorPane.setBottomAnchor(body,0.0);
             AnchorPane.setTopAnchor(body,0.0);
             AnchorPane.setLeftAnchor(body,0.0);
             AnchorPane.setRightAnchor(body,0.0);
-            homeBodyController = loader.getController();//messo solo per provare
+            //homeBodyController = loader.getController();//messo solo per provare
             return body;
         } catch (IOException e) {
             System.out.println(e.getMessage());
