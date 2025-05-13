@@ -4,12 +4,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1920" maxWidth="1080" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="1077.0" styleClass="bg-color" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.home.SearchController">>
+<AnchorPane maxHeight="1920" maxWidth="1080" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="1077.0" styleClass="bg-color" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.home.SearchController">
 
-    <ScrollPane fx:id="root1" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="TOP_CENTER">
-        <VBox fx:id="body1" alignment="TOP_CENTER" spacing="16.0" style=" -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+    <ScrollPane  fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="TOP_CENTER">
+        <VBox  alignment="TOP_CENTER" spacing="16.0" style=" -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
 
-            <Pane fx:id="pnl_separator" prefHeight="60.0" prefWidth="0.0" />
+            <Pane fx:id="pnl_separator1" prefHeight="60.0" prefWidth="0.0" />
 
         </VBox>
         <padding>
@@ -17,3 +17,4 @@
         </padding>
     </ScrollPane>
 </AnchorPane>
+

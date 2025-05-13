@@ -67,7 +67,10 @@ public class MainPagesController {
 
 
         try {
+
             homeBodyController.setRecommendations(p,c);
+            body.getChildren().clear();
+            body.getChildren().add(homeBody);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -116,12 +119,22 @@ public class MainPagesController {
                 body.getChildren().add(homeBody);
             });
             headerController.getTbxSearch().textProperty().addListener((observableValue, s1, t1)
-                    ->{if(body.getChildren().contains(searchNode))
-                        return;
-                    if(searchNode == null)
-                        searchNode=loadDynamicBody("search.fxml");
+                    ->{
+                try {
+                    FXMLLoader loader1 = new FXMLLoader(getClass().getResource("search.fxml"));
+                    Node search = loader1.load();
+                    AnchorPane.setBottomAnchor(search,0.0);
+                    AnchorPane.setTopAnchor(search,0.0);
+                    AnchorPane.setLeftAnchor(search,0.0);
+                    AnchorPane.setRightAnchor(search,0.0);
                     body.getChildren().clear();
-                    body.getChildren().add(searchNode);});
+                    ((SearchController)loader1.getController()).set_headercontroller(headerController);
+                    body.getChildren().add(search);
+                    }
+                catch(Exception e){
+                    System.err.println(e.getMessage());
+            }
+            });
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -135,7 +148,7 @@ public class MainPagesController {
             AnchorPane.setTopAnchor(body,0.0);
             AnchorPane.setLeftAnchor(body,0.0);
             AnchorPane.setRightAnchor(body,0.0);
-            //homeBodyController = loader.getController();//messo solo per provare
+            homeBodyController = loader.getController();//messo solo per provare
             return body;
         } catch (IOException e) {
             System.out.println(e.getMessage());

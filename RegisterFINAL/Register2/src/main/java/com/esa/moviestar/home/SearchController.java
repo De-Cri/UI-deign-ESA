@@ -12,9 +12,14 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 public class SearchController {
     @FXML
-    ScrollPane root1;
-    @FXML
-    VBox body1;
-    @FXML
-    Pane pnl_separator;
+    private Pane pnl_separator1;
+    private HeaderController headerController;
+
+    public void initialize(){
+
+    }
+    public void set_headercontroller(HeaderController h){
+        headerController = h;
+    }
+
 }
