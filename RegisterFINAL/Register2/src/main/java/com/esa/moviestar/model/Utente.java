@@ -1,26 +1,30 @@
 package com.esa.moviestar.model;
 
+import javafx.scene.Node;
+
 public class Utente {
 
     private int codUtente;         // PRIMARY KEY
     private String nome;
     private String gusti;
-    private int idImmagine;        // FOREIGN KEY verso tabella immagine
+    private int ImmagineProfilo;        // FOREIGN KEY verso tabella immagine
     private String email;          // FOREIGN KEY verso tabella Account
 
     // Costruttore completo (es. da DB)
-    public Utente(int codUtente, String nome, String gusti, int idImmagine, String email) {
+    public Utente(int codUtente, String nome, String gusti, int ImmagineProfilo, String email) {
         this.codUtente = codUtente;
         this.nome = nome;
         this.gusti = gusti;
-        this.idImmagine = idImmagine;
+        this.ImmagineProfilo = ImmagineProfilo;
         this.email = email;
     }
 
+    public Utente(){}
+
     // Costruttore senza codUtente (es. prima di inserimento nel DB)
-    public Utente(String nome, int idImmagine, String gusti, String email) {
+    public Utente(String nome, int ImmagineProfilo, String gusti, String email) {
         this.nome = nome;
-        this.idImmagine = idImmagine;
+        this.ImmagineProfilo = ImmagineProfilo;
         this.gusti = gusti;
         this.email = email;
     }
@@ -29,14 +33,14 @@ public class Utente {
     public int getCodUtente() { return codUtente; }
     public String getNome() { return nome; }
     public String getGusti() { return gusti; }
-    public int getIdImmagine() { return idImmagine; }
+    public int getImmagineProfilo() { return ImmagineProfilo; }
     public String getEmail() { return email; }
 
     // Setter
     public void setCodUtente(int codUtente) { this.codUtente = codUtente; }
     public void setNome(String nome) { this.nome = nome; }
     public void setGusti(String gusti) { this.gusti = gusti; }
-    public void setIdImmagine(int idImmagine) { this.idImmagine = idImmagine; }
+    public void setImmagineProfilo(int immagineProfilo) { this.ImmagineProfilo = immagineProfilo; }
     public void setEmail(String email) { this.email = email; }
 
     // Verifica del nome (rimasta invariata)
