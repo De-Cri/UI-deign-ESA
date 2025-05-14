@@ -1,9 +1,9 @@
 package com.esa.moviestar.Login;
 
 import com.esa.moviestar.Database.AccountDao;
+import com.esa.moviestar.Profile.CreateProfileController;
 import com.esa.moviestar.model.Account;
 import jakarta.mail.MessagingException;
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -18,7 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -287,8 +287,10 @@ public class Access {
 
             if (Objects.equals(temp_acc.getPassword(), password)) {
                 // Carica il nuovo FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/modify-create-view.fxml"), resourceBundle);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"), resourceBundle);
                 Parent homeContent = loader.load();
+                CreateProfileController createProfileController = loader.getController();
+                createProfileController.setEmail(email);
 
                 // Ottieni la scena corrente
                 Scene currentScene = ContenitorePadre.getScene();
