@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -49,15 +50,15 @@ public class FilmCardController {
 
         _id = film.getId();
         titleLabel.setText(film.getTitle());
-        descriptionLabel.setText(film.getSubtitle());
-        timeLabel.setText(film.getTime());
+        descriptionLabel.setText(film.getPlot());
+        timeLabel.setText(String.valueOf( film.getDuration()));
         ratingLabel.setText(String.valueOf(film.getRating()));
         if (durationIcon != null && resources != null) {
             durationIcon.setContent(resources.getString(film.isSeries() ? "episodes" : "clock"));
         }
         try {
-            if (film.getImageUrl() == null || film.getImageUrl().isEmpty()) {
-                System.err.println("Error: Image URL is null or empty for film: " + film.getTitle());
+            if (film.getImageUrl() == null || film.getImageUrl().isEmpty() || Objects.equals(film.getImageUrl(), "error")) {
+               // System.err.println("Error: Image URL is null or empty for film: " + film.getTitle());
                 imgView.setImage(null); // Clear previous image
                 Platform.runLater(this::displayErrorShimmer); // Show shimmer for this specific error
                 return;

@@ -60,9 +60,10 @@ public class WindowCardController {
     public void setContent(Content film){
         _id= film.getId();
         titleLabel.setText(film.getTitle());
-        descriptionLabel.setText(film.getSubtitle());
+        descriptionLabel.setText(film.getPlot());
         ratingLabel.setText(String.valueOf(film.getRating()));
-        imgView.setImage(new Image(film.getImageUrl(),true));
+        if(!Objects.equals(film.getImageUrl(), "error"))
+            imgView.setImage(new Image(film.getImageUrl(),true));
     }
 
     public long getCardId() {

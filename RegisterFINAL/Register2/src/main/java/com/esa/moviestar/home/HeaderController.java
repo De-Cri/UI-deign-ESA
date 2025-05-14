@@ -1,6 +1,6 @@
 package com.esa.moviestar.home;
 
-import com.esa.moviestar.model.Profile;
+import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -60,9 +60,9 @@ public class HeaderController {
         rootHeader.widthProperty().addListener((observable, oldValue, newValue) -> {
             titleImageContainer.setVisible(!(newValue.doubleValue() < 720));
         });
-        List<Profile> l = new ArrayList<>();
+        List<Utente> l = new ArrayList<>();
         for (int i = 0; i < 16; i++) {
-            Profile n = new Profile(i, "Giacomino", "", i);
+            Utente n = new Utente(i, "Giacomino", "", i,"");
             l.add(n);
         }
         setupPopupMenu(l);
@@ -107,7 +107,7 @@ public class HeaderController {
     }
 
 
-    private void setupPopupMenu(List<Profile> content) {
+    private void setupPopupMenu(List<Utente> content) {
         // Create the popup menu - no stage needed
         popupMenu = new PopupMenu();
 
@@ -129,8 +129,8 @@ public class HeaderController {
 
         popupMenu.addItem(settingsItem);
         popupMenu.addSeparator();
-        for (Profile i : content) {
-            createProfileItem(i.getID(), i.getName(), i.getIcon());
+        for (Utente i : content) {
+            createProfileItem(i.getID(), i.getNome(), i.getIcona());
         }
         popupMenu.addSeparator();
         HBox emailButton = new HBox() {{

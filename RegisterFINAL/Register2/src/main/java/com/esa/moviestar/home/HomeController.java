@@ -1,7 +1,7 @@
 package com.esa.moviestar.home;
 
 import com.esa.moviestar.model.Content;
-import com.esa.moviestar.model.Profile;
+import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.FilmCardController;
 import com.esa.moviestar.movie_view.WindowCardController;
 import javafx.fxml.FXML;
@@ -38,7 +38,7 @@ public class HomeController {
     /**
      * Set all recommendation lists for a user profile
      */
-    public void setRecommendations(Profile user, List<Content> contentList) throws ParseException {
+    public void setRecommendations(Utente user, List<Content> contentList) {
         List<Content> top10 = getTopRecommendations(user, contentList);
         List<Content> latest10 = getLatestPublished(contentList);
         List<Content> popularByTaste = getPopularByUserTaste(user, contentList);
@@ -110,14 +110,14 @@ public class HomeController {
         /**
          * Calculate top recommendations based on user taste profile
          */
-        public List<Content> getTopRecommendations(Profile user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getTaste());
+        public List<Content> getTopRecommendations(Utente user, List<Content> contentList) {
+            List<Integer> weights = parseTasteProfile(user.getGusti());
 
             return contentList.stream()
                     .sorted((c1, c2) -> {
                         // Calculate relevance scores for each content based on category weights
-                        int score1 = calculateRelevanceScore(c1.getCategorie(), weights);
-                        int score2 = calculateRelevanceScore(c2.getCategorie(), weights);
+                        int score1 = calculateRelevanceScore(c1.getCategories(), weights);
+                        int score2 = calculateRelevanceScore(c2.getCategories(), weights);
 
                         // Sort in descending order (highest scores first)
                         return Integer.compare(score2, score1);
@@ -126,14 +126,14 @@ public class HomeController {
                     .collect(Collectors.toList());
         }
 
-        public List<Content> getWorstRecommendations(Profile user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getTaste());
+        public List<Content> getWorstRecommendations(Utente user, List<Content> contentList) {
+            List<Integer> weights = parseTasteProfile(user.getGusti());
 
             return contentList.stream()
                     .sorted((c1, c2) -> {
                         // Calculate relevance scores for each content based on category weights
-                        int score1 = calculateRelevanceScore(c1.getCategorie(), weights);
-                        int score2 = calculateRelevanceScore(c2.getCategorie(), weights);
+                        int score1 = calculateRelevanceScore(c1.getCategories(), weights);
+                        int score2 = calculateRelevanceScore(c2.getCategories(), weights);
 
                         // Sort in ascending order (lowest scores first)
                         return Integer.compare(score1, score2);
@@ -149,8 +149,9 @@ public class HomeController {
      * @return The calculated relevance score
      */
     private int calculateRelevanceScore(List<Integer> contentCategories, List<Integer> tasteWeights) {
+        if(contentCategories==null)
+            return -1;
         int score = 0;
-
         for (Integer categoryId : contentCategories) {
             // Make sure the category ID is valid for our weights list
             if (categoryId >= 0 && categoryId < tasteWeights.size()) {
@@ -168,7 +169,7 @@ public class HomeController {
         public List<Content> getLatestPublished(List<Content> contentList)  {
             return contentList.stream()
                     .sorted((c1, c2) -> {
-                        return c2.getDataPubblicazione().compareTo(c1.getDataPubblicazione());
+                        return c2.getReleaseDate().compareTo(c1.getReleaseDate());
                     })
                     .limit(LARGE_RECOMMENDATION_LIMIT)
                     .collect(Collectors.toList());
@@ -177,34 +178,35 @@ public class HomeController {
         /**
          * Find content similar to the last watched item
          */
-        public List<Content> getSimilarToLastWatched(Profile user, List<Content> contentList) {
-            // In a real application, we would get this from user history
-            int lastWatchedId = user.getLastWatched();
+        public List<Content> getSimilarToLastWatched(Utente user, List<Content> contentList) {
+            // In un'applicazione reale, otterremmo questo dalla cronologia dell'utente
+            int lastWatchedId = user.getUltimoGuardato();
 
-            // Find the last watched content
+            // Trova l'ultimo contenuto guardato
             Content lastWatched = contentList.stream()
                     .filter(content -> content.getId() == lastWatchedId)
                     .findFirst()
                     .orElse(null);
 
-            if (lastWatched == null) {
+            if (lastWatched == null || lastWatched.getCategories() == null) {
                 return Collections.emptyList();
             }
 
-            // Create a set for faster lookups
-            Set<Integer> lastWatchedCategories = new HashSet<>(lastWatched.getCategorie());
+            // Crea un set per ricerche più veloci
+            Set<Integer> lastWatchedCategories = new HashSet<>(lastWatched.getCategories());
 
             return contentList.stream()
-                    .filter(content -> content.getId() != lastWatchedId) // Exclude the same content
+                    .filter(content -> content.getId() != lastWatchedId && content.getCategories() != null) // Escludi lo stesso contenuto e quelli con categorie nulle
                     .map(content -> {
-                        // Count common categories
-                        long commonCategories = content.getCategorie().stream()
+                        // Conta le categorie comuni
+                        long commonCategories = content.getCategories().stream()
                                 .filter(lastWatchedCategories::contains)
                                 .count();
-                        return new AbstractMap.SimpleEntry<>((int)commonCategories, content);
+                        return new AbstractMap.SimpleEntry<>((int) commonCategories, content);
                     })
-                    .filter(entry -> entry.getKey() > 0) // Only include content with at least one common category
-                    .sorted(Map.Entry.<Integer, Content>comparingByKey().reversed()).limit(SMALL_RECOMMENDATION_LIMIT)
+                    .filter(entry -> entry.getKey() > 0) // Includi solo contenuti con almeno una categoria in comune
+                    .sorted(Map.Entry.<Integer, Content>comparingByKey().reversed())
+                    .limit(SMALL_RECOMMENDATION_LIMIT)
                     .map(Map.Entry::getValue)
                     .collect(Collectors.toList());
         }
@@ -212,8 +214,8 @@ public class HomeController {
         /**
          * Get recommended TV series based on user taste
          */
-        public List<Content> getRecommendedSeries(Profile user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getTaste());
+        public List<Content> getRecommendedSeries(Utente user, List<Content> contentList) {
+            List<Integer> weights = parseTasteProfile(user.getGusti());
 
             return contentList.stream()
                     .filter(Content::isSeries) // Only TV series
@@ -230,10 +232,10 @@ public class HomeController {
         /**
          * Get popular content aligned with user taste profile
          */
-        public List<Content> getPopularByUserTaste(Profile user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getTaste());
+        public List<Content> getPopularByUserTaste(Utente user, List<Content> contentList) {
+            List<Integer> weights = parseTasteProfile(user.getGusti());
 
-            // Find favorite category
+            // Trova la categoria preferita
             int maxWeight = -1;
             int maxWeightIndex = -1;
 
@@ -244,41 +246,44 @@ public class HomeController {
                 }
             }
 
-            // Ensure we have a valid category index
+            // Assicurati di avere un indice di categoria valido
             if (maxWeightIndex < 0 || maxWeightIndex >= CATEGORIES.size()) {
                 return Collections.emptyList();
             }
 
             final Integer favoriteCategory = maxWeightIndex;
 
-            // Find content with favorite category
+            // Filtra i contenuti in base alla categoria preferita, gestendo il caso di categorie nulle
             List<Content> filteredContent = contentList.stream()
-                    .filter(content -> content.getCategorie().contains(favoriteCategory))
+                    .filter(content -> content.getCategories() != null && content.getCategories().contains(favoriteCategory))
                     .toList();
 
             if (filteredContent.isEmpty()) {
                 return Collections.emptyList();
             }
 
-            // Find maximum click count for normalization
+            // Trova il numero massimo di click per la normalizzazione
             long maxClicks = filteredContent.stream()
-                    .mapToLong(Content::getClick)
+                    .mapToLong(Content::getClicks)
                     .max()
-                    .orElse(1); // Default to 1 to avoid division by zero
+                    .orElse(1); // Valore predefinito a 1 per evitare la divisione per zero
 
-            // Calculate weighted scores based on clicks and category match
-            final double alpha = 0.6; // Click weight
-            final double beta = 0.4;  // Category match weight
+            // Calcola i punteggi ponderati in base ai click e alla corrispondenza della categoria
+            final double alpha = 0.6; // Peso dei click
+            final double beta = 0.4;  // Peso della corrispondenza della categoria
 
             return filteredContent.stream()
                     .map(content -> {
-                        double normalizedClicks = (double) content.getClick() / maxClicks;
+                        double normalizedClicks = (double) content.getClicks() / maxClicks;
 
-                        // Calculate category compatibility score
-                        double categoryScore = content.getCategorie().stream()
-                                .filter(cat -> cat < weights.size() && cat < CATEGORIES.size())
-                                .mapToDouble(cat -> weights.get(cat) / 255.0)
-                                .sum() / Math.max(1, content.getCategorie().size());
+                        // Calcola il punteggio di compatibilità della categoria, gestendo il caso di categorie nulle
+                        double categoryScore = 0.0;
+                        if (content.getCategories() != null && !content.getCategories().isEmpty()) {
+                            categoryScore = content.getCategories().stream()
+                                    .filter(cat -> cat < weights.size() && cat < CATEGORIES.size())
+                                    .mapToDouble(cat -> weights.get(cat) / 255.0)
+                                    .sum() / content.getCategories().size();
+                        }
 
                         double totalScore = alpha * normalizedClicks + beta * categoryScore;
 
@@ -312,27 +317,24 @@ public class HomeController {
         /**
          * Calculate scores for a list of content items based on user taste weights
          */
-        private List<Map.Entry<Integer, Content>> calculateContentScores(List<Content> contentList, List<Integer> weights) {
-            return contentList.stream()
-                    .map(content -> {
-                        int score = calculateContentScore(content, weights);
-                        return new AbstractMap.SimpleEntry<>(score, content);
-                    })
-                    .collect(Collectors.toList());
+        private int calculateContentScore(Content content, List<Integer> weights) {
+            if (content.getCategories() == null || content.getCategories().isEmpty()) {
+                return 0; // O un altro valore predefinito appropriato per indicare un punteggio nullo o minimo
+            }
+
+            int score = 0;
+            for (Integer categoryId : content.getCategories()) {
+                if (categoryId != null && categoryId < weights.size()) {
+                    score += weights.get(categoryId);
+                }
+            }
+            return score;
         }
 
         /**
          * Calculate score for a single content item based on user taste weights
          */
-        private int calculateContentScore(Content content, List<Integer> weights) {
-            return content.getCategorie().stream()
-                    .filter(category -> CATEGORIES.contains(category))
-                    .mapToInt(category -> {
-                        int categoryIndex = CATEGORIES.indexOf(category);
-                        return categoryIndex < weights.size() ? weights.get(categoryIndex) : 0;
-                    })
-                    .sum();
-        }
+
 
 
     public void cardClicked(long idFilm){
