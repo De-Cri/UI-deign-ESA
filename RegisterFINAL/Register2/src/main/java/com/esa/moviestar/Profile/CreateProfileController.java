@@ -3,7 +3,6 @@ package com.esa.moviestar.Profile;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import com.esa.moviestar.Database.AccountDao;
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
 import com.esa.moviestar.model.Utente;
@@ -17,14 +16,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import com.esa.moviestar.Profile.IconSVG;
-
-import static com.esa.moviestar.Profile.IconSVG.copyGroup;
 
 
-public class ModifyCreateController {
+public class CreateProfileController {
     @FXML
     GridPane pageContainer;
     @FXML
@@ -55,15 +50,26 @@ public class ModifyCreateController {
     Label warningText;
     @FXML
     private Label errorText;
+    @FXML
+    private VBox imageContainer;
+
     private Group originalProfileImage;
+    private int codImmagineCorrente;
+    private String email;
+
+    public void setEmail(String email) {
+        this.email = email;
+        System.out.println("Email passata alla schermata creazione profilo: " + email);
+    }
+
 
     public void initialize() {
 
 
         errorText.setText("");
 
-
-        defaultImagine = IconSVG.takeElement(0);
+        codImmagineCorrente=0;
+        defaultImagine = IconSVG.takeElement(codImmagineCorrente);
         defaultImagine.setScaleX(10);
         defaultImagine.setScaleY(10);
         elementContainer.getChildren().add(0, defaultImagine);
@@ -93,26 +99,37 @@ public class ModifyCreateController {
 
         cancelButton.setOnMouseClicked(e -> {//Se cliccato è un evento irreversibile
             textName.setText(""); //elimina la stringa che scrivo da input se non mi piace
-           // elementContainer.getChildren().set(0, originalProfileImage); // ripristina  l'immagine originale
+            // elementContainer.getChildren().set(0, originalProfileImage); // ripristina  l'immagine originale
 
         });
         saveButton.setOnMouseClicked(event -> {  //Se clicco sul bottone di salvataggio / dovrà poi ritornare alla pagina di scelta dei profili con il profilo creato
             String name = textName.getText();
             String gusto = "0";
-            int immagine = 1 ;
-            String email = "";
+            int immagine =codImmagineCorrente;
+
             if (!textName.getText().isEmpty() && !textName.getText().contains(" ")) {  //se ho messo un nome nel textfield e l'ho salvato allora ritorno alla pagina principale dei profili / oppure potrei far direttamente loggare / (modifiche da fare : controllare che abbia scelto anche un immagine, oppure se non l'ha scelta dare quella di default)
                 //questo metodo cosi fa ritornare alla pagina dei profili, aggiungere poi il fatto che io abbia creato il panel nuovo con tutte le modifiche
                 try {
 
-                    Utente utente = new Utente(name,immagine,gusto,email);
-                    UtenteDao dao = new UtenteDao();
-                    dao.inserisciUtente(utente);
+                    UtenteDao utentedao = new UtenteDao();
+                    int count = utentedao.contaProfiliPerEmail(email);
+                    Utente ut = new Utente(name,immagine,gusto,email);
+                    if (count >= 4) {
+                        errorText.setText("Puoi creare al massimo 4 profili.");
+                        return;
+                    }
+
+                    utentedao.inserisciUtente(ut);
+
+
 
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/hello-view-profile.fxml"));
                     Parent profileContent = loader.load();
-                    pageContainer.getChildren().clear();
-                    pageContainer.getChildren().add(profileContent);
+                    HelloController helloController = loader.getController();
+                    helloController.setEmail(email);
+
+                    svgContainer.getChildren().clear();
+                    svgContainer.getChildren().add(profileContent);
                 } catch (IOException e) {
                     warningText.setText("Errore durante il caricamento della pagina di modifica: " + e.getMessage());
                     e.printStackTrace();
@@ -139,13 +156,13 @@ public class ModifyCreateController {
             g.getChildren().add(IconSVG.takeElement(i));  // Aggiungi l'elemento SVG al gruppo g
 
             // Aggiungi il gruppo all'HBox, distribuendo le icone tra imageScroll1, imageScroll2, imageScroll3
-            if (i>=0 && i <= 3) {
+            if (i <= 3) {
                 imageScroll1.getChildren().add(g);  // Aggiungi il gruppo a imageScroll1
-            } else if (i>=4 && i <= 7) {
+            } else if (i <= 7) {
                 imageScroll2.getChildren().add(g);  // Aggiungi il gruppo a imageScroll2
-            } else if (i>=8 && i<=11){
+            } else if (i<=11){
                 imageScroll3.getChildren().add(g);  // Aggiungi il gruppo a imageScroll3
-            }else if (i>=12 && i<=15) {
+            }else if (i<=15) {
                 imageScroll4.getChildren().add(g);
             }
         }
@@ -172,18 +189,26 @@ public class ModifyCreateController {
                 Group originalGroup = (Group) scrollImage;
 
                 // Crea un nuovo gruppo che contiene l'immagine SVG
-                Group clonedGroup = copyGroup(originalGroup);  // Crea una copia del gruppo con l'immagine
+                Group clonedGroup = IconSVG.copyGroup(originalGroup);  // Crea una copia del gruppo con l'immagine
                 clonedGroup.setScaleY(10);
                 clonedGroup.setScaleX(10);
 
                 // Aggiungi il clone al container principale
                 elementContainer.getChildren().removeFirst();  // Rimuovi la precedente immagine
-                elementContainer.getChildren().add(0, clonedGroup);  // Aggiungi la nuova immagine
+                elementContainer.getChildren().addFirst(clonedGroup);  // Aggiungi la nuova immagine
 
                 // Salva il riferimento dell'immagine selezionata
                 originalProfileImage = clonedGroup;  // Salva il clone come immagine originale
+
+                for(int j = 0 ; j < 4 ; j++){
+                    HBox c = (HBox) imageContainer.getChildren().get(j);
+                    if (c.getChildren().contains(originalGroup)){
+                        codImmagineCorrente = c.getChildren().indexOf(originalGroup)+j*4;
+                    }
+                }
             });
 
         }
     }
+
 }

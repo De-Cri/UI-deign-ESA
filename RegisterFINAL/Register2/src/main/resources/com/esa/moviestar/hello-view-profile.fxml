@@ -8,10 +8,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import java.net.URL?>
 <StackPane fx:id="ContenitorePadre" xmlns="http://javafx.com/javafx/17.0.12"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.esa.moviestar.Profile.HelloController">
-
+    <stylesheets>
+        <URL value="@styles/General.css" />
+    </stylesheets>
     <VBox alignment="CENTER"
           prefHeight="425.0"
           prefWidth="569.0"
