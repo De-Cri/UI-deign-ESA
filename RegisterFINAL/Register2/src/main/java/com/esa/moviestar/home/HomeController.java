@@ -11,7 +11,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,9 +22,14 @@ public class HomeController {
     @FXML
     private VBox scrollViewContainer;
     private Carousel carousel;
+
+
     private final ResourceBundle resourceBundle =ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+
+    //u
     private final Color foreColor = Color.rgb(240, 240, 240);
     private final Color backgroundColor = Color.rgb(15, 15, 15);
+
     private static final List<String> CATEGORIES = Arrays.asList("action","animation","anime","biography","comedy","crime","documentary","drama","fantasy","history","horror","musical","romantic","sci-fy","superheros","thriller","war","western");
 
     private static final int LARGE_RECOMMENDATION_LIMIT = 10;
@@ -50,7 +54,7 @@ public class HomeController {
             for (Content c:popularByTaste) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/movie_view/WindowCard.fxml"),resourceBundle);
                 Node body = loader.load();
-                WindowCardController windowCardController = loader.getController();
+                WindowCardController windowCardController  = loader.getController();
                 windowCardController.setContent(c);
                 windowCardController.getPlayButton().setOnMouseClicked(e->cardClicked(windowCardController.getCardId()));
                 windowCardController.getInfoButton().setOnMouseClicked(e->cardClicked(windowCardController.getCardId()));
@@ -64,27 +68,21 @@ public class HomeController {
 
             ScrollView top10Scroll = new ScrollView("Scelti per te", Color.TRANSPARENT, foreColor,backgroundColor);
             top10Scroll.setContent(createFilmNodes(top10,false));
-            top10Scroll.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/ScrollView.css")).toExternalForm());
 
-            ScrollView latest10Scroll = new ScrollView("Novità", Color.rgb(228,143,80), backgroundColor);
+            ScrollView latest10Scroll = new ScrollView("Novità", Color.rgb(228,193,42), backgroundColor,null,32.0);
             latest10Scroll.setContent(createFilmNodes(latest10,true));
-            latest10Scroll.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/ScrollView.css")).toExternalForm());
 
             ScrollView favouriteCategoryScroll = new ScrollView("La tua categoria preferita", Color.TRANSPARENT, foreColor,backgroundColor);
             favouriteCategoryScroll.setContent(createFilmNodes(popularByTaste,false));
-            favouriteCategoryScroll.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/ScrollView.css")).toExternalForm());
 
             ScrollView similarToLastWatchedScroll = new ScrollView("La tua categoria preferita", Color.TRANSPARENT, foreColor,backgroundColor);
             similarToLastWatchedScroll.setContent(createFilmNodes(similarToLastWatched,false));
-            similarToLastWatchedScroll.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/ScrollView.css")).toExternalForm());
 
             ScrollView racommendSeriesScroll = new ScrollView("Serie che ti possono piacere", Color.TRANSPARENT, foreColor,backgroundColor);
             racommendSeriesScroll.setContent(createFilmNodes(recommendedSeries,true));
-            racommendSeriesScroll.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/ScrollView.css")).toExternalForm());
 
             ScrollView bottom7Scroll = new ScrollView("Nuove Esperienze", Color.TRANSPARENT, foreColor,backgroundColor);
             bottom7Scroll.setContent(createFilmNodes(bottom7,false));
-            bottom7Scroll.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/ScrollView.css")).toExternalForm());
 
 
             scrollViewContainer.getChildren().addAll(top10Scroll,latest10Scroll,favouriteCategoryScroll,racommendSeriesScroll,bottom7Scroll);

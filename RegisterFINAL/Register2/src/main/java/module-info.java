@@ -3,6 +3,7 @@ module com.esa.moviestar {
     requires javafx.fxml;
     requires jakarta.mail;
     requires java.sql;
+    requires java.desktop;
 
 
     opens com.esa.moviestar to javafx.fxml;

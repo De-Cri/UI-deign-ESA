@@ -8,11 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import javafx.scene.image.PixelReader;
-import javafx.scene.paint.Color;
 
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -96,18 +96,36 @@ public class FilmCardController {
         // Default sizes if everything is uninitialized
         if (overlayWidth <= 0|| overlayHeight <= 0)
             return;
-        Rectangle shimmerOverlay = new Rectangle(overlayWidth, overlayHeight);
-        shimmerOverlay.setStyle("-fx-background-color: linear-gradient(to top, #3e3e3e, transparent);-fx-background-border:32px;");
-        FadeTransition shimmerFadeIn = new FadeTransition(new Duration(10000), shimmerOverlay);
+        Region shimmerOverlay = new Region();
+        shimmerOverlay.setBackground(Background.fill(
+                new RadialGradient(
+                        0, // proportional focus angle
+                        0.5, // focus distance
+                        0.5, // centerX
+                        0.5, // centerY
+                        0.9, // radius
+                        true, // proportional radius
+                        CycleMethod.NO_CYCLE, // cycle method
+                        new Stop(0, Color.TRANSPARENT), // center color (transparent)
+                        new Stop(0.5, Color.rgb(255, 255, 255, 0.1)), // barely visible color
+                        new Stop(1, Color.rgb(255, 255, 255, 0.3)) // border color (white)
+                )
+        ));
+        shimmerOverlay.setPrefSize(cardContainer.getWidth(), cardContainer.getHeight());
+        shimmerOverlay.setClip(new Rectangle(cardContainer.getWidth(), cardContainer.getHeight()) {{
+            setArcWidth(48);
+            setArcHeight(48);
+        }});
+        FadeTransition shimmerFadeIn = new FadeTransition(Duration.seconds(10), shimmerOverlay);
+        shimmerFadeIn.setFromValue(0);
         shimmerFadeIn.setToValue(1);
 
-        FadeTransition shimmerFadeOut = new FadeTransition(new Duration(10000), shimmerOverlay);
+        FadeTransition shimmerFadeOut = new FadeTransition(Duration.seconds(10), shimmerOverlay);
+        shimmerFadeOut.setFromValue(1);
         shimmerFadeOut.setToValue(0);
-
-        ParallelTransition completeAnimation = new ParallelTransition(shimmerFadeIn, shimmerFadeOut);
-        completeAnimation.setCycleCount(10);
-
-        cardContainer.getChildren().add(shimmerOverlay);
+        SequentialTransition completeAnimation = new SequentialTransition(shimmerFadeIn, shimmerFadeOut);
+        completeAnimation.setCycleCount(10); // Repeat the entire fade-in and fade-out sequence
+        cardContainer.getChildren().add(1, shimmerOverlay);
         completeAnimation.play();
     }
 

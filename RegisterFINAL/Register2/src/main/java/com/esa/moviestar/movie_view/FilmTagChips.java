@@ -33,13 +33,15 @@ public class FilmTagChips extends HBox {
     ));
 
     public FilmTagChips(int category){
-        this.minHeight(64.0);
+        this.minHeight(48.0);
+        this.prefHeight(48.0);
+        this.maxHeight(48.0);
         this.minWidth(64.0);
         this.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/General.css")).toExternalForm());
-        this.getStyleClass().addAll("surface-dim-border","surface-transparent", "small-item");
+        this.getStyleClass().addAll("surface-transparent", "small-item");
         this.getStyleClass().add("film-tag-chip");
         Text txt = new Text(CATEGORIES.get(category));
-        txt.getStyleClass().addAll("on-primary","small-text");
+        txt.getStyleClass().addAll("on-primary","medium-text");
         this.getStyleClass().add("chips");
         this.getChildren().add(copyGroup(ICONS.get(category)));
 
