@@ -49,6 +49,7 @@ public class HeaderController {
         currentActive = homeButton;
         currentActive.getStyleClass().remove("surface-transparent");
         currentActive.getStyleClass().add("primary");
+        tbxSearch.setPromptText("Titoli, persone, generi");
         profileImage.setOnMouseClicked(e -> popupMenu.show(profileImage));
         // da spostare
         homeButton.setOnMouseReleased(e -> activeButton(homeButton));
