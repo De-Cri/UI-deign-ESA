@@ -2,6 +2,9 @@ package com.esa.moviestar.home;
 
 import javafx.animation.*;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -11,14 +14,19 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class ScrollViewSkin extends SkinBase<ScrollView> {
     // UI Components
+    private Rectangle border;
     // header
     private StackPane titleBox;
-    private Button titleLabel;
+    private Text titleLabel;
     private Line separator;
     // footer
     private ScrollPane scrollPane;
@@ -31,10 +39,17 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
     // Animation
     private Timeline scrollAnimation;
 
+    // Data
+    private final int SPACE = 24;
 
     // Listeners
-    //private final ChangeListener<Number> scrollListener;
     private boolean isHovering = false; // Track hover state
+    private ChangeListener<Bounds> layoutBoundsListener;
+    private ChangeListener<Number> widthListener;
+    private ChangeListener<Paint> backgroundColorListener;
+    private ListChangeListener<Node> itemsListener;
+    private ChangeListener<Paint> foreColorListener;
+    private ChangeListener<Paint> edgeColorListener;
 
     /**
      * Constructor for the ScrollViewSkin.
@@ -44,9 +59,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
      */
     public ScrollViewSkin(ScrollView control) {
         super(control);
-        control.getStyleClass().add("scroll-view");
-
-
+        // Initialize UI components
         titleBox = createTitleBox();
         sliderContainer = createSlider();
 
@@ -67,6 +80,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         // Add to scene graph
         getChildren().add(mainLayout);
     }
+
     /**
      * Sets up the mouse enter/exit listeners on the slider container
      * to control the visibility of the navigation buttons.
@@ -94,31 +108,21 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
     private StackPane createTitleBox() {
         // Create StackPane container instead of HBox
         StackPane box = new StackPane();
-        Color foreColor = getSkinnable().getForeColor();
-        box.setPadding(new Insets(0, 24, 0, 24));
+        box.setMinHeight(SPACE*3);
+        box.setPrefHeight(SPACE*3);
+        Paint foreColor = getSkinnable().getForeColor();
+        box.setPadding(new Insets(0, SPACE, 0, SPACE));
 
         // Create and configure the label
-        titleLabel = new Button();
-        titleLabel.setTextFill(foreColor);
-        titleLabel.getStyleClass().add("title-label");
+        titleLabel = new Text();
+        titleLabel.setFill(foreColor);
+        titleLabel.setFont(Font.font(null, FontWeight.BOLD, SPACE));
 
         // Create the separator line
         separator = new Line();
         separator.setStrokeWidth(1);
-
-        LinearGradient gradient = new LinearGradient(
-                0, 0,      // start X,Y (left edge)
-                1, 0,      // end X,Y (right edge)
-                true,      // proportional
-                CycleMethod.NO_CYCLE,
-                new Stop(0.0, Color.TRANSPARENT),  // Transparent at left edge
-                new Stop(0.5, foreColor),          // Solid color at center
-                new Stop(1.0, Color.TRANSPARENT)   // Transparent at right edge
-        );
-
-        separator.setStroke(gradient);
+        separator.setStroke(getLinearGradient((Color)foreColor));
         separator.setOpacity(0.9);
-        // Create title button
 
         // Create internal layout components
         HBox controlsBox = new HBox();
@@ -149,16 +153,16 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         // Configure the
         container = new HBox(control.getSpacing());
         container.setAlignment(Pos.CENTER_LEFT);
-        container.getStyleClass().add("cards-container");
         container.setSpacing(control.getSpacing());
         container.spacingProperty().bind(control.spacingProperty());
-        container.setPadding(new Insets(0,24,0,24));
+        container.setPadding(new Insets(0,SPACE,0,SPACE));
+
         // Configure ScrollPane
         scrollPane.setContent(container);
         scrollPane.setVmax(0);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setPadding(new Insets(0,24,0,24));
+        scrollPane.setPadding(new Insets(0,SPACE,0,SPACE));
         scrollPane.setPannable(true);
         scrollPane.setFitToHeight(true); // Ensure content fits the height
         HBox.setHgrow(scrollPane, Priority.ALWAYS); // Make scroll pane take up all available space
@@ -169,35 +173,13 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
 
         // Create gradient overlays
         leftGradient = new Pane();
-        leftGradient.setPrefWidth(80);
-        leftGradient.setPrefHeight(1);
-
+        leftGradient.setPrefSize(80,SPACE);
         rightGradient = new Pane();
-        rightGradient.setPrefWidth(80);
-        rightGradient.setPrefHeight(1);
-        if(control.getEdgeColor()==null){
-        leftGradient.setStyle("-fx-background-color: linear-gradient( to right, "
-                + toCssCode(control.getBackgroundColor()) +
-                ", "
-                + toCssCode(control.getBackgroundColor()) +
-                " 40% , transparent);");
-        rightGradient.setStyle("-fx-background-color: linear-gradient( to left, "
-                + toCssCode(control.getBackgroundColor()) +
-                ", "
-                + toCssCode(control.getBackgroundColor()) +
-                " 40% , transparent);");}
-        else{
-            leftGradient.setStyle("-fx-background-color: linear-gradient( to right, "
-                    + toCssCode(control.getEdgeColor()) +
-                    ", "
-                    + toCssCode(control.getEdgeColor()) +
-                    " 40% , transparent);");
-            rightGradient.setStyle("-fx-background-color: linear-gradient( to left, "
-                    + toCssCode(control.getEdgeColor()) +
-                    ", "
-                    + toCssCode(control.getEdgeColor()) +
-                    " 40% , transparent);");
-        }
+        rightGradient.setPrefSize(80,SPACE);
+
+        leftGradient.setBackground(getOverlayGradientBackgroundFill(control.getEdgeColor()==null ? (Color)control.getBackgroundColor(): (Color)control.getEdgeColor(), true));
+        rightGradient.setBackground(getOverlayGradientBackgroundFill(control.getEdgeColor()==null ? (Color)control.getBackgroundColor(): (Color)control.getEdgeColor(), false));
+
 
 
         // Create Anchor to place buttons and gradients on the sides of ScrollPane
@@ -244,8 +226,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
      */
     private Button createNavButton(boolean isLeft) {
         Button button = new Button();
-        button.getStyleClass().add("nav-button");
-
+        button.setBackground(Background.EMPTY);
         // Create SVG icon with white fill to ensure visibility
         SVGPath svgPath = new SVGPath();
         svgPath.setContent(getSkinnable().getArrowIcon());
@@ -277,8 +258,6 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
             updateButtonVisibility(targetValue);
         });
 
-
-        // Set proper dimensions
         button.setMinHeight(80);
         button.setPrefWidth(40);
         button.setMinWidth(40);
@@ -344,7 +323,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         }
 
         // Calculate total width of all items and spacing
-        double totalContentWidth = (itemCount * itemWidth) + (itemCount * spacing);
+        double totalContentWidth = (itemCount * itemWidth) + (itemCount > 1 ? (itemCount - 1) * spacing : 0);
 
         // Calculate the total scrollable width (content width - viewport width)
         double totalScrollableWidth = Math.max(1.0, totalContentWidth - viewportWidth); // Use 1.0 to avoid division by zero
@@ -368,6 +347,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         // Clamp the result between 0 and 1, though it should naturally fall in this range
         return Math.max(0.0, Math.min(1.0, hValueChange));
     }
+
     /**
      * Animates the ScrollPane's horizontal scroll position (height value) to a target value.
      *
@@ -395,6 +375,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         // Start animation
         scrollAnimation.play();
     }
+
     /**
      * Updates the visibility (opacity) of the navigation buttons based on the current
      * scroll position (height value) and whether the mouse is hovering over the slider area.
@@ -424,6 +405,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
             showButton(rightButton, false);
         }
     }
+
     /**
      * Animates a button to become visible (fade in and slide in).
      *
@@ -434,10 +416,6 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         // Define animation duration and easing
         Duration duration = Duration.millis(250); // Smoother duration
         Interpolator easing = Interpolator.EASE_OUT; // Easing out for appearance
-
-        // Make the button visible and managed before starting animation
-        // Start transparent and slightly offset
-        button.setOpacity(0.0);
         button.setOpacity(1);
 
         // Create Fade Transition
@@ -481,6 +459,14 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         }
     }
 
+    /**
+     * Transition of the buttons
+     *
+     * @param button the object
+     * @param isLeft the orientation
+     * @param duration of the effect
+     *
+     */
     private static ParallelTransition getParallelTransition(Node button, boolean isLeft, Duration duration) {
         Interpolator easing = Interpolator.EASE_IN; // Easing in for disappearance
 
@@ -500,16 +486,41 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         return new ParallelTransition(button, fadeOut, slideOut);
     }
 
+    /**
+     * Bind the children of the object
+     */
     private void setupBindings() {
         ScrollView control = getSkinnable();
 
+        // Listener for layout bounds (clipping)
+        layoutBoundsListener = (observable, oldValue, newValue) -> {
+            if (control.getRadius() > 0) {
+                Rectangle clipRect = new Rectangle(newValue.getWidth(), newValue.getHeight());
+                clipRect.setArcWidth(control.getRadius() * 2);
+                clipRect.setArcHeight(control.getRadius() * 2);
+                control.setClip(clipRect);
+            } else {
+                control.setClip(null);
+            }
+        };
+        control.layoutBoundsProperty().addListener(layoutBoundsListener);
+
         // Bind title label text
         titleLabel.textProperty().bind(control.titleProperty());
-        titleLabel.prefWidthProperty().bind(control.widthProperty().divide(5.0));
 
-        // Bind the line width to the container width
-        separator.startXProperty().bind(titleBox.widthProperty().multiply(0.3));
-        separator.endXProperty().bind(titleBox.widthProperty().multiply(0.9));
+        // Listener for width changes (separator visibility)
+        widthListener = (obs, oldVal, newVal) -> {
+            if (separator != null) { // Check separator as it might be nullified during dispose
+                if (newVal.doubleValue() < 720) {
+                    separator.setVisible(false);
+                } else {
+                    separator.setVisible(true);
+                    separator.setStartX(newVal.doubleValue() * 0.3);
+                    separator.setEndX(newVal.doubleValue() * 0.8);
+                }
+            }
+        };
+        control.widthProperty().addListener(widthListener);
 
         // Initialize SVG paths
         updateSVGContent(leftButton, control.getArrowIcon());
@@ -517,92 +528,65 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         leftButton.prefHeightProperty().bind(container.heightProperty());
         rightButton.prefHeightProperty().bind(container.heightProperty());
 
-        // Bind foreground color
-        control.foreColorProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                updateForeColor(newVal);
-            }
-        });
-
         // Bind background color
-        control.backgroundColorProperty().addListener((obs, oldVal, newVal) -> {
+        getSkinnable().setBackground(Background.fill(control.getBackgroundColor()));
+        backgroundColorListener = (obs, oldVal, newVal) -> {
             if (newVal != null) {
-                String colorStyle = "-fx-background-color: " + toCssCode(newVal) + ";";
-                if(control.getEdgeColor()==null){
-                leftGradient.setStyle("-fx-background-color: linear-gradient( to right, "
-                        + toCssCode(newVal) +
-                        ", "
-                        + toCssCode(newVal) +
-                        " 40% , transparent);");
-                rightGradient.setStyle("-fx-background-color: linear-gradient( to left, "
-                        + toCssCode(newVal) +
-                        ", "
-                        + toCssCode(newVal) +
-                        " 40% , transparent);");
-
+                if (control.getEdgeColor() == null) {
+                    if (leftGradient != null) leftGradient.setBackground(getOverlayGradientBackgroundFill((Color)newVal, true));
+                    if (rightGradient != null) rightGradient.setBackground(getOverlayGradientBackgroundFill((Color)newVal, false));
                 }
-                getSkinnable().setStyle(colorStyle);
+                // Ensure getSkinnable() is valid if this listener is called late
+                ScrollView skinnable = getSkinnable();
+                if (skinnable != null) {
+                    skinnable.setBackground(Background.fill(skinnable.getBackgroundColor()));
+                }
             }
-        });
-        control.edgeColorProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {//forse non funziona
-                leftGradient.setStyle("-fx-background-color: linear-gradient( to right, "
-                        + toCssCode(newVal) +
-                        ", "
-                        + toCssCode(newVal) +
-                        " 40% , transparent);");
-                rightGradient.setStyle("-fx-background-color: linear-gradient( to left, "
-                        + toCssCode(newVal) +
-                        ", "
-                        + toCssCode(newVal) +
-                        " 40% , transparent);");
-            }
-            if (sliderContainer.getChildren().contains(leftGradient)) {
-                leftGradient.toFront();
-            }
-            if (sliderContainer.getChildren().contains(rightGradient)) {
-                rightGradient.toFront();
-            }
-
-            // Ensure buttons are at the very front
-            if (sliderContainer.getChildren().contains(leftButton)) {
-                leftButton.toFront();
-            }
-            if (sliderContainer.getChildren().contains(rightButton)) {
-                rightButton.toFront();
-            }
-        });
-        String colorStyle = "-fx-background-color: " + toCssCode(control.getBackgroundColor()) + ";";
-        getSkinnable().setStyle(colorStyle);
-
+        };
+        control.backgroundColorProperty().addListener(backgroundColorListener);
 
         // Bind items
         Bindings.bindContent(container.getChildren(), control.getItems());
+        itemsListener = this::onChanged; // Store the method reference
+        control.getItems().addListener(itemsListener);
 
-        control.getItems().addListener((javafx.collections.ListChangeListener<Node>) change -> {
-            while (change.next()) {
-                if (change.wasAdded()) {
-                    // Add height listeners to new items
-                    for (Node node : change.getAddedSubList()) {
-                        // This assumes each node has a heightProperty()
-                        // You might need to adjust based on your actual node types
-                        if (node instanceof Region region) {
-                            region.heightProperty().addListener((obs, oldVal, newVal) -> updateContainerHeight());
-                        }
-                    }
-                }
-                // Always update height when items change
-                updateContainerHeight();
+        // Bind foreground color
+        foreColorListener = (obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                updateForeColor((Color)newVal);
             }
-        });
-// Also trigger the height update when the container is resized
-//        container.widthProperty().addListener((obs, oldVal, newVal) -> {
-//            // Width changes may cause height changes in wrapped content
-//            Platform.runLater(this::updateContainerHeight);
-//        });
+        };
+        control.foreColorProperty().addListener(foreColorListener);
 
-
+        // Bind edge color
+        edgeColorListener = (obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                if (leftGradient != null) leftGradient.setBackground(getOverlayGradientBackgroundFill((Color) newVal, true));
+                if (rightGradient != null) rightGradient.setBackground(getOverlayGradientBackgroundFill((Color)newVal, false));
+            }
+            // Ensure components are not null before calling toFront()
+            if (sliderContainer != null) {
+                if (leftGradient != null && sliderContainer.getChildren().contains(leftGradient)) {
+                    leftGradient.toFront();
+                }
+                if (rightGradient != null && sliderContainer.getChildren().contains(rightGradient)) {
+                    rightGradient.toFront();
+                }
+                if (leftButton != null && sliderContainer.getChildren().contains(leftButton)) {
+                    leftButton.toFront();
+                }
+                if (rightButton != null && sliderContainer.getChildren().contains(rightButton)) {
+                    rightButton.toFront();
+                }
+            }
+        };
+        control.edgeColorProperty().addListener(edgeColorListener);
     }
+
+    /**
+     * Update the height of the control
+     * it controls the height of the items and add a minimum space
+     */
     private void updateContainerHeight() {
         double maxHeight = 0;
         for (Node item : getSkinnable().getItems()) {
@@ -612,7 +596,7 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
             }
             maxHeight = Math.max(maxHeight, itemHeight);
         }
-        maxHeight+= 32;
+        maxHeight+= SPACE;
         if (maxHeight > 0) {
             container.setMinHeight(maxHeight);
             container.setPrefHeight(maxHeight);
@@ -642,8 +626,20 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
      */
     public void updateForeColor(Color color) {
         if (color == null) return;
-        titleLabel.setTextFill(color);
-        LinearGradient gradient = new LinearGradient(
+        titleLabel.setFill(color);
+        separator.setStroke(getLinearGradient(color));
+        // Navigation Button Icons (assuming they exist and are SVG)
+        updateSVGContent(leftButton, getSkinnable().getArrowIcon());
+        updateSVGContent(rightButton, getSkinnable().getArrowIcon());
+
+    }
+    /**
+     * Return the color of the separator
+     *
+     * @param color the foreground color
+     */
+    public LinearGradient getLinearGradient(Color color) {
+        return new LinearGradient(
                 0, 0,      // start X,Y (left edge)
                 1, 0,      // end X,Y (right edge)
                 true,      // proportional
@@ -652,39 +648,64 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
                 new Stop(0.5, color),
                 new Stop(1.0, Color.TRANSPARENT)
         );
-        separator.setStroke(gradient);
-        // Navigation Button Icons (assuming they exist and are SVG)
-        updateSVGContent(leftButton, getSkinnable().getArrowIcon());
-        updateSVGContent(rightButton, getSkinnable().getArrowIcon());
+    }
 
-    }
     /**
-     * Converts a JavaFX Color object to a CSS rgba() string.
-     * Handles null color by returning transparent.
+     * Return the color of the overlays
      *
-     * @param color The JavaFX Color.
-     * @return A CSS rgba() string like "rgba(255, 0, 100, 0.8)".
+     * @param color the edge color, if null the background color
      */
-    public static String toCssCode(Color color) {
-        return "rgba("+ (color.getRed() * 255)+", "+ (color.getGreen() * 255)+", "+ (color.getBlue() * 255)+", "+ color.getOpacity() +" )";
+    public Background getOverlayGradientBackgroundFill(Color color, boolean isLeft) {
+        return Background.fill(
+                new LinearGradient(isLeft? 0:1,0,
+                isLeft? 1:0, 0,
+                true,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, color),
+                new Stop(0.4, color),
+                new Stop(1, Color.TRANSPARENT)));
     }
+
     /**
      * Cleans up resources, listeners, and bindings when the skin is disposed.
      */
     @Override
     public void dispose() {
-        // Clean up bindings and listeners
-        titleLabel.textProperty().unbind();
-        container.spacingProperty().unbind();
-//        if (scrollListener != null) {
-//            scrollPane.height valueProperty().removeListener(scrollListener);
-//        }
-        // Remove mouse event handlers
+        ScrollView control = getSkinnable(); // Get a reference early
+
+        // 1. Stop animations
+        if (scrollAnimation != null) {
+            scrollAnimation.stop();
+        }
+
+        // 2. Remove listeners
+        //  on the control (Skinnable)
+        if (control != null) {
+            if (layoutBoundsListener != null) control.layoutBoundsProperty().removeListener(layoutBoundsListener);
+            if (widthListener != null) control.widthProperty().removeListener(widthListener);
+            if (backgroundColorListener != null) control.backgroundColorProperty().removeListener(backgroundColorListener);
+            if (itemsListener != null) control.getItems().removeListener(itemsListener);
+            if (foreColorListener != null) control.foreColorProperty().removeListener(foreColorListener);
+            if (edgeColorListener != null) control.edgeColorProperty().removeListener(edgeColorListener);
+        }
+        // Event handlers on skin's own components
         if (sliderContainer != null) {
             sliderContainer.setOnMouseEntered(null);
             sliderContainer.setOnMouseExited(null);
         }
-        //Nullify references (optional, helps GC)
+
+        // 3. Unbind properties
+        if (titleLabel != null) titleLabel.textProperty().unbind();
+        if (container != null) {
+            container.spacingProperty().unbind();
+            if (control != null && control.getItems() != null) {
+                Bindings.unbindContent(container.getChildren(), control.getItems());
+            }
+        }
+        if (leftButton != null) leftButton.prefHeightProperty().unbind();
+        if (rightButton != null) rightButton.prefHeightProperty().unbind();
+
+        // 4. Nullify references to help GC and prevent accidental use
         titleBox = null;
         titleLabel = null;
         separator = null;
@@ -697,6 +718,21 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
         rightGradient = null;
         scrollAnimation = null;
 
+        // Nullify listener fields
+        layoutBoundsListener = null;
+        widthListener = null;
+        backgroundColorListener = null;
+        itemsListener = null;
+        foreColorListener = null;
+        edgeColorListener = null;
+
+        // 5. Call super.dispose()
+        // This will typically clear the children list of the SkinBase,
+        // effectively removing mainLayout and its descendants from the scene graph.
         super.dispose();
+    }
+
+    private void onChanged(ListChangeListener.Change<? extends Node> change) {
+        updateContainerHeight();
     }
 }

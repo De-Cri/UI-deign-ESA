@@ -60,7 +60,7 @@
     -fx-background-color: radial-gradient(focus-angle 254deg , focus-distance 20% , center 50% 50% , radius 55% , #7341BE, #101010);
 }
 .surface-gradient{
-    -fx-background-color:  radial-gradient(focus-distance 0% , center 50% 50% , radius 55% , rgba(0,0,0,0.5), #101010);
+    -fx-background-color:  radial-gradient(focus-distance 0% , center 50% 50% , radius 55% , rgba(0,0,0,0.5),rgba(0,0,0,0.7),rgba(0,0,0,0.8), #101010);
 }
 .surface-opaque{
     -fx-background-color:  rgba(15,15,15,0.97);

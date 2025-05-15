@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="1920" maxWidth="1080" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="1077.0" styleClass="bg-color" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.home.FilterController">
+
+    <ScrollPane fx:id="root" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="TOP_CENTER">
+        <VBox fx:id="body" alignment="TOP_CENTER" spacing="16.0" style=" -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+
+            <Pane fx:id="pnl_separator" prefHeight="100.0" prefWidth="0.0" />
+         <HBox prefHeight="64.0" prefWidth="200.0">
+            <children>
+               <HBox fx:id="filterButton" alignment="CENTER" prefHeight="48.0" prefWidth="128.0">
+                  <styleClass>
+                     <String fx:value="primary" />
+                     <String fx:value="chips" />
+                     <String fx:value="medium-item" />
+                  </styleClass>
+                  <children>
+                     <SVGPath content="M9.64-.32q-.57 0-.95-.38T8.31-1.66v-7.99L.59-19.49q-.5-.67-.15-1.4t1.21-.73h18.63q.87 0 1.21.73t-.15 1.4L13.63-9.64v7.99q0 .57-.38.95T12.3-.32h-2.66Zm1.33-10.25 6.59-8.39H4.38l6.59 8.39Zm0 0Z" fill="WHITE" styleClass="on-primary" />
+                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Filter">
+                        <styleClass>
+                           <String fx:value="on-primary" />
+                           <String fx:value="large-text" />
+                        </styleClass>
+                     </Text>
+                  </children>
+               </HBox>
+            </children>
+            <padding>
+               <Insets left="32.0" right="32.0" />
+            </padding>
+         </HBox>
+         <VBox fx:id="scrollViewContainer" prefHeight="200.0" prefWidth="100.0">
+            <styleClass>
+               <String fx:value="surface-gradient" />
+               <String fx:value="very-large-item" />
+            </styleClass>
+         </VBox>
+
+        </VBox>
+      <padding>
+         <Insets bottom="16.0" left="16.0" top="16.0" />
+      </padding>
+    </ScrollPane>
+</AnchorPane>

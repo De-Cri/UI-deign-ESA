@@ -2,12 +2,16 @@
 package com.esa.moviestar.home;
 
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
@@ -20,9 +24,10 @@ public class ScrollView extends Control {
     private final StringProperty title = new SimpleStringProperty(this, "title", "title");
     private final StringProperty buttonText = new SimpleStringProperty(this, "buttonText", "Watch more");
     private final StringProperty arrowIcon = new SimpleStringProperty(this, "arrowIcon", DEFAULT_ARROW_ICON);
-    private final ObjectProperty<Color> backgroundColor = new SimpleObjectProperty<>(this, "backgroundColor", Color.GRAY);
-    private final ObjectProperty<Color> foreColor = new SimpleObjectProperty<>(this, "foreColor", Color.BLACK);
-    private final ObjectProperty<Color> edgeColor = new SimpleObjectProperty<>(this, "edgeColor", null);
+    private final ObjectProperty<Paint> backgroundColor = new SimpleObjectProperty<>(this, "backgroundColor", Color.GRAY);
+    private final ObjectProperty<Paint> foreColor = new SimpleObjectProperty<>(this, "foreColor", Color.BLACK);
+    private final ObjectProperty<Paint> edgeColor = new SimpleObjectProperty<>(this, "edgeColor", null);
+    private final DoubleProperty radius = new SimpleDoubleProperty(this, "radius", 0);
     private final DoubleProperty spacing = new SimpleDoubleProperty(this, "spacing", 4);
     private final ObservableList<Node> items = FXCollections.observableArrayList();
     // Constructor
@@ -46,6 +51,14 @@ public class ScrollView extends Control {
         this.edgeColor.set(edgeColor);
         this.title.set(title);
         initialize();
+    }
+    public ScrollView(String title,Color backgroundColor ,Color foregroundColor,Color edgeColor,Double border) {
+        this.foreColor.set(foregroundColor);
+        this.backgroundColor.set(backgroundColor);
+        this.edgeColor.set(edgeColor);
+        this.title.set(title);
+        initialize();
+        this.setClipRadius(border);
     }
     private void initialize() {
         getStyleClass().add(DEFAULT_STYLE_CLASS);
@@ -108,23 +121,23 @@ public class ScrollView extends Control {
         this.arrowIcon.set(svg);
     }
 
-    public Color getBackgroundColor() {
+    public Paint getBackgroundColor() {
         return backgroundColor.get();
     }
 
-    public ObjectProperty<Color> backgroundColorProperty() {
+    public ObjectProperty<Paint> backgroundColorProperty() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(Color color) {
+    public void setBackgroundColor(Paint color) {
         this.backgroundColor.set(color);
     }
 
-    public Color getForeColor() {
+    public Paint getForeColor() {
         return foreColor.get();
     }
 
-    public ObjectProperty<Color> foreColorProperty() {
+    public ObjectProperty<Paint> foreColorProperty() {
         return foreColor;
     }
 
@@ -148,14 +161,24 @@ public class ScrollView extends Control {
         return items;
     }
 
-    public Color getEdgeColor() {
+    public Paint getEdgeColor() {
        return this.edgeColor.get();
     }
     public void setEdgeColor(Color c) {
        edgeColor.set(c);
     }
-    public ObjectProperty<Color> edgeColorProperty() {
+    public ObjectProperty<Paint> edgeColorProperty() {
         return edgeColor;
+    }
+
+    public double getRadius() {
+        return radius.get();
+    }
+    public void setClipRadius(double n) {
+         radius.set(n);
+    }
+    public DoubleProperty radiusProperty() {
+        return radius;
     }
 }
 
