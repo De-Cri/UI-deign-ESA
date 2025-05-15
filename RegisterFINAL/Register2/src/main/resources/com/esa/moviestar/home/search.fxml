@@ -9,7 +9,14 @@
     <ScrollPane  fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="TOP_CENTER">
         <VBox  alignment="TOP_CENTER" spacing="16.0" style=" -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
 
-            <Pane fx:id="pnl_separator1" prefHeight="60.0" prefWidth="0.0" />
+            <Pane fx:id="pnl_separator1" minHeight="150.0" prefWidth="1" />
+
+            <HBox spacing="8">
+                <Label fx:id="findout" text="Altri titoli da scoprire:" styleClass="large-text-gray"/>
+
+                <FlowPane fx:id="raccomendations" hgap="8" vgap="8" prefWrapLength="1200"/>
+            </HBox>
+            <FlowPane fx:id="filmseriesRaccomendations" hgap="8" vgap="8" prefWrapLength="1200" />
 
         </VBox>
         <padding>
@@ -17,4 +24,3 @@
         </padding>
     </ScrollPane>
 </AnchorPane>
-

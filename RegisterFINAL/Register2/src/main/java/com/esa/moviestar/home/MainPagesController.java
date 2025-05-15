@@ -20,15 +20,18 @@ public class MainPagesController {
     private final ResourceBundle resourceBundle =ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
     private HeaderController headerController;
     private Node homeBody;
+    private Node currentScene;
     private Node s;
     private Node searchNode;
     private HomeController homeBodyController;
+    private List<Content> c;
 
     public void  initialize()  {
         loadHeader();
         homeBody =loadDynamicBody("home.fxml");
+        currentScene = homeBody;
         Profile p = new Profile(1,"eden","FF1C2A0B3D4E1F00112233445566778009",6);
-        List<Content> c = new ArrayList<>(Arrays.asList(
+        c = new ArrayList<>(Arrays.asList(
                         new Content(1L, "SPiderman", "un ragazzo viene punto da un ragno", "1h 57m", 4.6, "https://via.assets.so/img.jpg?w=400&h=150&tc=blue&bg=#cecece", 88935L, "2012, 05, 28", false, new ArrayList<>(Arrays.asList(1, 15))), // action, superheros
                         new Content(2L, "Avengers: Endgame", "I Vendicatori rimasti cercano di annullare le azioni di Thanos.", "3h 1m", 4.8, "https://via.assets.so/img.jpg?w=400&h=150&tc=blue&bg=#cecece", 157896L, "2019, 04, 24", true, new ArrayList<>(Arrays.asList(1, 14, 15))), // action, sci-fy, superheros
                         new Content(3L, "Il Cavaliere Oscuro", "Batman affronta il Joker.", "2h 32m", 4.9, "https://via.assets.so/img.jpg?w=400&h=150&tc=blue&bg=#cecece", 123456L, "2008, 07, 23", true, new ArrayList<>(Arrays.asList(1, 6, 16))), // action, crime, thriller
@@ -81,61 +84,68 @@ public class MainPagesController {
 
     private void loadHeader(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("header.fxml"),resourceBundle);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("header.fxml"), resourceBundle);
             Node headerNode = loader.load();
             headerContainer.getChildren().add(headerNode);
             headerController = loader.getController();
             headerController.homeButton.setOnMouseClicked(e -> {
-                if(homeBody == null)
+                if (homeBody == null)
                     return;
-                if(body.getChildren().contains(homeBody))
+                if (body.getChildren().contains(homeBody))
                     return;
+                currentScene = homeBody;
                 body.getChildren().clear();
                 body.getChildren().add(homeBody);
 
             });
             headerController.filmButton.setOnMouseClicked(e -> {
-                if(body.getChildren().contains(s))
+                if (body.getChildren().contains(s))
                     return;
-                if(s == null)
-                    s=loadDynamicBody("seconda.fxml");
+                if (s == null)
+                    s = loadDynamicBody("seconda.fxml");
+                currentScene = s;
                 body.getChildren().clear();
                 body.getChildren().add(s);
             });
             headerController.seriesButton.setOnMouseClicked(e -> {
-                if(homeBody == null)
+                if (homeBody == null)
                     return;
-                if(body.getChildren().contains(homeBody))
+                if (body.getChildren().contains(homeBody))
                     return;
+                //currentScene = series;
                 body.getChildren().clear();
                 body.getChildren().add(homeBody);
             });
-            headerController.searchButton.setOnMouseClicked(e -> {
-                if(homeBody == null)
-                    return;
-                if(body.getChildren().contains(homeBody))
-                    return;
-                body.getChildren().clear();
-                body.getChildren().add(homeBody);
-            });
-            headerController.getTbxSearch().textProperty().addListener((observableValue, s1, t1)
-                    ->{
+
+            headerController.getTbxSearch().textProperty().addListener((observableValue, oldV,  newV)
+                    -> {
+                if (newV.isEmpty()) {
+                    try {
+                        body.getChildren().clear();
+                        body.getChildren().add(currentScene);
+
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
+                    return ;
+                }
                 try {
                     FXMLLoader loader1 = new FXMLLoader(getClass().getResource("search.fxml"));
                     Node search = loader1.load();
-                    AnchorPane.setBottomAnchor(search,0.0);
-                    AnchorPane.setTopAnchor(search,0.0);
-                    AnchorPane.setLeftAnchor(search,0.0);
-                    AnchorPane.setRightAnchor(search,0.0);
+                    AnchorPane.setBottomAnchor(search, 0.0);
+                    AnchorPane.setTopAnchor(search, 0.0);
+                    AnchorPane.setLeftAnchor(search, 0.0);
+                    AnchorPane.setRightAnchor(search, 0.0);
                     body.getChildren().clear();
-                    ((SearchController)loader1.getController()).set_headercontroller(headerController);
+                    ((SearchController) loader1.getController()).set_headercontroller(headerController);
+                    ((SearchController) loader1.getController()).set_trylist(homeBodyController.createFilmNodes(c,false));
                     body.getChildren().add(search);
-                    }
-                catch(Exception e){
+                } catch (Exception e) {
                     System.err.println(e.getMessage());
-            }
+                }
             });
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -149,6 +159,8 @@ public class MainPagesController {
             AnchorPane.setLeftAnchor(body,0.0);
             AnchorPane.setRightAnchor(body,0.0);
             homeBodyController = loader.getController();//messo solo per provare
+            //Object ugo = loader.getController();//
+
             return body;
         } catch (IOException e) {
             System.out.println(e.getMessage());
