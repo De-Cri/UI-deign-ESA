@@ -1,5 +1,10 @@
 package com.esa.moviestar.model;
 
+import com.esa.moviestar.Profile.IconSVG;
+import javafx.scene.Group;
+
+import java.awt.geom.GeneralPath;
+
 public class Utente {
 
     private int codUtente;         // PRIMARY KEY
@@ -8,7 +13,7 @@ public class Utente {
     private int idImmagine;        // FOREIGN KEY verso tabella immagine
     private String email;          // FOREIGN KEY verso tabella Account
 
-    // Costruttore completo (es. da DB)
+    // Costruttore completo (es. DB)
     public Utente(int codUtente, String nome, String gusti, int idImmagine, String email) {
         this.codUtente = codUtente;
         this.nome = nome;
@@ -26,17 +31,18 @@ public class Utente {
     }
 
     // Getter
-    public int getCodUtente() { return codUtente; }
+    public int getID() { return codUtente; }
     public String getNome() { return nome; }
     public String getGusti() { return gusti; }
-    public int getIdImmagine() { return idImmagine; }
+    public Group getIcona() { return IconSVG.takeElement(idImmagine); }
+    public int getIDIcona() { return idImmagine; }
     public String getEmail() { return email; }
 
     // Setter
-    public void setCodUtente(int codUtente) { this.codUtente = codUtente; }
+    public void setID(int codUtente) { this.codUtente = codUtente; }
     public void setNome(String nome) { this.nome = nome; }
     public void setGusti(String gusti) { this.gusti = gusti; }
-    public void setIdImmagine(int idImmagine) { this.idImmagine = idImmagine; }
+    public void setIcona(int idImmagine) { this.idImmagine = idImmagine; }
     public void setEmail(String email) { this.email = email; }
 
     // Verifica del nome (rimasta invariata)
@@ -66,5 +72,9 @@ public class Utente {
         } else {
             System.out.println("Il nome ha tutti caratteri ammessi");
         }
+    }
+
+    public int getUltimoGuardato() {
+        return 5;
     }
 }

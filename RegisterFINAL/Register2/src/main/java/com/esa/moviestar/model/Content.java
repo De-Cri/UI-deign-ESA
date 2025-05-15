@@ -1,48 +1,53 @@
 package com.esa.moviestar.model;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a Content or TV series in the recommendation system.
+ * Content class representing a film or TV series based on the SQLite schema.
  */
 public class Content {
-    private long id;
+    private int id;
     private String title;
-    private String subtitle;
-    private String time;
-    private double rating;
+    private String plot;
     private String imageUrl;
-    private long click;
-    private String dataPubblicazione;
-    private boolean serie;
-    private List<Integer> categorie;
+    private String videoUrl;
+    private double duration;
+    private int year;
+    private double rating;
+    private int clicks;
+    private String country;
+    private String releaseDate;
+    private boolean isSeries;
+    private boolean isSeasonDivided;
+    private int seasonCount;
+    private int episodeCount;
+    private List<Integer> categories ;
 
-    // Default constructor
-    public Content() {
-        this.categorie = new ArrayList<>();
+    public Content(){
+        categories= new ArrayList<>();
     }
 
-    // Constructor with all fields
-    public Content(long id, String title,String subtitle, String time, double rating, String imageUrl, long click, String dataPubblicazione, boolean serie, List<Integer> categorie) {
-        this.id = id;
-        this.title= title;
-        this.subtitle = subtitle;
-        this.time = time;
-        this.rating = rating;
-        this.imageUrl = imageUrl;
-        this.click = click;
-        this.dataPubblicazione = dataPubblicazione;
-        this.serie = serie;
-        this.categorie = categorie != null ? categorie : new ArrayList<>();
+
+    public boolean isSeries() {
+        return this.isSeries;
+    }
+    public void Series(boolean isSeries) {
+        this.isSeries = isSeries;
     }
 
-    // Getters and Setters
-    public long getId() {
+    public boolean isSeasonDivided() {
+        return this.isSeasonDivided;
+    }
+    public void seasonDivided(boolean isSeries) {
+        this.isSeasonDivided = isSeries;
+    }
+
+    // Getters and setters
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -54,58 +59,44 @@ public class Content {
         this.title = title;
     }
 
-    public long getClick() {
-        return click;
+    public String getPlot() {
+        return plot;
     }
 
-    public void setClick(long click) {
-        this.click = click;
+    public void setPlot(String plot) {
+        this.plot = plot;
     }
 
-    public String getDataPubblicazione() {
-        return dataPubblicazione;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setDataPubblicazione(String dataPubblicazione) {
-        this.dataPubblicazione = dataPubblicazione;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-
-
-    public boolean isSeries() {
-        return serie;
+    public String getVideoUrl() {
+        return videoUrl;
     }
 
-    public void setSeries(boolean serie) {
-        this.serie = serie;
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
-    public List<Integer> getCategorie() {
-        return categorie;
+    public double getDuration() {
+        return duration;
     }
 
-    public void setCategorie(List<Integer> categorie) {
-        this.categorie = categorie != null ? categorie : new ArrayList<>();
-    }
-    @Override
-    public String toString(){
-        return title;
+    public void setDuration(double duration) {
+        this.duration = duration;
     }
 
-    public String getSubtitle() {
-        return subtitle;
+    public int getYear() {
+        return year;
     }
 
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public double getRating() {
@@ -116,11 +107,75 @@ public class Content {
         this.rating = rating;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public int getClicks() {
+        return clicks;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setClicks(int clicks) {
+        this.clicks = clicks;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+
+    public int getEpisodeCount() {
+        return episodeCount;
+    }
+
+    public void setEpisodeCount(int episodeCount) {
+        this.episodeCount = episodeCount;
+    }
+
+    public int getSeasonCount() {
+        return seasonCount;
+    }
+
+    public void setSeasonCount(int seasonCount) {
+        this.seasonCount = seasonCount;
+    }
+
+
+    public List<Integer> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Integer> categories) {
+        this.categories = categories;
+    }
+
+    @Override
+    public String toString() {
+        return "Content{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", plot='" + plot + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", duration=" + duration +
+                ", year=" + year +
+                ", rating=" + rating +
+                ", clicks=" + clicks +
+                ", country='" + country + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", isSeries=" + isSeries +
+                ", isSeasonDivided=" + isSeasonDivided +
+                ", seasonCount=" + seasonCount +
+                ", episodeCount=" + episodeCount +
+                ", categories=" + categories +
+                '}';
     }
 }
