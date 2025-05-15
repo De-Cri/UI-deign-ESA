@@ -60,7 +60,7 @@
             <!-- Search Button -->
             <HBox fx:id="searchButton" alignment="CENTER" prefHeight="72.0" prefWidth="305.0" spacing="8.0">
                 <SVGPath fx:id="searchIcon" content="%search" styleClass="on-primary" />
-                <TextField fx:id="tbxSearch" maxHeight="1.7976931348623157E308" promptText="Search" HBox.hgrow="ALWAYS">
+                <TextField fx:id="tbxSearch" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                     <styleClass>
                         <String fx:value="search-field" />
                         <String fx:value="medium-text" />

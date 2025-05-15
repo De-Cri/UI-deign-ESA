@@ -15,7 +15,7 @@ public class HelloApplication extends Application{
     public void start(Stage primaryStage) throws IOException {
 
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home/main.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load());
         primaryStage.setTitle("Titolo della finestra");

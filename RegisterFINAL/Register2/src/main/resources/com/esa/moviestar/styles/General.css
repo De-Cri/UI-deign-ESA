@@ -117,7 +117,3 @@
 .bold-text{
     -fx-font-weight: bold;
 }
-.large-text-gray{
-    -fx-font-size: 24px;
-    -fx-font-color: gray;
-}

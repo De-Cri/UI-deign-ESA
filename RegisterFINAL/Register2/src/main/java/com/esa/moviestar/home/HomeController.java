@@ -46,20 +46,20 @@ public class HomeController {
         List<Content> recommendedSeries = getRecommendedSeries(user, contentList);
         List<Content> bottom7 = getWorstRecommendations(user, contentList);
         try {
-            List<Node> carouselList= new Vector<>();
-            for (Content c:popularByTaste) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/movie_view/WindowCard.fxml"),resourceBundle);
-                Node body = loader.load();
-                WindowCardController windowCardController = loader.getController();
-                windowCardController.setContent(c);
-                windowCardController.getPlayButton().setOnMouseClicked(e->cardClicked(windowCardController.getCardId()));
-                windowCardController.getInfoButton().setOnMouseClicked(e->cardClicked(windowCardController.getCardId()));
-                carouselList.add(body);
-        }
-            carousel = new Carousel();
-            carousel.getItems().addAll(carouselList);
-            carousel.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/Carousel.css")).toExternalForm());
-            body.getChildren().add(1, carousel);
+//            List<Node> carouselList= new Vector<>();
+//            for (Content c:popularByTaste) {
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/movie_view/WindowCard.fxml"),resourceBundle);
+//                Node body = loader.load();
+//                WindowCardController windowCardController = loader.getController();
+//                windowCardController.setContent(c);
+//                windowCardController.getPlayButton().setOnMouseClicked(e->cardClicked(windowCardController.getCardId()));
+//                windowCardController.getInfoButton().setOnMouseClicked(e->cardClicked(windowCardController.getCardId()));
+//                carouselList.add(body);
+//        }
+//            carousel = new Carousel();
+//            carousel.getItems().addAll(carouselList);
+//            carousel.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/Carousel.css")).toExternalForm());
+//            body.getChildren().add(1, carousel);
 
 
             ScrollView top10Scroll = new ScrollView("Scelti per te", Color.TRANSPARENT, foreColor,backgroundColor);

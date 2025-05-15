@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane maxHeight="1920" maxWidth="1080" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="1077.0" styleClass="bg-color" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.home.SearchController">
 
-    <ScrollPane  fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="TOP_CENTER">
-        <VBox  alignment="TOP_CENTER" spacing="16.0" style=" -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="TOP_CENTER">
+        <VBox alignment="TOP_CENTER" spacing="16.0" style=" -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
 
-            <Pane fx:id="pnl_separator1" minHeight="150.0" prefWidth="1" />
+            <Pane fx:id="pnl_separator1" minHeight="100.0" prefWidth="1" />
 
             <HBox spacing="8">
-                <Label fx:id="findout" text="Altri titoli da scoprire:" styleClass="large-text-gray"/>
+                <Label fx:id="findout" text="Altri titoli da scoprire:">
+               <styleClass>
+                  <String fx:value="large-text" />
+                  <String fx:value="on-primary" />
+               </styleClass></Label>
 
-                <FlowPane fx:id="raccomendations" hgap="8" vgap="8" prefWrapLength="1200"/>
+                <FlowPane fx:id="raccomendations" hgap="8" prefWrapLength="1200" vgap="8" />
             </HBox>
-            <FlowPane fx:id="filmseriesRaccomendations" hgap="8" vgap="8" prefWrapLength="1200" />
+            <FlowPane fx:id="filmseriesRaccomendations" hgap="8" prefWrapLength="1200" vgap="8" />
 
         </VBox>
         <padding>

@@ -158,7 +158,8 @@ public class MainPagesController {
             AnchorPane.setTopAnchor(body,0.0);
             AnchorPane.setLeftAnchor(body,0.0);
             AnchorPane.setRightAnchor(body,0.0);
-            homeBodyController = loader.getController();//messo solo per provare
+            if (loader.getController() instanceof  HomeController)
+                homeBodyController = loader.getController();//messo solo per provare
             //Object ugo = loader.getController();//
 
             return body;
