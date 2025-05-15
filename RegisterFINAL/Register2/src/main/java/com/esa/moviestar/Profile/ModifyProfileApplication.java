@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ModifyCreateApplication extends Application {
+public class ModifyProfileApplication extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -15,7 +15,7 @@ public class ModifyCreateApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("modify-create-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("modify-profile-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         primaryStage.setTitle("Titolo della finestra");
