@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<VBox fx:id="svgContainer" alignment="CENTER" styleClass="bg-color" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.Profile.ModifyProfileController">
+<VBox fx:id="ContenitorePaginaModifica" alignment="CENTER" styleClass="bg-color" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.Profile.ModifyProfileController">
     <stylesheets>
         <URL value="@styles/General.css" />
     </stylesheets>
@@ -30,9 +30,9 @@
             <children>
                 <VBox fx:id="elementContainer" alignment="CENTER" prefHeight="362.0" prefWidth="294.0" spacing="20.0" GridPane.columnIndex="0">
                     <children>
-                        <StackPane prefHeight="200.0">
+                        <StackPane maxHeight="256.0" maxWidth="256.0" minHeight="256.0" minWidth="256.0" prefHeight="256.0" prefWidth="256.0">
                             <children>
-                                <Group fx:id="defaultImagine" scaleX="2.0" scaleY="2.0" />
+                                <Group fx:id="defaultImagine" scaleX="2.0" scaleY="2.0" StackPane.alignment="CENTER" />
                             </children>
                         </StackPane>
                         <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="10.0">
@@ -183,6 +183,8 @@
                 <ColumnConstraints />
                 <ColumnConstraints />
                 <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints />

@@ -1,7 +1,7 @@
 package com.esa.moviestar.Profile;
 
 import java.io.IOException;
-import java.sql.SQLException;
+
 
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
@@ -9,6 +9,7 @@ import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,13 +18,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 
 public class CreateProfileController {
     @FXML
     GridPane pageContainer;
     @FXML
-    VBox svgContainer;
+    VBox ContenitorePaginaCreazione;
     @FXML
     VBox elementContainer;
     @FXML
@@ -69,25 +71,13 @@ public class CreateProfileController {
         errorText.setText("");
 
         codImmagineCorrente=0;
-        defaultImagine = IconSVG.takeElement(codImmagineCorrente);
+        defaultImagine.getChildren().add(IconSVG.takeElement(codImmagineCorrente));
         defaultImagine.setScaleX(10);
         defaultImagine.setScaleY(10);
-        elementContainer.getChildren().add(0, defaultImagine);
-
-// Clona davvero l'immagine come copia iniziale
-//        originalProfileImage = IconSVG.takeElement(1); // Ottieni un nuovo oggetto identico
-//        originalProfileImage.setScaleX(1);
-//        originalProfileImage.setScaleY(1);
-
 
         creationTitle.setText("Crea il nome utente:"); //label per sopra il textfield per farci capire che stiamo creando un nuovo utente
 
         textName.setPromptText("Nome");// text field dove inserire il nome, (con all'interno trasparente la scritta "inserisci nome")
-
-
-
-        elementContainer.setSpacing(30);
-
 
         //metto lo stile per ogni scroll di immagini
 
@@ -105,15 +95,18 @@ public class CreateProfileController {
         saveButton.setOnMouseClicked(event -> {  //Se clicco sul bottone di salvataggio / dovrà poi ritornare alla pagina di scelta dei profili con il profilo creato
             String name = textName.getText();
             String gusto = "0";
-            int immagine =codImmagineCorrente;
+            int immagine = codImmagineCorrente;
 
-            if (!textName.getText().isEmpty() && !textName.getText().contains(" ")) {  //se ho messo un nome nel textfield e l'ho salvato allora ritorno alla pagina principale dei profili / oppure potrei far direttamente loggare / (modifiche da fare : controllare che abbia scelto anche un immagine, oppure se non l'ha scelta dare quella di default)
+            if (!textName.getText().isEmpty()) {  //se ho messo un nome nel textfield e l'ho salvato allora ritorno alla pagina principale dei profili / oppure potrei far direttamente loggare / (modifiche da fare : controllare che abbia scelto anche un immagine, oppure se non l'ha scelta dare quella di default)
                 //questo metodo cosi fa ritornare alla pagina dei profili, aggiungere poi il fatto che io abbia creato il panel nuovo con tutte le modifiche
                 try {
-
                     UtenteDao utentedao = new UtenteDao();
+
+
                     int count = utentedao.contaProfiliPerEmail(email);
-                    Utente ut = new Utente(name,immagine,gusto,email);
+
+                    Utente ut = new Utente(name, immagine, gusto, email);
+
                     if (count >= 4) {
                         errorText.setText("Puoi creare al massimo 4 profili.");
                         return;
@@ -122,22 +115,27 @@ public class CreateProfileController {
                     utentedao.inserisciUtente(ut);
 
 
-
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/hello-view-profile.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
                     Parent profileContent = loader.load();
-                    HelloController helloController = loader.getController();
-                    helloController.setEmail(email);
+                    ProfileView profileView = loader.getController();
+                    profileView.setEmail(email);
 
-                    svgContainer.getChildren().clear();
-                    svgContainer.getChildren().add(profileContent);
+
+                    // Ottieni la scena corrente
+                    Scene currentScene = ContenitorePaginaCreazione.getScene();
+
+                    // Crea una nuova scena con il nuovo contenuto
+                    Scene newScene = new Scene(profileContent, currentScene.getWidth(), currentScene.getHeight());
+
+                    // Ottieni lo Stage corrente e imposta la nuova scena
+                    Stage stage = (Stage) ContenitorePaginaCreazione.getScene().getWindow();
+                    stage.setScene(newScene);
                 } catch (IOException e) {
-                    warningText.setText("Errore durante il caricamento della pagina di modifica: " + e.getMessage());
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    warningText.setText("Errore durante il caricamento della pagina di visualizzazione dei profili: " + e.getMessage());
+                    System.err.println("CreateProfileController : Errore caricamento pagina di visualizzazione dei profili"+e.getMessage());
                 }
-                System.out.println("Ritorni alla pagina dei profili");
-            } else {
+
+            }else {
                 errorText.setText("Nessun nome inserito"); //se non ho inserito nessun nome mi da errore perchè per forza va settato un nome , oppure potrei dare il nome di default tipo utente 1
                 AnimationUtils.shake(errorText);
             }
@@ -190,12 +188,11 @@ public class CreateProfileController {
 
                 // Crea un nuovo gruppo che contiene l'immagine SVG
                 Group clonedGroup = IconSVG.copyGroup(originalGroup);  // Crea una copia del gruppo con l'immagine
-                clonedGroup.setScaleY(10);
-                clonedGroup.setScaleX(10);
+
 
                 // Aggiungi il clone al container principale
-                elementContainer.getChildren().removeFirst();  // Rimuovi la precedente immagine
-                elementContainer.getChildren().addFirst(clonedGroup);  // Aggiungi la nuova immagine
+                defaultImagine.getChildren().clear();  // Rimuovi la precedente immagine
+                defaultImagine.getChildren().addFirst(clonedGroup);  // Aggiungi la nuova immagine
 
                 // Salva il riferimento dell'immagine selezionata
                 originalProfileImage = clonedGroup;  // Salva il clone come immagine originale

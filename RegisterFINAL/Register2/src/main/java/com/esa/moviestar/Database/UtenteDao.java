@@ -13,13 +13,13 @@ public class UtenteDao {
         try {
             this.connection = DataBaseManager.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("utenteDao : errore di connessione con il database "+e.getMessage());
         }
     }
 
     // Inserimento di un nuovo utente
-    public void inserisciUtente(Utente utente) throws SQLException {
-        String query = "INSERT INTO Utente (Nome, Gusti, Email, ImmagineProfilo) VALUES (?, ?, ?, ?);";
+    public void inserisciUtente(Utente utente){
+        String query = "INSERT INTO Utente (Nome, Gusti, Email, Icona) VALUES (?, ?, ?, ?);";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, utente.getNome());
@@ -28,52 +28,50 @@ public class UtenteDao {
             stmt.setInt(4, utente.getIDIcona());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException("Errore nell'inserimento dell'utente", e);
+            System.err.println("utenteDao : errore di inserimento dell'utente "+e.getMessage());
         }
     }
 
     // Rimozione utente tramite codice
-    public void rimuoviUtente(int codUtente) throws SQLException {
-        String sql = "DELETE FROM Utente WHERE CodUtente = ?;";
+    public void rimuoviUtente(int idUtente){
+        String sql = "DELETE FROM Utente WHERE ID_Utente = ?;";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, codUtente);
+            stmt.setInt(1, idUtente);
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {
-                throw new SQLException("Nessun utente trovato con codice utente = " + codUtente);
+                throw new SQLException("Nessun utente trovato con codice utente = " + idUtente);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException("Errore nell'eliminazione dell'utente", e);
+            System.err.println("utenteDao : errore di rimozione dell'utente "+e.getMessage());
         }
     }
 
     // Ricerca utente tramite codice
-    public Utente cercaUtente(int codUtente) throws SQLException {
-        String query = "SELECT * FROM Utente WHERE CodUtente = ?;";
+    public Utente cercaUtente(int idUtente) {
+        String query = "SELECT * FROM Utente WHERE ID_Utente = ?;";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, codUtente);
+            stmt.setInt(1, idUtente);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 return new Utente(
+                        rs.getInt("ID_Utente"),
                         rs.getString("Nome"),
-                        rs.getInt("ImmagineProfilo"),
                         rs.getString("Gusti"),
+                        rs.getInt("Icona"),
                         rs.getString("Email")
                 );
             } else {
                 return null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException("Errore nel cercare l'utente", e);
-        }
+            System.err.println("utenteDao : errore di ricerca dell'utente "+e.getMessage());        }
+        return null;
     }
 
-    public int contaProfiliPerEmail(String email) throws  SQLException{
+    public int contaProfiliPerEmail(String email){
         String query = "SELECT COUNT(*) FROM Utente WHERE Email = ?;";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, email);
@@ -81,48 +79,49 @@ public class UtenteDao {
             if (rs.next()) {
                 return rs.getInt(1);
             }
-        }
+        }catch(SQLException e){
+            System.err.println("utenteDao : errore di conteggio del numero di utenti "+e.getMessage());        }
         return 0;
     }
 
-    public Utente recuperoUtente(String email,int codUtente) throws SQLException {
-        String query = "SELECT * FROM Utente WHERE Email = ? AND CodUtente = ?;";
+    public Utente recuperoUtente(String email,int idUtente)  {
+        String query = "SELECT * FROM Utente WHERE Email = ? AND ID_Utente = ?;";
         try(PreparedStatement stmt = connection.prepareStatement(query)){
             stmt.setString(1, email);
-            stmt.setInt(2,codUtente);
+            stmt.setInt(2,idUtente);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new Utente(
+                        rs.getInt("ID_Utente"),
                         rs.getString("Nome"),
-                        rs.getInt("ImmagineProfilo"),
                         rs.getString("Gusti"),
+                        rs.getInt("Icona"),
                         rs.getString("Email")
                 );
             }else {return null;}
 
         }catch(SQLException e){
-            e.printStackTrace();
+            System.err.println("utenteDao : errore nel recupero delle informazioni dell'utente "+e.getMessage());
         }
         return null;
     }
 
-    public int recuperoCodiceUtente(String email) throws SQLException {
-        String query = "SELECT CodUtente FROM Utente WHERE Email = ?;";
+    public int recuperoCodiceUtente(String email) {
+        String query = "SELECT ID_Utente FROM Utente WHERE Email = ?;";
         try(PreparedStatement stmt = connection.prepareStatement(query)){
             stmt.setString(1,email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt("CodUtente");
+                return rs.getInt("ID_Utente");
             }
 
         }catch(SQLException e){
-            e.printStackTrace();
-        }
+            System.err.println("utenteDao : errore nel recupero del codice dell'utente "+e.getMessage());        }
         return -1;
     }
 
     // Metodo che recupera tutti gli utenti
-    public List<Utente> recuperaTuttiGliUtenti(String email) throws SQLException {
+    public List<Utente> recuperaTuttiGliUtenti(String email) {
         List<Utente> utenti = new ArrayList<>();
         System.out.println("Email usata: " + email);
         String query = "SELECT * FROM Utente WHERE Email = ?;";  // Recupera tutti gli utenti in base all'email
@@ -133,18 +132,17 @@ public class UtenteDao {
             while (rs.next()) {
                 // Crea un oggetto Utente per ogni record nel risultato della query
                 Utente utente = new Utente(
+                        rs.getInt("ID_Utente"),
                         rs.getString("Nome"),
-                        rs.getInt("ImmagineProfilo"),
                         rs.getString("Gusti"),
+                        rs.getInt("Icona"),
                         rs.getString("Email")
                 );
                 utenti.add(utente);  // Aggiungi l'utente alla lista
             }
             System.out.println("Numero di utenti recuperati: " + utenti.size());
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException("Errore nel recupero degli utenti", e);
-        }
+            System.err.println("utenteDao : errore di recupero lista utenti in base l'email dell'utente "+e.getMessage());        }
         return utenti;  // Restituisci la lista di utenti
     }
 }
