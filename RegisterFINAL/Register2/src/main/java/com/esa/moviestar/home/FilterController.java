@@ -28,4 +28,7 @@ public class FilterController {
 
     }
 
+    public void loadWithFilter(int i) {
+
+    }
 }

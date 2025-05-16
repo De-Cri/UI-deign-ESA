@@ -2,8 +2,7 @@ package com.esa.moviestar.model;
 
 import com.esa.moviestar.Profile.IconSVG;
 import javafx.scene.Group;
-
-import java.awt.geom.GeneralPath;
+import  java.util.List;
 
 public class Utente {
 
@@ -12,6 +11,7 @@ public class Utente {
     private String gusti;
     private int idImmagine;        // FOREIGN KEY verso tabella immagine
     private String email;          // FOREIGN KEY verso tabella Account
+    private List<Integer> cronologia;
 
     // Costruttore completo (es. DB)
     public Utente(int codUtente, String nome, String gusti, int idImmagine, String email) {
@@ -22,7 +22,7 @@ public class Utente {
         this.email = email;
     }
 
-    // Costruttore senza codUtente (es. prima di inserimento nel DB)
+    // Costruttore senza codUtente (es.prima di inserimento nel DB)
     public Utente(String nome, int idImmagine, String gusti, String email) {
         this.nome = nome;
         this.idImmagine = idImmagine;
@@ -37,6 +37,9 @@ public class Utente {
     public Group getIcona() { return IconSVG.takeElement(idImmagine); }
     public int getIDIcona() { return idImmagine; }
     public String getEmail() { return email; }
+    public List<Integer> getCronologia(){
+        return cronologia;
+    }
 
     // Setter
     public void setID(int codUtente) { this.codUtente = codUtente; }
@@ -44,6 +47,7 @@ public class Utente {
     public void setGusti(String gusti) { this.gusti = gusti; }
     public void setIcona(int idImmagine) { this.idImmagine = idImmagine; }
     public void setEmail(String email) { this.email = email; }
+    public void setCronologia(List<Integer> cronologia) { this.cronologia = cronologia; }
 
     // Verifica del nome (rimasta invariata)
     public void verificaNomeValido() {
