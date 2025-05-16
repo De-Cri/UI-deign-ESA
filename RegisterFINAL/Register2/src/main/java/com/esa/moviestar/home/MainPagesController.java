@@ -21,6 +21,8 @@ public class MainPagesController {
     private HeaderController headerController;
     private Node homeBody;
     private Node s;
+    private Node currentScene;
+    private ContentDao c;
     private HomeController homeBodyController;
 
     public void  initialize()  {
@@ -30,7 +32,7 @@ public class MainPagesController {
         Utente p = new Utente(1,"nome","001C2A0B3D4E1F00112233445566778009",1,"");
         this.headerController.setProfileIcon(p.getIcona());
 
-        ContentDao c = new ContentDao();
+        c = new ContentDao();
         homeBodyController.setRecommendations(p,c.take_all_contents());
 
         //s=loadDynamicBody("filter.fxml");
@@ -40,48 +42,72 @@ public class MainPagesController {
 
     private void loadHeader(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("header.fxml"),resourceBundle);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("header.fxml"), resourceBundle);
             Node headerNode = loader.load();
             headerContainer.getChildren().add(headerNode);
             headerController = loader.getController();
             headerController.homeButton.setOnMouseClicked(e -> {
-                if(homeBody == null)
+                if (homeBody == null)
                     return;
-                if(body.getChildren().contains(homeBody))
+                if (body.getChildren().contains(homeBody))
                     return;
+                currentScene = homeBody;
                 body.getChildren().clear();
                 body.getChildren().add(homeBody);
 
             });
             headerController.filmButton.setOnMouseClicked(e -> {
-                if(body.getChildren().contains(s))
+                if (body.getChildren().contains(s))
                     return;
-                if(s == null)
-                    s=loadDynamicBody("filter.fxml");
+                if (s == null)
+                    s = loadDynamicBody("seconda.fxml");
+                currentScene = s;
                 body.getChildren().clear();
                 body.getChildren().add(s);
             });
             headerController.seriesButton.setOnMouseClicked(e -> {
-                if(homeBody == null)
+                if (homeBody == null)
                     return;
-                if(body.getChildren().contains(homeBody))
+                if (body.getChildren().contains(homeBody))
                     return;
+                //currentScene = series;
                 body.getChildren().clear();
                 body.getChildren().add(homeBody);
             });
-            headerController.searchButton.setOnMouseClicked(e -> {
-                if(homeBody == null)
-                    return;
-                if(body.getChildren().contains(homeBody))
-                    return;
-                body.getChildren().clear();
-                body.getChildren().add(homeBody);
+
+            headerController.getTbxSearch().textProperty().addListener((observableValue, oldV,  newV)
+                    -> {
+                if (newV.isEmpty()) {
+                    try {
+                        body.getChildren().clear();
+                        body.getChildren().add(currentScene);
+
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
+                    return ;
+                }
+                try {
+                    FXMLLoader loader1 = new FXMLLoader(getClass().getResource("search.fxml"));
+                    Node search = loader1.load();
+                    AnchorPane.setBottomAnchor(search, 0.0);
+                    AnchorPane.setTopAnchor(search, 0.0);
+                    AnchorPane.setLeftAnchor(search, 0.0);
+                    AnchorPane.setRightAnchor(search, 0.0);
+                    body.getChildren().clear();
+                    ((SearchController) loader1.getController()).set_headercontroller(headerController);
+                    //((SearchController) loader1.getController()).set_trylist(homeBodyController.createFilmNodes(c.take_all_contents(),false));
+                    body.getChildren().add(search);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
             });
-            // homeBodyController.carousel.start();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
+
 
     private Node loadDynamicBody(String bodySource) {
         try {
