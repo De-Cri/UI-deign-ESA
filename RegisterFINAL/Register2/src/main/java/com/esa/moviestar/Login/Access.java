@@ -1,7 +1,7 @@
 package com.esa.moviestar.Login;
 
 import com.esa.moviestar.Database.AccountDao;
-import com.esa.moviestar.Profile.CreateProfileController;
+import com.esa.moviestar.Profile.ProfileView;
 import com.esa.moviestar.model.Account;
 import jakarta.mail.MessagingException;
 import javafx.fxml.FXML;
@@ -287,10 +287,10 @@ public class Access {
 
             if (Objects.equals(temp_acc.getPassword(), password)) {
                 // Carica il nuovo FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"), resourceBundle);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"), resourceBundle);
                 Parent homeContent = loader.load();
-                CreateProfileController createProfileController = loader.getController();
-                createProfileController.setEmail(email);
+                ProfileView profileView = loader.getController();
+                profileView.setEmail(email);
 
                 // Ottieni la scena corrente
                 Scene currentScene = ContenitorePadre.getScene();
@@ -307,10 +307,7 @@ public class Access {
                 warningText.setText("Password errata");
                 AnimationUtils.shake(warningText);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            warningText.setText("Errore di connessione al database: " + e.getMessage());
-        } catch (IOException e) {
+        }catch (IOException e) {
             e.printStackTrace();
             warningText.setText("Errore di caricamento: " + e.getMessage());
         } catch (Exception e) {

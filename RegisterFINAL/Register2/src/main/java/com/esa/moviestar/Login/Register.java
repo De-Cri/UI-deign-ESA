@@ -1,12 +1,14 @@
 package com.esa.moviestar.Login;
 
 import com.esa.moviestar.Database.AccountDao;
+import com.esa.moviestar.Profile.CreateProfileController;
 import com.esa.moviestar.model.Account;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -14,9 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class Register {
@@ -53,6 +56,8 @@ public class Register {
     // Regex patterns for email and password validation
     private String email_regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private String password_regex = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\-])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+{}\\[\\]:;<>,.?~\\-]{8,}$";
+    private ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+
 
     // Valori di riferimento per il layout responsivo
     private final double REFERENCE_WIDTH = 1720.0;
@@ -281,13 +286,28 @@ public class Register {
             if (dao.inserisciAccount(account)) {
                 welcomeText.setText("Utente registrato con successo!");
                 AnimationUtils.pulse(welcomeText);
+
+                //Subito dopo la registrazione carica la pagina con la creazione del profilo
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"), resourceBundle);
+                Parent homeContent = loader.load();
+                CreateProfileController createProfileController = loader.getController();
+                createProfileController.setEmail(email);
+
+                // Ottieni la scena corrente
+                Scene currentScene = ContenitorePadre.getScene();
+
+                // Crea una nuova scena con il nuovo contenuto
+                Scene newScene = new Scene(homeContent, currentScene.getWidth(), currentScene.getHeight());
+
+                // Ottieni lo Stage corrente e imposta la nuova scena
+                Stage stage = (Stage) ContenitorePadre.getScene().getWindow();
+                stage.setScene(newScene);
             } else {
                 welcomeText.setText("Utente già esistente");
                 AnimationUtils.shake(welcomeText);
             }
-        } catch (SQLException e) {
-            welcomeText.setText("Errore durante la registrazione"+e.getMessage());
-            e.printStackTrace();
+        }catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        }
+    }
 }

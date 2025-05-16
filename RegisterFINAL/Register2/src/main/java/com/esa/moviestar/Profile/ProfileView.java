@@ -4,7 +4,7 @@ import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
-import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -15,13 +15,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 
-public class HelloController {
+public class ProfileView {
 
     @FXML   // Collegamento alla label del testo
     Label testo;
@@ -35,7 +36,10 @@ public class HelloController {
     @FXML   // Label per eventuali messaggi di errore o avviso
     Label warningText;
 
-    private int codUtente;
+
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+
+
     private String email;
     public void setEmail(String email) {
         this.email = email;
@@ -52,7 +56,6 @@ public class HelloController {
     }
 
     private void caricaUtenti() {
-        try {
             UtenteDao dao = new UtenteDao();
             List<Utente> utenti = dao.recuperaTuttiGliUtenti(email);
 
@@ -109,16 +112,13 @@ public class HelloController {
                 Button modifica = new Button("Modifica");
                 modifica.setPrefWidth(100);
                 icon.setOnMouseClicked(e -> paginaHome());
-                modifica.setOnAction(e -> paginaModifica(utente.getNome(), "colore"));
+                modifica.setOnAction(e -> paginaModifica());
 
                 box.getChildren().addAll(iconBox, name, modifica);
                 griglia.getChildren().add(box);
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            warningText.setText("Errore nel recupero degli utenti: " + e.getMessage());
-        }
+
     }
 
     // Metodo che si attiva quando l'utente clicca sul pannello "Aggiungi"
@@ -127,7 +127,7 @@ public class HelloController {
             paginaCreazioneUtente();  // Carica la pagina di creazione
             griglia.getChildren().add(recuperoCreazioneDellUtente());  // Aggiungi un nuovo utente alla griglia
         } else if (griglia.getChildren().size() == 4) {  // Se la griglia ha già 4 elementi
-            griglia.getChildren().remove(0);  // Rimuovi il primo utente della griglia (per far spazio al nuovo)
+            griglia.getChildren().removeFirst();  // Rimuovi il primo utente della griglia (per far spazio al nuovo)
             griglia.getChildren().add(recuperoCreazioneDellUtente());  // Aggiungi il nuovo utente
         }
     }
@@ -138,16 +138,27 @@ public class HelloController {
     }
 
     // Metodo che gestisce il passaggio alla pagina di modifica
-    private void paginaModifica(String nome, String colore) {
+    private void paginaModifica() {
         if (griglia.getChildren().size() > 1) {  // Verifica che ci sia almeno un utente nella griglia
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("modify-profile-view.fxml"));  // Carica il FXML per la modifica
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/modify-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
                 Parent modifyContent = loader.load();  // Carica la vista della pagina
-                ContenitorePadre.getChildren().clear();  // Svuota il contenitore principale
-                ContenitorePadre.getChildren().add(modifyContent);  // Aggiungi la nuova vista al contenitore principale
+
+                ModifyProfileController modifyProfileController = loader.getController();
+                modifyProfileController.setEmail(email);
+
+                //Ottieni la scena corrente
+                Scene currentScene = ContenitorePadre.getScene();
+
+                // Crea una nuova scena con il nuovo contenuto
+                Scene newScene = new Scene(modifyContent, currentScene.getWidth(), currentScene.getHeight());
+
+                // Ottieni lo Stage corrente e imposta la nuova scena
+                Stage stage = (Stage) ContenitorePadre.getScene().getWindow();
+                stage.setScene(newScene);
             } catch (IOException e) {
                 warningText.setText("Errore durante il caricamento della pagina di modifica: " + e.getMessage());  // Gestione errore
-                e.printStackTrace();  // Stampa il trace dell'errore
+                System.err.println("ProfileView : Errore caricamento pagina di modifica"+e.getMessage());
             }
         } else {
             warningText.setText("Nessun elemento selezionato da modificare.");  // Se non c'è nessun utente, mostra avviso
@@ -158,13 +169,24 @@ public class HelloController {
     private void paginaCreazioneUtente() {
         System.out.println("SEI NELLA PAGINA DI CREAZIONE");  // Stampa un messaggio per il debug
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("create-profile-view.fxml"));  // Carica il FXML per la modifica
-            Parent modifyContent = loader.load();  // Carica la vista della pagina
-            ContenitorePadre.getChildren().clear();  // Svuota il contenitore principale
-            ContenitorePadre.getChildren().add(modifyContent);  // Aggiungi la nuova vista al contenitore principale
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
+            Parent createContent = loader.load();  // Carica la vista della pagina
+
+            CreateProfileController createProfileController = loader.getController();
+            createProfileController.setEmail(email);
+
+            //Ottieni la scena corrente
+            Scene currentScene = ContenitorePadre.getScene();
+
+            // Crea una nuova scena con il nuovo contenuto
+            Scene newScene = new Scene(createContent, currentScene.getWidth(), currentScene.getHeight());
+
+            // Ottieni lo Stage corrente e imposta la nuova scena
+            Stage stage = (Stage) ContenitorePadre.getScene().getWindow();
+            stage.setScene(newScene);
         } catch (IOException e) {
-            warningText.setText("Errore durante il caricamento della pagina di modifica: " + e.getMessage());  // Gestione errore
-            e.printStackTrace();  // Stampa il trace dell'errore
+            warningText.setText("Errore durante il caricamento della pagina di creazione: " + e.getMessage());  // Gestione errore
+            System.err.println("ProfileView : Errore caricamento pagina di creazione"+e.getMessage());
         }
     }
 
@@ -175,9 +197,9 @@ public class HelloController {
         box.setPadding(new Insets(10));
         box.setAlignment(Pos.CENTER);  // Centro gli elementi
 
-        try {
             UtenteDao dao = new UtenteDao();
-            codUtente = dao.recuperoCodiceUtente(email);
+
+            int codUtente = dao.recuperoCodiceUtente(email);
 
             if (codUtente != -1) {
                 Utente a = dao.recuperoUtente(email, codUtente);
@@ -190,16 +212,11 @@ public class HelloController {
 
                 // Aggiungi azioni
                 icon.setOnMouseClicked(e -> paginaHome());
-                modifica.setOnAction(e -> paginaModifica(a.getNome(), "colore"));  // puoi sostituire "colore" se serve
+                modifica.setOnAction(e -> paginaModifica());  // puoi sostituire "colore" se serve
 
                 box.getChildren().addAll(icon, name, modifica);
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return box;
+            return box;
     }
 
 }

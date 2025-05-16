@@ -18,7 +18,7 @@ public class AccountDao {
             this.connection = DataBaseManager.getConnection();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("accountDao : errore di connessione con il database "+e.getMessage());
         }
     }
 
@@ -26,7 +26,7 @@ public class AccountDao {
 
 
     //Metodo per inserire un Account
-    public boolean inserisciAccount(Account account) throws SQLException {
+    public boolean inserisciAccount(Account account) {
         String sql = "INSERT INTO account (email,password) Values (?,?);";
 
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -39,14 +39,14 @@ public class AccountDao {
                 // Email già esistente
                 return false;
             } else {
-                e.printStackTrace();
+                System.err.println("accountDao : errore di inserimento dell'account"+e.getMessage());
                 return false;
             }
         }
     }
 
     //Metodo per eliminare l'account
-    public void rimuoviAccount(String email) throws SQLException{
+    public void rimuoviAccount(String email) {
         String query = "DELETE FROM account WHERE email = ?;";
         try(PreparedStatement stmt = connection.prepareStatement(query)){
             stmt.setString(1,email);
@@ -55,13 +55,12 @@ public class AccountDao {
                 throw new SQLException("Nessun account trovato con email = " + email);
             }
         }catch(SQLException e ){
-            e.printStackTrace();
-            throw  new SQLException("Errore nell'eliminazione dell'account",e);
+            System.err.println("accountDao : errore di rimozione dell'account"+e.getMessage());
         }
     }
 
     //Metodo per cercare l'account dall'email
-    public  Account cercaAccount(String email) throws SQLException {
+    public  Account cercaAccount(String email) {
         String query = "SELECT * FROM account WHERE email = ?;";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -76,11 +75,11 @@ public class AccountDao {
                 return null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException("Errore nel cercare l'utente", e);
+            System.err.println("accountDao : errore di ricerca dell'account"+e.getMessage());
         }
+        return null;
     }
-    public boolean updatePassword(String email, String nuovaPassword) throws SQLException {
+    public boolean updatePassword(String email, String nuovaPassword) {
         String query = "UPDATE account SET password = ? WHERE email = ?;";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -89,9 +88,10 @@ public class AccountDao {
             int righeModificate = stmt.executeUpdate();
             return righeModificate > 0;  // ritorna true se almeno una riga è stata modificata
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException("Errore nell'aggiornamento della password per l'email: " + email, e);
+            System.err.println("accountDao : errore di aggiornamento della password dell'account"+e.getMessage());
+
         }
+        return false;
     }
 
 
