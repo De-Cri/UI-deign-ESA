@@ -1,6 +1,9 @@
 package com.esa.moviestar.home;
 import com.esa.moviestar.Database.AccountDao;
+import com.esa.moviestar.Database.ContentDao;
 import com.esa.moviestar.model.Content;
+import com.esa.moviestar.model.Utente;
+import com.esa.moviestar.movie_view.FilmCardController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,6 +16,7 @@ import javafx.scene.layout.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 public class SearchController {
@@ -33,18 +37,23 @@ public class SearchController {
 
     private HeaderController headerController;
 
+    private Utente p;
+
+    private ContentDao dbSearch;
+
     private List<Node> trylist;
+
     public void initialize(){
         //prompt da fare come netflix
 
     }
-    public void set_headercontroller(HeaderController h){
+    public void set_headercontroller(HeaderController h, Utente u) throws IOException {
         this.headerController = h;
+        this.p = u;
         String searchText= headerController.getTbxSearch().getText();
         reccomendedList();
-    }
-    public void set_trylist(List<Node> contentTry){
-        this.trylist = contentTry;
+        List<Content> content = dbSearch.take_film_tvseries(searchText, p);
+        trylist = createFilmNodes(content, false);
         raccomendedSeriesFilms();
     }
     public void reccomendedList(){
@@ -63,19 +72,23 @@ public class SearchController {
     public void raccomendedSeriesFilms(){
         if (!headerController.getTbxSearch().getText().isEmpty()){
 
-            /*ArrayList<String> prefSet = s.search(searchText).size())*/;
-
-            /*prefSet.size()
-            for (Node dynamicNode : trylist) {
-                prefSet
-                filmseriesRaccomendations.getChildren().add(dynamicNode);
-            }*/
-            for(int i = 0; (i < 10 /*prefSet.size()*/); i++){
-                /*prefSet*/
+            for(int i = 0;i<trylist.size() ; i++){
                 Button dynamicButton = new Button("/*prefSet[i]*/");
                 dynamicButton.getStyleClass().add("medium-item");
                 raccomendations.getChildren().add(dynamicButton);
             }
         }
+    }
+    public List<Node> createFilmNodes(List<Content> contentList,boolean isVertical) throws IOException {
+        /*List<Node> nodes= new Vector<>();
+        for (Content content: contentList) {
+            FXMLLoader fxmlLoader= new FXMLLoader(isVertical? Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Vertical.fxml")):Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Horizontal.fxml")),resourceBundle);
+            Node n = fxmlLoader.load();
+            FilmCardController filmCardController = fxmlLoader.getController();
+            filmCardController.setContent(content);
+            //n.setOnMouseClicked(e->cardClicked(filmCardController.getCardId()));
+            nodes.add(n);
+        }*/
+        return null; //nodes
     }
 }
