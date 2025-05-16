@@ -102,5 +102,9 @@ public class ContentDao {
 //            throw new SQLException("Errore nel cercare l'utente", e);
 //        }
 //    }
+    public List<Content>take_film_tvseries(String title){
+        String queryContenuti = "SELECT * FROM Contenuto WHERE ";
+        return null;
+    }
 
 }
