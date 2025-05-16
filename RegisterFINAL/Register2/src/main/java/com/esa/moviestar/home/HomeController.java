@@ -21,13 +21,13 @@ public class HomeController {
     private ScrollPane root;
     @FXML
     private VBox scrollViewContainer;
-    private Carousel carousel;
-
-
+    private  final  String pathWindowCard = "/com/esa/moviestar/movie_view/WindowCard.fxml";
+    private final  String pathCardVertical = "/com/esa/moviestar/movie_view/FilmCard_Vertical.fxml";
+    private final  String pathCardHorizontal = "/com/esa/moviestar/movie_view/FilmCard_Horizontal.fxml";
     private final ResourceBundle resourceBundle =ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
-    //u
-    private final Color foreColor = Color.rgb(240, 240, 240);
+    //ui color
+    private final Color foreColor = Color.rgb(240, 236, 253);
     private final Color backgroundColor = Color.rgb(15, 15, 15);
 
     private static final List<String> CATEGORIES = Arrays.asList("action","animation","anime","biography","comedy","crime","documentary","drama","fantasy","history","horror","musical","romantic","sci-fy","superheros","thriller","war","western");
@@ -43,16 +43,27 @@ public class HomeController {
      * Set all recommendation lists for a user profile
      */
     public void setRecommendations(Utente user, List<Content> contentList) {
-        List<Content> top10 = getTopRecommendations(user, contentList);
+        List<Integer> weights = new ArrayList<>();
+
+        for (int i = 0; i < user.getGusti().length(); i += 2) {
+            if (i + 2 <= user.getGusti().length()) {
+                try {
+                    weights.add(Integer.parseInt(user.getGusti().substring(i, i + 2), 16));
+                } catch (NumberFormatException e) {
+                    System.err.println("HomeController: the tastes of user can be not valid");
+                }
+            }
+        }
+        List<Content> top10 = getTopRecommendations(weights, contentList);
         List<Content> latest10 = getLatestPublished(contentList);
-        List<Content> popularByTaste = getPopularByUserTaste(user, contentList);
+        List<Content> popularByTaste = getPopularByUserTaste(weights, contentList);
         List<Content> similarToLastWatched = getSimilarToLastWatched(user, contentList);
-        List<Content> recommendedSeries = getRecommendedSeries(user, contentList);
-        List<Content> bottom7 = getWorstRecommendations(user, contentList);
+        List<Content> recommendedSeries = getRecommendedSeries(weights, contentList);
+        List<Content> bottom7 = getWorstRecommendations(weights, contentList);
         try {
             List<Node> carouselList= new Vector<>();
             for (Content c:popularByTaste) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/movie_view/WindowCard.fxml"),resourceBundle);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(pathWindowCard),resourceBundle);
                 Node body = loader.load();
                 WindowCardController windowCardController  = loader.getController();
                 windowCardController.setContent(c);
@@ -60,7 +71,7 @@ public class HomeController {
                 windowCardController.getInfoButton().setOnMouseClicked(e->cardClicked(windowCardController.getCardId()));
                 carouselList.add(body);
         }
-            carousel = new Carousel();
+            Carousel carousel = new Carousel();
             carousel.getItems().addAll(carouselList);
             carousel.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/Carousel.css")).toExternalForm());
             body.getChildren().add(1, carousel);
@@ -75,8 +86,12 @@ public class HomeController {
             ScrollView favouriteCategoryScroll = new ScrollView("La tua categoria preferita", Color.TRANSPARENT, foreColor,backgroundColor);
             favouriteCategoryScroll.setContent(createFilmNodes(popularByTaste,false));
 
-            ScrollView similarToLastWatchedScroll = new ScrollView("La tua categoria preferita", Color.TRANSPARENT, foreColor,backgroundColor);
+            ScrollView cronologyScroll = new ScrollView("Novità", Color.rgb(115, 65, 190), backgroundColor,null,32.0);
+            cronologyScroll.setContent(createFilmNodes(latest10,true));
+
+            ScrollView similarToLastWatchedScroll = new ScrollView("Simili a:"+ user.getUltimoGuardato(), Color.TRANSPARENT, foreColor,backgroundColor);
             similarToLastWatchedScroll.setContent(createFilmNodes(similarToLastWatched,false));
+
 
             ScrollView racommendSeriesScroll = new ScrollView("Serie che ti possono piacere", Color.TRANSPARENT, foreColor,backgroundColor);
             racommendSeriesScroll.setContent(createFilmNodes(recommendedSeries,true));
@@ -85,16 +100,16 @@ public class HomeController {
             bottom7Scroll.setContent(createFilmNodes(bottom7,false));
 
 
-            scrollViewContainer.getChildren().addAll(top10Scroll,latest10Scroll,favouriteCategoryScroll,racommendSeriesScroll,bottom7Scroll);
+            scrollViewContainer.getChildren().addAll(top10Scroll,latest10Scroll,favouriteCategoryScroll,cronologyScroll,similarToLastWatchedScroll,racommendSeriesScroll,bottom7Scroll);
         }
         catch (IOException e){
-            System.err.println(e.getMessage());//gestire l'errore in modo che l'utente ricaricarichi o aggiusti l'errore
+            System.err.println("HomeController: Failed to load recommendations \n Error:"+e.getMessage());
         }
     }
     public List<Node> createFilmNodes(List<Content> contentList,boolean isVertical) throws IOException {
         List<Node> nodes= new Vector<>();
         for (Content content: contentList) {
-            FXMLLoader fxmlLoader= new FXMLLoader(isVertical?Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Vertical.fxml")):Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Horizontal.fxml")),resourceBundle);
+            FXMLLoader fxmlLoader= new FXMLLoader(Objects.requireNonNull(getClass().getResource(isVertical?pathCardVertical:pathCardHorizontal)),resourceBundle);
             Node n = fxmlLoader.load();
             FilmCardController filmCardController = fxmlLoader.getController();
             filmCardController.setContent(content);
@@ -108,8 +123,8 @@ public class HomeController {
         /**
          * Calculate top recommendations based on user taste profile
          */
-        public List<Content> getTopRecommendations(Utente user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getGusti());
+        public List<Content> getTopRecommendations(List<Integer>weights, List<Content> contentList) {
+
 
             return contentList.stream()
                     .sorted((c1, c2) -> {
@@ -124,9 +139,7 @@ public class HomeController {
                     .collect(Collectors.toList());
         }
 
-        public List<Content> getWorstRecommendations(Utente user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getGusti());
-
+        public List<Content> getWorstRecommendations(List<Integer>weights, List<Content> contentList) {
             return contentList.stream()
                     .sorted((c1, c2) -> {
                         // Calculate relevance scores for each content based on category weights
@@ -212,9 +225,7 @@ public class HomeController {
         /**
          * Get recommended TV series based on user taste
          */
-        public List<Content> getRecommendedSeries(Utente user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getGusti());
-
+        public List<Content> getRecommendedSeries(List<Integer>weights, List<Content> contentList) {
             return contentList.stream()
                     .filter(Content::isSeries) // Only TV series
                     .map(content -> {
@@ -230,10 +241,7 @@ public class HomeController {
         /**
          * Get popular content aligned with user taste profile
          */
-        public List<Content> getPopularByUserTaste(Utente user, List<Content> contentList) {
-            List<Integer> weights = parseTasteProfile(user.getGusti());
-
-            // Trova la categoria preferita
+        public List<Content> getPopularByUserTaste(List<Integer>weights, List<Content> contentList) {
             int maxWeight = -1;
             int maxWeightIndex = -1;
 
@@ -243,15 +251,12 @@ public class HomeController {
                     maxWeightIndex = i;
                 }
             }
-
-            // Assicurati di avere un indice di categoria valido
             if (maxWeightIndex < 0 || maxWeightIndex >= CATEGORIES.size()) {
                 return Collections.emptyList();
             }
 
             final Integer favoriteCategory = maxWeightIndex;
 
-            // Filtra i contenuti in base alla categoria preferita, gestendo il caso di categorie nulle
             List<Content> filteredContent = contentList.stream()
                     .filter(content -> content.getCategories() != null && content.getCategories().contains(favoriteCategory))
                     .toList();
@@ -260,15 +265,13 @@ public class HomeController {
                 return Collections.emptyList();
             }
 
-            // Trova il numero massimo di click per la normalizzazione
             long maxClicks = filteredContent.stream()
                     .mapToLong(Content::getClicks)
                     .max()
-                    .orElse(1); // Valore predefinito a 1 per evitare la divisione per zero
+                    .orElse(1);
 
-            // Calcola i punteggi ponderati in base ai click e alla corrispondenza della categoria
-            final double alpha = 0.6; // Peso dei click
-            final double beta = 0.4;  // Peso della corrispondenza della categoria
+            final double alpha = 0.6; // weight of the click
+            final double beta = 0.4;  // weight of the category
 
             return filteredContent.stream()
                     .map(content -> {
@@ -293,24 +296,7 @@ public class HomeController {
                     .collect(Collectors.toList());
         }
 
-        /**
-         * Parse user taste profile from hexadecimal string
-         */
-        private List<Integer> parseTasteProfile(String tasteProfile) {
-            List<Integer> weights = new ArrayList<>();
 
-            for (int i = 0; i < tasteProfile.length(); i += 2) {
-                if (i + 2 <= tasteProfile.length()) {
-                    try {
-                        weights.add(Integer.parseInt(tasteProfile.substring(i, i + 2), 16));
-                    } catch (NumberFormatException e) {
-                        // Skip invalid hex values
-                    }
-                }
-            }
-
-            return weights;
-        }
 
         /**
          * Calculate scores for a list of content items based on user taste weights

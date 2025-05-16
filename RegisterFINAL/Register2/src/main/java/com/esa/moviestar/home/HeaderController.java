@@ -1,5 +1,6 @@
 package com.esa.moviestar.home;
 
+import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -11,7 +12,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -50,23 +50,31 @@ public class HeaderController {
         currentActive.getStyleClass().remove("surface-transparent");
         currentActive.getStyleClass().add("primary");
         tbxSearch.setPromptText("Titoli, persone, generi");
+        tbxSearch.setMouseTransparent(true);
         profileImage.setOnMouseClicked(e -> popupMenu.show(profileImage));
-        // da spostare
         homeButton.setOnMouseReleased(e -> activeButton(homeButton));
         filmButton.setOnMouseReleased(e -> activeButton(filmButton));
         seriesButton.setOnMouseReleased(e -> activeButton(seriesButton));
         searchButton.setOnMouseReleased(e -> {
+            if(currentActive==searchButton)
+                return;
+            currentActive.getStyleClass().remove("primary");
+            currentActive.getStyleClass().add("surface-transparent");
+            currentActive=searchButton;
+            searchButton.getStyleClass().remove("surface-transparent");
+            searchButton.getStyleClass().add("surface-dim");
         });
-
         rootHeader.widthProperty().addListener((observable, oldValue, newValue) -> {
             titleImageContainer.setVisible(!(newValue.doubleValue() < 720));
         });
-        List<Utente> l = new ArrayList<>();
-        for (int i = 0; i < 16; i++) {
-            Utente n = new Utente(i, "Giacomino", "", i,"");
-            l.add(n);
-        }
-        setupPopupMenu(l);
+
+    }
+    public void setUpPopUpMenu(Utente user){
+        UtenteDao utenteDao = new UtenteDao();
+        try {
+            List<Utente> users = utenteDao.recuperaTuttiGliUtenti(user.getEmail());
+            setupPopupMenu(users);
+        }catch(Exception e){}
     }
     public TextField getTbxSearch(){
         return tbxSearch;
@@ -85,10 +93,15 @@ public class HeaderController {
 
         // Deactivate the previously active button
         if (currentActive != null) {
+            if (currentActive == searchButton) {
+            searchButton.getStyleClass().remove("surface-dim");
+            searchButton.getStyleClass().add("surface-transparent");
+            }else{
             currentActive.getStyleClass().remove("primary");
             // Ensure the inactive style is present
             if (!currentActive.getStyleClass().contains("surface-transparent")) {
                 currentActive.getStyleClass().add("surface-transparent");
+            }
             }
         }
 
@@ -103,8 +116,7 @@ public class HeaderController {
             // If the activated element is the search HBox containing the TextField,
             // you might want to give focus to the TextField itself.
             if (currentActive == searchButton) {
-                // Add a small delay to ensure focus happens after potential layout changes
-                javafx.application.Platform.runLater(() -> tbxSearch.requestFocus());
+                tbxSearch.requestFocus();
             }
         }
     }
