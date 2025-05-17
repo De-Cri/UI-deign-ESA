@@ -110,7 +110,11 @@ public class MainPagesController {
             }
             Data search = loadDynamicBody("search.fxml");
             if (search != null) {
-                ((SearchController) search.controller).set_headercontroller(headerController);
+                try {
+                    ((SearchController) search.controller).set_headercontroller(headerController, user);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 body.getChildren().clear();
                 body.getChildren().add(search.node);
             }
