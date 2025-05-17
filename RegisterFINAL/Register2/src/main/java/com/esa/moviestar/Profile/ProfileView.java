@@ -1,10 +1,13 @@
 package com.esa.moviestar.Profile;
 
 import com.esa.moviestar.Database.UtenteDao;
+import com.esa.moviestar.home.HomeController;
+import com.esa.moviestar.home.MainPagesController;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -12,9 +15,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -56,29 +59,9 @@ public class ProfileView {
     }
 
     private void caricaUtenti() {
+            griglia.getChildren().clear(); // Pulisci sempre la griglia prima di ricaricare
             UtenteDao dao = new UtenteDao();
             List<Utente> utenti = dao.recuperaTuttiGliUtenti(email);
-
-            if (utenti.size() < 4) {
-                Pane creazione = new Pane();
-                creazione.setPrefHeight(100);
-                creazione.setPrefWidth(100);
-                creazione.setStyle("-fx-background-color:yellow;" +
-                        "-fx-background-radius:30;" +
-                        "-fx-border-radius: 20;" +
-                        "-fx-border-color: black; " +
-                        "-fx-border-radius: 30;");
-
-                VBox creazioneUtente = new VBox();
-                Label nomeCreazione = new Label("Aggiungi");
-                nomeCreazione.setStyle("-fx-font-size: 20px;" +
-                        "-fx-font-family: Arial;" +
-                        "-fx-text-fill: white;");
-                creazioneUtente.getChildren().addAll(creazione, nomeCreazione);
-                griglia.getChildren().add(creazioneUtente);
-                creazioneUtente.setAlignment(Pos.CENTER);
-                creazione.setOnMouseClicked(e -> tastoAggiungi());
-            }
 
             for (Utente utente : utenti) {
                 VBox box = new VBox();
@@ -90,55 +73,93 @@ public class ProfileView {
                 name.getStyleClass().addAll("on-primary", "bold-text", "large-text");
 
                 Group icon = new Group(IconSVG.takeElement(utente.getIDIcona()));
-                icon.setScaleY(5);
-                icon.setScaleX(5);
+                icon.setScaleY(8);
+                icon.setScaleX(8);
 
                 StackPane iconBox = new StackPane(icon);
                 StackPane.setAlignment(icon, Pos.CENTER);
-                iconBox.setMinSize(100, 100);
+                iconBox.setMinSize(200, 200);
 
                 box.setOnMouseEntered(event -> {
-                    icon.setScaleX(6);
-                    icon.setScaleY(6);
+                    icon.setScaleX(8.2);
+                    icon.setScaleY(8.2);
                     name.getStyleClass().addAll("bold-text", "large-text");
                 });
 
                 box.setOnMouseExited(event -> {
-                    icon.setScaleX(4);
-                    icon.setScaleY(4);
+                    icon.setScaleX(8);
+                    icon.setScaleY(8);
                     name.getStyleClass().addAll("on-primary", "bold-text", "large-text");
                 });
 
-                Button modifica = new Button("Modifica");
+                StackPane modifica = new StackPane();
                 modifica.setPrefWidth(100);
-                icon.setOnMouseClicked(e -> paginaHome());
-                modifica.setOnAction(e -> paginaModifica());
+                SVGPath pencilModify = new SVGPath();
+                pencilModify.setContent(resourceBundle.getString("pencil"));
+                pencilModify.setScaleY(0.5);
+                pencilModify.setScaleX(0.5);
+                pencilModify.setStyle("-fx-fill: #E6E3DC;");
+                modifica.getChildren().add(pencilModify);
+                icon.setOnMouseClicked(e -> paginaHome(utente));
+                modifica.setOnMouseClicked(e -> paginaModifica(utente));
 
                 box.getChildren().addAll(iconBox, name, modifica);
                 griglia.getChildren().add(box);
             }
+            //creazione e settaggio del bottone aggiungi
+            if (utenti.size() < 4) {
+                StackPane creazione = new StackPane();
+                creazione.setPrefHeight(100);
+                creazione.setPrefWidth(100);
+                creazione.setStyle("-fx-background-color: #333333;" +
+                        "-fx-background-radius: 24px;" +
+                        "-fx-border-radius: 24px;");
+
+                SVGPath crossAggiungi = new SVGPath();
+                crossAggiungi.setContent(resourceBundle.getString("plusButton"));
+                crossAggiungi.setScaleX(1.8);
+                crossAggiungi.setScaleY(1.8);
+                crossAggiungi.setStyle("-fx-fill: #121212;");
+                // Aggiungi al pane
+                creazione.getChildren().add(crossAggiungi);
 
 
+                VBox creazioneUtente = new VBox();
+                Label plusText = new Label();
+                plusText.setText("Aggiungi");
+                plusText.getStyleClass().addAll("on-primary", "bold-text", "large-text");
+                creazioneUtente.getChildren().addAll(creazione,plusText);
+                creazioneUtente.setSpacing(20);
+                griglia.getChildren().add(creazioneUtente);
+                creazioneUtente.setAlignment(Pos.CENTER);
+                creazione.setOnMouseClicked(e -> paginaCreazioneUtente());
+            }
     }
 
-    // Metodo che si attiva quando l'utente clicca sul pannello "Aggiungi"
-    private void tastoAggiungi() {
-        if (griglia.getChildren().size() < 4) {  // Se ci sono meno di 4 elementi, posso aggiungerne uno nuovo
-            paginaCreazioneUtente();  // Carica la pagina di creazione
-            griglia.getChildren().add(recuperoCreazioneDellUtente());  // Aggiungi un nuovo utente alla griglia
-        } else if (griglia.getChildren().size() == 4) {  // Se la griglia ha già 4 elementi
-            griglia.getChildren().removeFirst();  // Rimuovi il primo utente della griglia (per far spazio al nuovo)
-            griglia.getChildren().add(recuperoCreazioneDellUtente());  // Aggiungi il nuovo utente
+
+    //passaggio alla pagina Home
+    private void paginaHome(Utente user) {
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/home/main.fxml"),resourceBundle);
+            Parent homeContent = loader.load();
+
+            MainPagesController mainPagesController = loader.getController();
+            mainPagesController.first_load(user);
+
+            Scene currentScene = ContenitorePadre.getScene();
+            Scene newScene = new Scene(homeContent, currentScene.getWidth(), currentScene.getHeight());
+
+            // Ottieni lo Stage corrente e imposta la nuova scena
+            Stage stage = (Stage) ContenitorePadre.getScene().getWindow();
+            stage.setScene(newScene);
+        }catch(IOException e){
+            warningText.setText("Errore durante il caricamento della pagina home: " + e.getMessage());  // Gestione errore
+            System.err.println("ProfileView : Errore caricamento pagina home"+e.getMessage());
         }
     }
 
-    // Metodo per simulare il passaggio alla pagina Home
-    private void paginaHome() {
-        System.out.println("SEI NELLA PAGINA HOME ");  // Stampa un messaggio per debugging
-    }
-
-    // Metodo che gestisce il passaggio alla pagina di modifica
-    private void paginaModifica() {
+    //  passaggio alla pagina di modifica
+    private void paginaModifica(Utente user) {
         if (griglia.getChildren().size() > 1) {  // Verifica che ci sia almeno un utente nella griglia
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/modify-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
@@ -146,6 +167,7 @@ public class ProfileView {
 
                 ModifyProfileController modifyProfileController = loader.getController();
                 modifyProfileController.setEmail(email);
+                modifyProfileController.setUtente(user);
 
                 //Ottieni la scena corrente
                 Scene currentScene = ContenitorePadre.getScene();
@@ -165,9 +187,8 @@ public class ProfileView {
         }
     }
 
-    // Metodo che simula il passaggio alla pagina di creazione utente
+    //  passaggio alla pagina di creazione utente
     private void paginaCreazioneUtente() {
-        System.out.println("SEI NELLA PAGINA DI CREAZIONE");  // Stampa un messaggio per il debug
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
             Parent createContent = loader.load();  // Carica la vista della pagina
@@ -188,35 +209,6 @@ public class ProfileView {
             warningText.setText("Errore durante il caricamento della pagina di creazione: " + e.getMessage());  // Gestione errore
             System.err.println("ProfileView : Errore caricamento pagina di creazione"+e.getMessage());
         }
-    }
-
-    // Metodo che crea e restituisce un nuovo utente con il nome e l'immagine specificati
-    private VBox recuperoCreazioneDellUtente() {
-        VBox box = new VBox();
-        box.setSpacing(10);
-        box.setPadding(new Insets(10));
-        box.setAlignment(Pos.CENTER);  // Centro gli elementi
-
-            UtenteDao dao = new UtenteDao();
-
-            int codUtente = dao.recuperoCodiceUtente(email);
-
-            if (codUtente != -1) {
-                Utente a = dao.recuperoUtente(email, codUtente);
-
-                Label name = new Label(a.getNome());
-                Group icon = new Group(IconSVG.takeElement(a.getIDIcona()));
-
-                Button modifica = new Button("Modifica");
-                modifica.setPrefWidth(100);
-
-                // Aggiungi azioni
-                icon.setOnMouseClicked(e -> paginaHome());
-                modifica.setOnAction(e -> paginaModifica());  // puoi sostituire "colore" se serve
-
-                box.getChildren().addAll(icon, name, modifica);
-            }
-            return box;
     }
 
 }

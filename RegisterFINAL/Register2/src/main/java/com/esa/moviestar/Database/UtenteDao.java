@@ -1,9 +1,6 @@
 package com.esa.moviestar.Database;
 
-import com.esa.moviestar.model.Comment;
-import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
-
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -149,20 +146,18 @@ public class UtenteDao {
         return utenti;  // Restituisci la lista di utenti
     }
 
-    public List<Comment> getCommentiUtente(int idUser, int  limit) {
-//        String query = "SELECT TOP(?) * FROM Contenuto JOIN Cronologia WHERE Cronologia.ID_Contenuto = Contenuto.ID_Contenuto AND ID_Utente = ?;";
-//        try(PreparedStatement stmt = connection.prepareStatement(query)){
-//            stmt.setInt(1, limit);
-//            stmt.setInt(2,idUser);
-//            ResultSet rs = stmt.executeQuery();
-//            if (rs.next()) {
-//
-//            }else {return null;}
-//
-//        }catch(SQLException e){
-//            System.err.println("utenteDao : errore nel recupero delle informazioni dell'utente "+e.getMessage());
-//        }
-        return null;
+    public boolean aggiornaUtente(Utente utente){
+        String query = "UPDATE Utente SET Nome = ? , Icona = ? WHERE ID_Utente=?;";
+        try(PreparedStatement stmt = connection.prepareStatement(query)){
+           stmt.setString(1,utente.getNome());
+           stmt.setInt(2,utente.getIDIcona());
+           stmt.setInt(3,utente.getID());
+           stmt.executeUpdate();
+           return true;
+        }catch (SQLException e){
+            System.err.println("utenteDao : errore di aggiornamento dell'utente "+e.getMessage());
+            return false;
+        }
     }
 }
 
