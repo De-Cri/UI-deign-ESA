@@ -42,34 +42,44 @@ public class FilmCardController {
     @FXML
     ResourceBundle resources;
 
-    public long _id;
+    public int _id;
 
-    public void setContent(Content film) {
+    public void setContent(Content content) {
         // Clean up any previous shimmer if setContent is called again
         removeShimmerOverlay();
 
-        _id = film.getId();
-        titleLabel.setText(film.getTitle());
-        descriptionLabel.setText(film.getPlot());
-        timeLabel.setText(String.valueOf( film.getDuration()));
-        ratingLabel.setText(String.valueOf(film.getRating()));
-        if (durationIcon != null && resources != null) {
-            durationIcon.setContent(resources.getString(film.isSeries() ? "episodes" : "clock"));
+        _id = content.getId();
+        titleLabel.setText(content.getTitle());
+        descriptionLabel.setText(content.getPlot());
+        if(content.isSeasonDivided()){
+            timeLabel.setText(content.getSeasonCount()+" Seasons");
+            durationIcon.setContent(resources.getString("season"));
         }
+        else if(content.isSeries()){
+            timeLabel.setText(content.getEpisodeCount() +" Episodes");
+            durationIcon.setContent(resources.getString("episodes"));
+        }
+        else{
+            timeLabel.setText(((int)content.getDuration()/60)+"h "+((int)content.getDuration()%60)+"min");
+            durationIcon.setContent(resources.getString("clock"));
+        }
+        ratingLabel.setText(String.valueOf(content.getRating()));
+
+
         try {
-            if (film.getImageUrl() == null || film.getImageUrl().isEmpty() || Objects.equals(film.getImageUrl(), "error")) {
-               // System.err.println("Error: Image URL is null or empty for film: " + film.getTitle());
+            if (content.getImageUrl() == null || content.getImageUrl().isEmpty() || Objects.equals(content.getImageUrl(), "error")) {
+                // System.err.println("Error: Image URL is null or empty for content: " + content.getTitle());
                 imgView.setImage(null); // Clear previous image
                 Platform.runLater(this::displayErrorShimmer); // Show shimmer for this specific error
                 return;
             }
-            Image img = new Image(film.getImageUrl(), true);
+            Image img = new Image(content.getImageUrl(), true);
             img.errorProperty().addListener((observable, oldValue, newValue) -> {
                 Exception e = img.getException();
                 if (e != null) {
-                    System.err.println("Error loading image '" + film.getImageUrl() + "': " + e.getMessage());
+                    System.err.println("Error loading image '" + content.getImageUrl() + "': " + e.getMessage());
                 } else {
-                    System.err.println("Error loading image '" + film.getImageUrl() + "': Unknown error.");
+                    System.err.println("Error loading image '" + content.getImageUrl() + "': Unknown error.");
                 }
                 Platform.runLater(this::displayErrorShimmer);
             });
@@ -116,6 +126,12 @@ public class FilmCardController {
             setArcWidth(48);
             setArcHeight(48);
         }});
+        SequentialTransition completeAnimation = getSequentialTransition(shimmerOverlay);
+        cardContainer.getChildren().add(1, shimmerOverlay);
+        completeAnimation.play();
+    }
+
+    private static SequentialTransition getSequentialTransition(Region shimmerOverlay) {
         FadeTransition shimmerFadeIn = new FadeTransition(Duration.seconds(10), shimmerOverlay);
         shimmerFadeIn.setFromValue(0);
         shimmerFadeIn.setToValue(1);
@@ -125,8 +141,7 @@ public class FilmCardController {
         shimmerFadeOut.setToValue(0);
         SequentialTransition completeAnimation = new SequentialTransition(shimmerFadeIn, shimmerFadeOut);
         completeAnimation.setCycleCount(10); // Repeat the entire fade-in and fade-out sequence
-        cardContainer.getChildren().add(1, shimmerOverlay);
-        completeAnimation.play();
+        return completeAnimation;
     }
 
     private void removeShimmerOverlay() {
@@ -254,7 +269,7 @@ public class FilmCardController {
         return "rgb("+ avgRed*255+", "+ avgGreen*255+", "+ avgBlue*255+")";
     }
 
-    public long getCardId() {
+    public int getCardId() {
         return _id;
     }
 }

@@ -1,8 +1,12 @@
 package com.esa.moviestar.model;
 
+import com.esa.moviestar.Database.AccountDao;
+import com.esa.moviestar.Database.ContentDao;
+import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Profile.IconSVG;
 import javafx.scene.Group;
 import  java.util.List;
+import java.util.Vector;
 
 public class Utente {
 
@@ -78,6 +82,33 @@ public class Utente {
         }
     }
 
+    public List<Integer> getGustiComeLista() {
+        List<Integer> pesi = new Vector<>();
+        for (int i = 0; i < getGusti().length(); i += 2) {
+            if (i + 2 <= getGusti().length()) {
+                try {
+                    pesi.add(Integer.parseInt(getGusti().substring(i, i + 2), 16));
+                } catch (NumberFormatException e) {
+                    System.err.println("Utente: i gusti potrebbero non essere corretti");
+                }
+            }
+        }
+        return pesi;
+    }
+    public List<Content> getCronologia(int limit) {
+        ContentDao contentDao = new ContentDao();
+        return contentDao.getWatched(this.codUtente,limit);
+    }
+    
+    public List<Content> getPreferiti(int limit) {
+        ContentDao accountDao = new ContentDao();
+        return accountDao.getFavourites(this.codUtente,limit);
+    }
+    
+    public List<Comment> getCommenti(int limit) {
+        UtenteDao utenteDao = new UtenteDao();
+        return utenteDao.getCommentiUtente(this.codUtente,limit);
+    }
     public int getUltimoGuardato() {
         return 5;
     }

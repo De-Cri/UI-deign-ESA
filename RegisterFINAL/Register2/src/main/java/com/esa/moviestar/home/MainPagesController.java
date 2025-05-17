@@ -1,6 +1,5 @@
 package com.esa.moviestar.home;
 
-import com.esa.moviestar.Database.ContentDao;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +43,7 @@ public class MainPagesController {
         Data home =loadDynamicBody("home.fxml");
         if(home!=null){
             HomeController homeBodyController = (HomeController) home.controller;
-            homeBodyController.setRecommendations(user,new ContentDao().take_all_contents());
+            homeBodyController.setRecommendations(user,this);
             currentScene = home;
             body.getChildren().clear();
             body.getChildren().add(home.node);
@@ -65,7 +64,7 @@ public class MainPagesController {
             if (home == null) {
                 home = loadDynamicBody("home.fxml");
                 if (home != null)
-                    ((HomeController) home.controller).setRecommendations(user, new ContentDao().take_all_contents());
+                    ((HomeController) home.controller).setRecommendations(user,this);
             }
             currentScene = home;
             body.getChildren().clear();
@@ -78,7 +77,7 @@ public class MainPagesController {
             if (filter_film == null) {
                 filter_film = loadDynamicBody("filter.fxml");
                 if (filter_film != null)
-                    ((FilterController) filter_film.controller).loadWithFilter(0);
+                    ((FilterController) filter_film.controller).loadWithFilter(user,false);
             }
             currentScene = filter_film;
             body.getChildren().clear();
@@ -90,7 +89,7 @@ public class MainPagesController {
             if (filter_series == null) {
                 filter_series = loadDynamicBody("filter.fxml");
                 if (filter_series != null)
-                    ((FilterController) filter_series.controller).loadWithFilter(1);
+                    ((FilterController) filter_series.controller).loadWithFilter(user,true);
             }
             currentScene = filter_series;
             body.getChildren().clear();
@@ -104,15 +103,19 @@ public class MainPagesController {
                     body.getChildren().clear();
                     body.getChildren().add(currentScene.node);
                 } catch (Exception e) {
-                    System.err.println("MainPagesController: tbxSearchListener error \n Error:"+e.getMessage());
+                    System.err.println("MainPagesController: tbxSearchListener error \nError:"+e.getMessage());
                 }
                 return;
             }
             Data search = loadDynamicBody("search.fxml");
             if (search != null) {
-                ((SearchController) search.controller).set_headercontroller(headerController);
+                try{
+                ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user);
                 body.getChildren().clear();
-                body.getChildren().add(search.node);
+                body.getChildren().add(search.node);}
+                catch (Exception e){
+                    System.err.println("MainPagesController: tbxSearchListener error \nError:"+e.getMessage());
+                }
             }
         });
     }
@@ -120,7 +123,6 @@ public class MainPagesController {
 
     private Data loadDynamicBody(String bodySource) {
         try {
-            System.out.println("Main Controller: Loading body: "+ bodySource);
             FXMLLoader loader = new FXMLLoader(getClass().getResource(bodySource),resourceBundle);
             Node body = loader.load();
             this.body.getChildren().add(body);
@@ -130,8 +132,22 @@ public class MainPagesController {
             AnchorPane.setRightAnchor(body,0.0);
             return new Data(body,(Object) loader.getController());
         } catch (IOException e) {
-            System.err.println("Main Controller: Failed to load body: "+ bodySource+"\n Error:"+e.getMessage());
+            System.err.println("Main Controller: Failed to load body: "+ bodySource+"\nError:"+e.getMessage());
         }
         return null;
+    }
+    public void cardClicked(int id){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("com/esa/moviestar/movie_view/filmInterface.fxml"),resourceBundle);
+            Node body = loader.load();
+            this.body.getChildren().add(body);
+            AnchorPane.setBottomAnchor(body,0.0);
+            AnchorPane.setTopAnchor(body,0.0);
+            AnchorPane.setLeftAnchor(body,0.0);
+            AnchorPane.setRightAnchor(body,0.0);
+
+        } catch (IOException e) {
+            System.err.println("Main Controller: Failed to load body: card \nError:"+e.getMessage());
+        }
     }
 }

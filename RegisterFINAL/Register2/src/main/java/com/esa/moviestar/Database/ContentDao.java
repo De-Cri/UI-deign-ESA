@@ -8,10 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class ContentDao {
     private static Connection connection;
@@ -26,83 +24,173 @@ public class ContentDao {
         }
     }
 
-    public List<Content> take_all_contents() {
-        List<Content> listaContenuti = new ArrayList<>();
-        Map<Integer, List<Integer>> tagsMap = new HashMap<>();
 
-        // Prima query per ottenere tutti i generi associati ai contenuti
-        String queryGeneri = "SELECT ID_Contenuto, ID_Genere FROM Contenuti_Generi;";
-        try (PreparedStatement stmtGeneri = connection.prepareStatement(queryGeneri)) {
-            ResultSet rsGeneri = stmtGeneri.executeQuery();
+    public List<List<Content>> getHomePageContents(Utente user) {
+        List<Integer> gusti = user.getGustiComeLista();
+        String top_genres = IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get)).map(Object::toString).limit(3).collect(java.util.stream.Collectors.joining(","));
+        String bottom_genres = IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get).reversed()).map(Object::toString).limit(3).collect(java.util.stream.Collectors.joining(","));
+        String query =
+                // Popular content from top genres
+                "SELECT* FROM(SELECT C.*, 0 AS Ordinamento " +
+                        "FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "WHERE CG.ID_Genere IN (" + top_genres + ") " +
+                        "ORDER BY C.Click DESC LIMIT 5)" +
 
-            while (rsGeneri.next()) {
-                int idContenuto = rsGeneri.getInt("ID_Contenuto");
-                int idGenere = rsGeneri.getInt("ID_Genere");
+                        " UNION ALL " +
 
-                if (!tagsMap.containsKey(idContenuto)) {
-                    tagsMap.put(idContenuto, new ArrayList<>());
-                }
-                tagsMap.get(idContenuto).add(idGenere);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Errore nel recupero dei generi: " + e.getMessage(), e);
-        }
+                        // Random top genres content
+                        "SELECT* FROM(SELECT C.*, 1 AS Ordinamento FROM Contenuto C " +
+                        "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "WHERE CG.ID_Genere IN (" + top_genres + ") " +
+                        "ORDER BY RANDOM() LIMIT 10)" +
 
-        String queryContenuti = "SELECT c.ID_Contenuto, c.Titolo, c.Trama, c.Link_immagine, c.Link_film, " +
-                "c.Durata, c.Anno, c.Valutazione, c.Click, c.Nazione, c.Data_di_pubblicazione, c.Stagioni, c.N_Episodi " +
-                "FROM Contenuto c";
+                        " UNION ALL " +
 
-        try (PreparedStatement stmt = connection.prepareStatement(queryContenuti)) {
-            ResultSet rs = stmt.executeQuery();
+                        // New releases
+                        "SELECT* FROM(SELECT C.*, 2 AS Ordinamento FROM Contenuto C ORDER BY Data_di_pubblicazione DESC LIMIT 8)" +
 
-            while (rs.next()) {
-                Content contenuto = new Content();
+                        " UNION ALL " +
 
-                // Popola l'oggetto Content con tutti i campi dal ResultSet
-                contenuto.setId(rs.getInt("ID_Contenuto"));
-                contenuto.setTitle(rs.getString("Titolo"));
-                contenuto.setPlot(rs.getString("Trama"));
-                contenuto.setImageUrl(rs.getString("Link_immagine"));
-                contenuto.setVideoUrl(rs.getString("Link_film"));
-                contenuto.setDuration(rs.getDouble("Durata"));
-                contenuto.setYear(rs.getInt("Anno"));
-                contenuto.setRating(rs.getDouble("Valutazione"));
-                contenuto.setClicks(rs.getInt("Click"));
-                contenuto.setCountry(rs.getString("Nazione"));
-                contenuto.setReleaseDate(rs.getString("Data_di_pubblicazione"));
-                contenuto.seasonDivided(rs.getInt("Stagioni") > 0);
-                contenuto.setSeasonCount(rs.getInt("Stagioni"));
-                contenuto.Series(rs.getInt("N_Episodi")>0);
-                contenuto.setEpisodeCount(rs.getInt("N_Episodi"));
-                contenuto.setCategories(tagsMap.get(rs.getInt("ID_Contenuto")));
-                // Aggiungi l'oggetto completo alla lista
-                listaContenuti.add(contenuto);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException();
-        }
-        return listaContenuti;
+                        // Favorite tag but not watched
+                        "SELECT* FROM(SELECT C.*, 3 AS Ordinamento FROM Contenuto C " +
+                        "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "LEFT JOIN Cronologia CR ON C.ID_Contenuto = CR.ID_Contenuto AND CR.ID_Utente = " + user.getID() + " " +
+                        "WHERE CG.ID_Genere = ( " +
+                        "SELECT ID_Genere FROM Contenuti_Generi WHERE ID_Contenuto IN ( " +
+                        "SELECT ID_Contenuto FROM Contenuti_Generi WHERE ID_Genere IN (" + top_genres + ") LIMIT 1 ) LIMIT 1" +
+                        ") AND CR.ID_Contenuto IS NULL AND C.N_Episodi = 0 ORDER BY RANDOM() LIMIT 8)" +
+
+                        " UNION ALL " +
+
+                        // Recently watched
+                        "SELECT* FROM(SELECT C.*, 4 AS Ordinamento FROM Cronologia CR JOIN Contenuto C ON CR.ID_Contenuto = C.ID_Contenuto " +
+                        "WHERE CR.ID_Utente = " + user.getID() + " ORDER BY CR.DataVisione DESC LIMIT 7)" +
+
+                        " UNION ALL " +
+
+                        // Similar to last watched
+                        "SELECT* FROM(SELECT C2.*, 5 AS Ordinamento FROM Contenuti_Generi CG1 " +
+                        "JOIN Contenuti_Generi CG2 ON CG1.ID_Genere = CG2.ID_Genere AND CG1.ID_Contenuto != CG2.ID_Contenuto " +
+                        "JOIN Contenuto C2 ON CG2.ID_Contenuto = C2.ID_Contenuto " +
+                        "WHERE CG1.ID_Contenuto = ( SELECT CR.ID_Contenuto FROM Cronologia CR WHERE CR.ID_Utente = " + user.getID() + " " +
+                        "ORDER BY CR.DataVisione DESC LIMIT 1 ) ORDER BY RANDOM() LIMIT 7)" +
+
+                        " UNION ALL " +
+
+                        // User favorites
+                        "SELECT* FROM(SELECT C.*, 6 AS Ordinamento FROM Preferiti P JOIN Contenuto C ON P.ID_Contenuto = C.ID_Contenuto " +
+                        "WHERE P.ID_Utente = " + user.getID() + " ORDER BY RANDOM() LIMIT 7)" +
+
+                        " UNION ALL " +
+
+                        // Recommended series
+                        "SELECT* FROM(SELECT C.*, 7 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "WHERE CG.ID_Genere IN (" + top_genres + ") AND C.N_Episodi > 0 ORDER BY RANDOM() LIMIT 7)" +
+
+                        " UNION ALL " +
+
+                        // Other categories (bottom genres)
+                        "SELECT* FROM(SELECT C.*, 8 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "WHERE CG.ID_Genere IN (" + bottom_genres + ") ORDER BY RANDOM() LIMIT 7)";
+
+        return getPagesContents(user,query);
+    }
+    public List<List<Content>> getFilterPageContents(Utente user,boolean isFilm) {
+        List<Integer> gusti = user.getGustiComeLista();
+        String top_genres = IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get)).map(Object::toString).limit(3).collect(java.util.stream.Collectors.joining(","));
+        String query =
+                // Popular content from top genres
+                "SELECT* FROM(SELECT C.*, 0 AS Ordinamento " +
+                        "FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "WHERE CG.ID_Genere IN (" + top_genres + ") " +
+                        "ORDER BY C.Click DESC LIMIT 5)" +
+
+                        " UNION ALL " +
+
+                        // Random top genres content
+                        "SELECT* FROM(SELECT C.*, 1 AS Ordinamento FROM Contenuto C " +
+                        "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "WHERE CG.ID_Genere IN (" + top_genres + ") " +
+                        "ORDER BY RANDOM() LIMIT 10)" +
+
+                        " UNION ALL " +
+
+                        // New releases
+                        "SELECT* FROM(SELECT C.*, 2 AS Ordinamento FROM Contenuto C ORDER BY Data_di_pubblicazione DESC LIMIT 8)" +
+
+                        " UNION ALL " +
+
+                        // Favorite tag but not watched
+                        "SELECT* FROM(SELECT C.*, 3 AS Ordinamento FROM Contenuto C " +
+                        "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "LEFT JOIN Cronologia CR ON C.ID_Contenuto = CR.ID_Contenuto AND CR.ID_Utente = " + user.getID() + " " +
+                        "WHERE CG.ID_Genere = ( " +
+                        "SELECT ID_Genere FROM Contenuti_Generi WHERE ID_Contenuto IN ( " +
+                        "SELECT ID_Contenuto FROM Contenuti_Generi WHERE ID_Genere IN (" + top_genres + ") LIMIT 1 ) LIMIT 1" +
+                        ") AND CR.ID_Contenuto IS NULL AND C.N_Episodi = 0 ORDER BY RANDOM() LIMIT 8)" +
+
+                        " UNION ALL " +
+
+                        // Recently watched
+                        "SELECT* FROM(SELECT C.*, 4 AS Ordinamento FROM Cronologia CR JOIN Contenuto C ON CR.ID_Contenuto = C.ID_Contenuto " +
+                        "WHERE CR.ID_Utente = " + user.getID() + " ORDER BY CR.DataVisione DESC LIMIT 7)" +
+
+                        " UNION ALL " +
+
+                        // Similar to last watched
+                        "SELECT* FROM(SELECT C2.*, 5 AS Ordinamento FROM Contenuti_Generi CG1 " +
+                        "JOIN Contenuti_Generi CG2 ON CG1.ID_Genere = CG2.ID_Genere AND CG1.ID_Contenuto != CG2.ID_Contenuto " +
+                        "JOIN Contenuto C2 ON CG2.ID_Contenuto = C2.ID_Contenuto " +
+                        "WHERE CG1.ID_Contenuto = ( SELECT CR.ID_Contenuto FROM Cronologia CR WHERE CR.ID_Utente = " + user.getID() + " " +
+                        "ORDER BY CR.DataVisione DESC LIMIT 1 ) ORDER BY RANDOM() LIMIT 7)" +
+
+                        " UNION ALL " +
+
+                        // User favorites
+                        "SELECT* FROM(SELECT C.*, 6 AS Ordinamento FROM Preferiti P JOIN Contenuto C ON P.ID_Contenuto = C.ID_Contenuto " +
+                        "WHERE P.ID_Utente = " + user.getID() + " ORDER BY RANDOM() LIMIT 7)"
+                ;
+        return getPagesContents(user,query);
     }
 
-//    public  Content take_film(int id) throws SQLException {
-//        String query = "SELECT * FROM account WHERE id = ?;";
-//
-//        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-//            stmt.setString(1, email);
-//            ResultSet rs = stmt.executeQuery();
-//            if (rs.next()) {
-//                return new Account(
-//                        rs.getString("email"),
-//                        rs.getString("password")
-//                );
-//            } else {
-//                return null;
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            throw new SQLException("Errore nel cercare l'utente", e);
-//        }
-//    }
+    public List<List<Content>> getFilterPageContentsWithTag(Utente user,boolean isFilm,int tag) {
+        String query=
+                isFilm?
+                "SELECT C.* FROM Contenuto Co":
+                "SELECT C.* FROM Contenuto C";
+        return getPagesContents(user,query);
+    }
+    private List<List<Content>> getPagesContents(Utente user, String query) {
+        List<List<Content>> list = new Vector<>();
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                while(rs.getInt("Ordinamento")>=list.size()){
+                    System.out.println("a");
+                    list.add(new Vector<>());
+                }
+                list.get(rs.getInt("Ordinamento")).add(createContent(rs));
+            }
+        } catch (Exception e) {
+            System.err.println("ContentDao: Error to create content list in take_home_contents \n Error:" + e.getMessage());
+        }
+        return list;
+    }
+
+    public  Content getFiLmDetails(int id) {
+        String query = "SELECT C.* FROM Contenuto C WHERE ID_Contenuto = ?;";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            Content content = createContent(rs);
+            while(rs.next()){
+              content.addCategory(rs.getInt("ID_Genere"));
+            }
+            return content;
+        } catch (SQLException e) {
+            System.err.println("ContentDao: failed to load content: "+id + "\n Error:"+e.getMessage());
+        }
+        return  null;
+    }
     public List<Content> take_film_tvseries(String title, Utente u) {
         String gustiU = u.getGusti();
         List<Integer> weights = new ArrayList<>();
@@ -210,5 +298,49 @@ public class ContentDao {
 
         return resultContents;
     }
+
+    public List<Content> getWatched(int idUser,int limit) {
+        return getList(idUser,idUser,"SELECT C.* FROM Contenuto C JOIN Cronologia Cr ON C.ID_Contenuto = Cr.ID_Contenuto WHERE Cr.ID_Utente = ? LIMIT ?;");
+    }
+
+    public List<Content> getFavourites(int idUser,int limit) {
+        return getList(idUser,idUser,"SELECT C.* FROM Contenuto C JOIN Preferiti Pr ON C.ID_Contenuto = Pr.ID_Contenuto WHERE Pr.ID_Utente = ? LIMIT ?;");
+    }
+
+    private List<Content> getList(int idUser,int limit,String query){
+        List<Content> resultContents = new ArrayList<>();
+        try(PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setInt(1, idUser);
+            stmt.setInt(2, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                resultContents.add(createContent(rs));
+            }
+        }catch(SQLException e){
+            System.err.println("ContentDao: error to take execute query: "+query+ "\n Error:"+e.getMessage());
+        }
+        return resultContents;
+    }
+
+    private Content createContent(ResultSet rs) throws SQLException {
+        Content content = new Content();
+        content.setId(rs.getInt("ID_Contenuto"));
+        content.setTitle(rs.getString("Titolo"));
+        content.setPlot(rs.getString("Trama"));
+        content.setImageUrl(rs.getString("Link_immagine"));
+        content.setVideoUrl(rs.getString("Link_film"));
+        content.setDuration(rs.getDouble("Durata"));
+        content.setYear(rs.getInt("Anno"));
+        content.setRating(rs.getDouble("Valutazione"));
+        content.setClicks(rs.getInt("Click"));
+        content.setCountry(rs.getString("Nazione"));
+        content.setReleaseDate(rs.getString("Data_di_pubblicazione"));
+        content.seasonDivided(rs.getInt("Stagioni") > 0);
+        content.setSeasonCount(rs.getInt("Stagioni"));
+        content.Series(rs.getInt("N_Episodi")>0);
+        content.setEpisodeCount(rs.getInt("N_Episodi"));
+        return content;
+    }
+
 
 }

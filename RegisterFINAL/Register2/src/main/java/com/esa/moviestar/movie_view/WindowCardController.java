@@ -31,7 +31,7 @@ public class WindowCardController {
     private Label descriptionLabel;
     @FXML
     private Text ratingLabel;
-    private long _id;
+    private int _id;
 
     @FXML
     public void initialize(){
@@ -66,7 +66,7 @@ public class WindowCardController {
             imgView.setImage(new Image(film.getImageUrl(),true));
     }
 
-    public long getCardId() {
+    public int getCardId() {
         return _id;
     }
 
