@@ -2,7 +2,9 @@ package com.esa.moviestar.Profile;
 
 import java.io.IOException;
 
+import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
+import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -55,9 +57,22 @@ public class ModifyProfileController {
     private Group originalProfileImage;
     private int codImmagineCorrente;
     private String email;
+    private Utente utente;
     public void setEmail(String email) {
         this.email = email;
         System.out.println("Email passata alla schermata creazione profilo: " + email);
+    }
+    public void setUtente(Utente utente){
+        this.utente=utente;
+        if (utente != null) { // da qui in poi serve per portarsi dietro le immagini e il nome da modificare
+            textName.setText(utente.getNome());
+            codImmagineCorrente = utente.getIDIcona();
+
+            // Mostra l'icona corrente
+            defaultImagine.getChildren().clear();
+            Group g = new Group(IconSVG.takeElement(codImmagineCorrente));
+            defaultImagine.getChildren().add(g);
+        }
     }
 
     public void initialize() {
@@ -91,6 +106,21 @@ public class ModifyProfileController {
             String name = textName.getText();
             String gusto = "0";
             int immagine=codImmagineCorrente;
+
+            if(name==null){
+                errorText.setText("Nessun nome Inserito");
+                AnimationUtils.shake(errorText);
+                return;
+            }
+            utente.setNome(name);
+            utente.setIcona(immagine);
+
+            UtenteDao dao = new UtenteDao();
+            boolean successo = dao.aggiornaUtente(utente); // chiamata al database per fare l'update
+
+            if(!successo){
+                System.out.println("errore nel salvataggio delle modifiche");
+            }
 
             if (!textName.getText().isEmpty()) {  //se ho messo un nome nel textfield e l'ho salvato allora ritorno alla pagina principale dei profili / oppure potrei far direttamente loggare / (modifiche da fare : controllare che abbia scelto anche un immagine, oppure se non l'ha scelta dare quella di default)
                 //questo metodo cosi fa ritornare alla pagina dei profili, aggiungere poi il fatto che io abbia creato il panel nuovo con tutte le modifiche
