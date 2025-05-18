@@ -43,6 +43,15 @@
     -fx-text-fill: #F0ECFD;
     -fx-fill: #F0ECFD;
 }
+
+.on-secondary{
+-fx-text-fill: #E6E3DC;
+}
+
+.on-white{
+-fx-text-fill: #FFFFFF;
+}
+
 .texture-gold{
     -fx-fill: linear-gradient(
               	to bottom right,
