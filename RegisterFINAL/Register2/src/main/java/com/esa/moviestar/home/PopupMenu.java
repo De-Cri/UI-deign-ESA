@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
-        import javafx.scene.paint.Color;
+import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 
 import java.util.ArrayList;

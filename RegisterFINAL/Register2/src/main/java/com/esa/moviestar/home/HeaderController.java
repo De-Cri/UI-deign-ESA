@@ -69,12 +69,10 @@ public class HeaderController {
         });
 
     }
-    public void setUpPopUpMenu(Utente user){
+    public void setUpPopUpMenu(MainPagesController father,Utente user){
         UtenteDao utenteDao = new UtenteDao();
-        try {
-            List<Utente> users = utenteDao.recuperaTuttiGliUtenti(user.getEmail());
-            setupPopupMenu(users);
-        }catch(Exception e){}
+        List<Utente> users = utenteDao.recuperaTuttiGliUtenti(user.getEmail());
+        setupPopupMenu(father,user,users);
     }
     public TextField getTbxSearch(){
         return tbxSearch;
@@ -94,14 +92,14 @@ public class HeaderController {
         // Deactivate the previously active button
         if (currentActive != null) {
             if (currentActive == searchButton) {
-            searchButton.getStyleClass().remove("surface-dim");
-            searchButton.getStyleClass().add("surface-transparent");
+                searchButton.getStyleClass().remove("surface-dim");
+                searchButton.getStyleClass().add("surface-transparent");
             }else{
-            currentActive.getStyleClass().remove("primary");
-            // Ensure the inactive style is present
-            if (!currentActive.getStyleClass().contains("surface-transparent")) {
-                currentActive.getStyleClass().add("surface-transparent");
-            }
+                currentActive.getStyleClass().remove("primary");
+                // Ensure the inactive style is present
+                if (!currentActive.getStyleClass().contains("surface-transparent")) {
+                    currentActive.getStyleClass().add("surface-transparent");
+                }
             }
         }
 
@@ -122,7 +120,7 @@ public class HeaderController {
     }
 
 
-    private void setupPopupMenu(List<Utente> content) {
+    private void setupPopupMenu(MainPagesController father,Utente user,List<Utente> users) {
         // Create the popup menu - no stage needed
         popupMenu = new PopupMenu();
 
@@ -140,12 +138,12 @@ public class HeaderController {
             getStyleClass().addAll("medium-text", "on-primary");
         }};
         settingsItem.getChildren().addAll(profileIcon, text);
-        settingsItem.setOnMouseClicked(e -> settingsClick());
+        settingsItem.setOnMouseClicked(e -> father.settingsClick(user));
 
         popupMenu.addItem(settingsItem);
         popupMenu.addSeparator();
-        for (Utente i : content) {
-            createProfileItem(i.getID(), i.getNome(), i.getIcona());
+        for (Utente i : users) {
+            createProfileItem(i, i.getNome(), i.getIcona(),father);
         }
         popupMenu.addSeparator();
         HBox emailButton = new HBox() {{
@@ -160,13 +158,13 @@ public class HeaderController {
         Text emailText = new Text("Change Email") {{
             getStyleClass().addAll("medium-text", "on-primary");
         }};
-        emailButton.setOnMouseClicked(e -> emailClick());
+        emailButton.setOnMouseClicked(e -> father.emailClick());
         emailButton.getChildren().addAll(emailIcon, emailText);
         popupMenu.addItem(emailButton);
 
     }
 
-    private void createProfileItem(int id, String name, Group profileIcon) {
+    private void createProfileItem(Utente user, String name, Group profileIcon, MainPagesController father) {
         profileIcon.setScaleX(1.3);
         profileIcon.setScaleY(1.3);
         HBox item = new HBox() {{
@@ -179,25 +177,12 @@ public class HeaderController {
         }};
         item.getChildren().addAll(profileIcon, text);
         // Item click handling moved to controller via callback
-        item.setOnMouseClicked(e -> profileClick(id));
+        item.setOnMouseClicked(e -> father.profileClick(user));
         popupMenu.addItem(item);
 
     }
 
-    private void profileClick(int itemId) {
-        // Handle menu selections based on ID
-        System.out.println("selected profile n:" + itemId);
-    }
 
-    private void settingsClick() {
-        System.out.println("settings button clicked");
-        // Handle email change logic here
-    }
-
-    private void emailClick() {
-        System.out.println("Change email button clicked");
-        // Handle email change logic here
-    }
 
     public void setProfileIcon(Group icon) {
         profileImage.getChildren().clear();

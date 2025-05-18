@@ -1,12 +1,14 @@
 package com.esa.moviestar.home;
 
-import com.esa.moviestar.Database.ContentDao;
+import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
+import com.esa.moviestar.movie_view.FilmCardController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 
 import java.io.IOException;
@@ -20,17 +22,23 @@ public class MainPagesController {
     private StackPane headerContainer;
 
     //Var
-    private final ResourceBundle resourceBundle =ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+    public final ResourceBundle resourceBundle =ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+    public final  String pathWindowCard = "/com/esa/moviestar/movie_view/WindowCard.fxml";
+    public final  String pathCardVertical = "/com/esa/moviestar/movie_view/FilmCard_Vertical.fxml";
+    public final  String pathCardHorizontal = "/com/esa/moviestar/movie_view/FilmCard_Horizontal.fxml";
+
+    //UI Color
+    public final Color foreColor = Color.rgb(240, 236, 253);
+    public final Color backgroundColor = Color.rgb(16, 16, 16);
+
+    //Logic
     private record Data(Node node, Object controller){}
     private Utente user;
-
-    //Pages
     private Data header;
     private Data home;
     private Data filter_film;
     private Data filter_series;
     private Data currentScene;
-
 
 
     public void first_load(Utente user){
@@ -44,7 +52,7 @@ public class MainPagesController {
         Data home =loadDynamicBody("home.fxml");
         if(home!=null){
             HomeController homeBodyController = (HomeController) home.controller;
-            homeBodyController.setRecommendations(user,new ContentDao().take_all_contents());
+            homeBodyController.setRecommendations(user,this);
             currentScene = home;
             body.getChildren().clear();
             body.getChildren().add(home.node);
@@ -57,7 +65,7 @@ public class MainPagesController {
         headerContainer.getChildren().add(header.node);
         HeaderController headerController = (HeaderController) header.controller();
         if(user!=null)
-            headerController.setUpPopUpMenu(user);
+            headerController.setUpPopUpMenu(this,user);
         //set buttons click to change pages
         headerController.homeButton.setOnMouseClicked(e -> {
             if (currentScene == home)
@@ -65,7 +73,7 @@ public class MainPagesController {
             if (home == null) {
                 home = loadDynamicBody("home.fxml");
                 if (home != null)
-                    ((HomeController) home.controller).setRecommendations(user, new ContentDao().take_all_contents());
+                    ((HomeController) home.controller).setRecommendations(user,this);
             }
             currentScene = home;
             body.getChildren().clear();
@@ -78,7 +86,7 @@ public class MainPagesController {
             if (filter_film == null) {
                 filter_film = loadDynamicBody("filter.fxml");
                 if (filter_film != null)
-                    ((FilterController) filter_film.controller).loadWithFilter(0);
+                    ((FilterController) filter_film.controller).loadWithFilter(this,user,false);
             }
             currentScene = filter_film;
             body.getChildren().clear();
@@ -90,7 +98,7 @@ public class MainPagesController {
             if (filter_series == null) {
                 filter_series = loadDynamicBody("filter.fxml");
                 if (filter_series != null)
-                    ((FilterController) filter_series.controller).loadWithFilter(1);
+                    ((FilterController) filter_series.controller).loadWithFilter(this,user,true);
             }
             currentScene = filter_series;
             body.getChildren().clear();
@@ -110,13 +118,13 @@ public class MainPagesController {
             }
             Data search = loadDynamicBody("search.fxml");
             if (search != null) {
-                try {
-                    ((SearchController) search.controller).set_headercontroller(headerController, user);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                try{
+                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user);
+                    body.getChildren().clear();
+                    body.getChildren().add(search.node);}
+                catch (Exception e){
+                    System.err.println("MainPagesController: tbxSearchListener error \n Error:"+e.getMessage());
                 }
-                body.getChildren().clear();
-                body.getChildren().add(search.node);
             }
         });
     }
@@ -124,7 +132,6 @@ public class MainPagesController {
 
     private Data loadDynamicBody(String bodySource) {
         try {
-            System.out.println("Main Controller: Loading body: "+ bodySource);
             FXMLLoader loader = new FXMLLoader(getClass().getResource(bodySource),resourceBundle);
             Node body = loader.load();
             this.body.getChildren().add(body);
@@ -138,4 +145,63 @@ public class MainPagesController {
         }
         return null;
     }
+
+    //logic of the children pages
+    /**
+     * Method that convert a list of contents in a list of Nodes
+     * @param contentList list of the Contents to transform in Nodes
+     * @param isVertical specify the orientation of the
+     * @return List of Nodes
+     */
+    public List<Node> createFilmNodes(List<Content> contentList, boolean isVertical) throws IOException {
+        List<Node> nodes= new Vector<>();
+        for (Content content: contentList) {
+            FXMLLoader fxmlLoader= new FXMLLoader(Objects.requireNonNull(getClass().getResource(isVertical?pathCardVertical:pathCardHorizontal)),resourceBundle);
+            Node n = fxmlLoader.load();
+            FilmCardController filmCardController = fxmlLoader.getController();
+            filmCardController.setContent(content);
+            n.setOnMouseClicked(e->cardClicked(filmCardController.getCardId()));
+            nodes.add(n);
+        }
+        return nodes;
+    }
+    /**
+     * Switch the scene with the film interface
+     * @param cardId of the Content
+     */
+    public void cardClicked(int cardId){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("com/esa/moviestar/movie_view/filmInterface.fxml"),resourceBundle);
+            Node body = loader.load();
+            this.body.getChildren().add(body);
+
+        } catch (IOException e) {
+            System.err.println("Main Controller: Failed to load body: card \n Error:"+e.getMessage());
+        }
+    }
+    /**
+     * Switch and play the video of the film
+     * @param cardId of the Content
+     */
+    public void cardClickedPlay(int cardId) {
+
+    }
+    /**
+     * Open the settings of the current user
+     */
+    public void settingsClick(Utente user){
+    }
+    /**
+     * Dispose all the information and return to login page
+     */
+    public void emailClick() {
+
+    }
+    /**
+     * Change the profile with a new one, possibile disposing of resources
+     */
+    public void profileClick(Utente user) {
+
+    }
+
 }

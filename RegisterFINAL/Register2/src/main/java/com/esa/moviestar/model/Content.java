@@ -157,6 +157,12 @@ public class Content {
         this.categories = categories;
     }
 
+    public  void  addCategory(Integer i){
+        if(categories==null)
+            categories= new ArrayList<>();
+        this.categories.add(i);
+    }
+
     @Override
     public String toString() {
         return "Content{" +
