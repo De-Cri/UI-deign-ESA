@@ -43,6 +43,7 @@ public class FilmCardController {
     ResourceBundle resources;
 
     public int _id;
+    private Color color;
 
     public void setContent(Content content) {
         // Clean up any previous shimmer if setContent is called again
@@ -77,11 +78,13 @@ public class FilmCardController {
             img.errorProperty().addListener((observable, oldValue, newValue) -> {
                 Exception e = img.getException();
                 if (e != null) {
-                    System.err.println("Error loading image '" + content.getImageUrl() + "': " + e.getMessage());
+                    System.err.println("Error loading image '" + content.getImageUrl());
+
                 } else {
                     System.err.println("Error loading image '" + content.getImageUrl() + "': Unknown error.");
                 }
                 Platform.runLater(this::displayErrorShimmer);
+                Platform.runLater(this::setupHoverEffect);
             });
             img.progressProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.doubleValue() == 1.0) {
@@ -89,6 +92,7 @@ public class FilmCardController {
                     Platform.runLater(this::setupHoverEffect);
                 }
             });
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -107,20 +111,7 @@ public class FilmCardController {
         if (overlayWidth <= 0|| overlayHeight <= 0)
             return;
         Region shimmerOverlay = new Region();
-        shimmerOverlay.setBackground(Background.fill(
-                new RadialGradient(
-                        0, // proportional focus angle
-                        0.5, // focus distance
-                        0.5, // centerX
-                        0.5, // centerY
-                        0.9, // radius
-                        true, // proportional radius
-                        CycleMethod.NO_CYCLE, // cycle method
-                        new Stop(0, Color.TRANSPARENT), // center color (transparent)
-                        new Stop(0.5, Color.rgb(255, 255, 255, 0.1)), // barely visible color
-                        new Stop(1, Color.rgb(255, 255, 255, 0.3)) // border color (white)
-                )
-        ));
+        shimmerOverlay.setBackground(Background.fill(Color.rgb(62,62,62)));
         shimmerOverlay.setPrefSize(cardContainer.getWidth(), cardContainer.getHeight());
         shimmerOverlay.setClip(new Rectangle(cardContainer.getWidth(), cardContainer.getHeight()) {{
             setArcWidth(48);
@@ -152,12 +143,11 @@ public class FilmCardController {
     private void setupHoverEffect() {
         // Set initial positions and states
         contentPane.setOpacity(0);
-        String color = getMixedColorFromImage(imgView.getImage());
-        if ( color == null )
-            return;
-        // Set initial gradient state - less opaque
-        gradientOverlay.setStyle("-fx-background-color: linear-gradient(transparent 60%, " + color+" 100%);");
-
+        if(imgView.getImage()!=null) {
+            color = getMixedColorFromImage(imgView.getImage());
+            if(color!=null)
+                gradientOverlay.setStyle("-fx-background-color: linear-gradient(transparent 60%, " + color + " 100%);");
+        }
         // Create a clip for the card to ensure animations stay within bounds
         Rectangle clip = new Rectangle();
         clip.widthProperty().bind(cardContainer.widthProperty());
@@ -168,26 +158,19 @@ public class FilmCardController {
 
         // Create transitions for hover animation
         Duration duration = Duration.millis(250);
-
         TranslateTransition contentEnterTransition = new TranslateTransition(duration, contentPane);
         contentEnterTransition.setToY(0); // Move up into view
-
         FadeTransition metadataFadeOut = new FadeTransition(duration, metadataPane);
         metadataFadeOut.setToValue(0);
-
         FadeTransition contentFadeIn = new FadeTransition(duration, contentPane);
         contentFadeIn.setToValue(1);
-
         // Define transitions for mouse exit
         TranslateTransition metadataReturnTransition = new TranslateTransition(duration, metadataPane);
         metadataReturnTransition.setToY(0); // Return to original position
-
         TranslateTransition contentExitTransition = new TranslateTransition(duration, contentPane);
         contentExitTransition.setToY(50); // Move down out of view
-
         FadeTransition metadataFadeIn = new FadeTransition(duration, metadataPane);
         metadataFadeIn.setToValue(1);
-
         FadeTransition contentFadeOut = new FadeTransition(duration, contentPane);
         contentFadeOut.setToValue(0);
 
@@ -198,8 +181,8 @@ public class FilmCardController {
                 contentEnterTransition.stop();
                 metadataFadeOut.stop();
                 contentFadeIn.stop();
-                gradientOverlay.setStyle("-fx-background-color: linear-gradient(transparent, " + color+" 50%);");
-
+                if(color!=null)
+                    gradientOverlay.setStyle("-fx-background-color: linear-gradient(transparent, " + color+" 50%);");
                 // Play animations
                 contentEnterTransition.play();
                 metadataFadeOut.play();
@@ -210,10 +193,9 @@ public class FilmCardController {
                 contentExitTransition.stop();
                 metadataFadeIn.stop();
                 contentFadeOut.stop();
-
                 // Return gradient to original state
-                gradientOverlay.setStyle("-fx-background-color: linear-gradient(transparent 60%, " + color+" 100%);");
-
+                if(color!=null)
+                    gradientOverlay.setStyle("-fx-background-color: linear-gradient(transparent 60%, " + color+" 100%);");
                 // Play animations
                 metadataReturnTransition.play();
                 contentExitTransition.play();
@@ -223,7 +205,8 @@ public class FilmCardController {
         });
     }
 
-    public String getMixedColorFromImage(Image image) {
+    public Color getMixedColorFromImage(Image image) {
+        if (image == null) return null;
         // Get pixel reader for the image
         PixelReader pixelReader = image.getPixelReader();
 
@@ -266,7 +249,7 @@ public class FilmCardController {
         }
 
         // Return the balanced color
-        return "rgb("+ avgRed*255+", "+ avgGreen*255+", "+ avgBlue*255+")";
+        return Color.color(avgRed, avgGreen, avgBlue);
     }
 
     public int getCardId() {

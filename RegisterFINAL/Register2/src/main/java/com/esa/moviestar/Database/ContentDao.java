@@ -28,69 +28,63 @@ public class ContentDao {
     public List<List<Content>> getHomePageContents(Utente user) {
         List<Integer> gusti = user.getGustiComeLista();
         String top_genres = IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get)).map(Object::toString).limit(3).collect(java.util.stream.Collectors.joining(","));
-        String bottom_genres = IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get).reversed()).map(Object::toString).limit(3).collect(java.util.stream.Collectors.joining(","));
+        List<Integer>list=  IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get).reversed()).limit(3).toList();
+        String bottom_genres =  list.stream().map(Object::toString).collect(java.util.stream.Collectors.joining(","));
         String query =
                 // Popular content from top genres
-                "SELECT* FROM(SELECT C.*, 0 AS Ordinamento " +
+                "SELECT * FROM(SELECT C.*, 0 AS Ordinamento " +
                         "FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
                         "WHERE CG.ID_Genere IN (" + top_genres + ") " +
                         "ORDER BY C.Click DESC LIMIT 5)" +
 
                         " UNION ALL " +
-
                         // Random top genres content
-                        "SELECT* FROM(SELECT C.*, 1 AS Ordinamento FROM Contenuto C " +
+                        "SELECT * FROM(SELECT C.*, 1 AS Ordinamento FROM Contenuto C " +
                         "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
                         "WHERE CG.ID_Genere IN (" + top_genres + ") " +
                         "ORDER BY RANDOM() LIMIT 10)" +
 
                         " UNION ALL " +
-
                         // New releases
-                        "SELECT* FROM(SELECT C.*, 2 AS Ordinamento FROM Contenuto C ORDER BY Data_di_pubblicazione DESC LIMIT 8)" +
+                        "SELECT * FROM(SELECT C.*, 2 AS Ordinamento FROM Contenuto C ORDER BY Data_di_pubblicazione DESC LIMIT 8)" +
 
                         " UNION ALL " +
-
                         // Favorite tag but not watched
-                        "SELECT* FROM(SELECT C.*, 3 AS Ordinamento FROM Contenuto C " +
+                        "SELECT * FROM(SELECT C.*, 3 AS Ordinamento FROM Contenuto C " +
                         "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
                         "LEFT JOIN Cronologia CR ON C.ID_Contenuto = CR.ID_Contenuto AND CR.ID_Utente = " + user.getID() + " " +
                         "WHERE CG.ID_Genere = ( " +
                         "SELECT ID_Genere FROM Contenuti_Generi WHERE ID_Contenuto IN ( " +
-                        "SELECT ID_Contenuto FROM Contenuti_Generi WHERE ID_Genere IN (" + top_genres + ") LIMIT 1 ) LIMIT 1" +
+                        "SELECT ID_Contenuto FROM Contenuti_Generi WHERE ID_Genere = " + list.getFirst() + " LIMIT 1 ) LIMIT 1" +
                         ") AND CR.ID_Contenuto IS NULL AND C.N_Episodi = 0 ORDER BY RANDOM() LIMIT 8)" +
 
                         " UNION ALL " +
-
-                        // Recently watched
-                        "SELECT* FROM(SELECT C.*, 4 AS Ordinamento FROM Cronologia CR JOIN Contenuto C ON CR.ID_Contenuto = C.ID_Contenuto " +
-                        "WHERE CR.ID_Utente = " + user.getID() + " ORDER BY CR.DataVisione DESC LIMIT 7)" +
-
-                        " UNION ALL " +
-
                         // Similar to last watched
-                        "SELECT* FROM(SELECT C2.*, 5 AS Ordinamento FROM Contenuti_Generi CG1 " +
+                        "SELECT * FROM(SELECT C2.*, 4 AS Ordinamento FROM Contenuti_Generi CG1 " +
                         "JOIN Contenuti_Generi CG2 ON CG1.ID_Genere = CG2.ID_Genere AND CG1.ID_Contenuto != CG2.ID_Contenuto " +
                         "JOIN Contenuto C2 ON CG2.ID_Contenuto = C2.ID_Contenuto " +
                         "WHERE CG1.ID_Contenuto = ( SELECT CR.ID_Contenuto FROM Cronologia CR WHERE CR.ID_Utente = " + user.getID() + " " +
                         "ORDER BY CR.DataVisione DESC LIMIT 1 ) ORDER BY RANDOM() LIMIT 7)" +
-
                         " UNION ALL " +
 
-                        // User favorites
-                        "SELECT* FROM(SELECT C.*, 6 AS Ordinamento FROM Preferiti P JOIN Contenuto C ON P.ID_Contenuto = C.ID_Contenuto " +
-                        "WHERE P.ID_Utente = " + user.getID() + " ORDER BY RANDOM() LIMIT 7)" +
+                        // Recently watched
+                        "SELECT * FROM(SELECT C.*, 5 AS Ordinamento FROM Cronologia CR JOIN Contenuto C ON CR.ID_Contenuto = C.ID_Contenuto " +
+                        "WHERE CR.ID_Utente = " + user.getID() + " ORDER BY CR.DataVisione DESC LIMIT 7)" +
 
                         " UNION ALL " +
 
                         // Recommended series
-                        "SELECT* FROM(SELECT C.*, 7 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "SELECT * FROM(SELECT C.*, 6 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
                         "WHERE CG.ID_Genere IN (" + top_genres + ") AND C.N_Episodi > 0 ORDER BY RANDOM() LIMIT 7)" +
 
                         " UNION ALL " +
+                        // User favorites
+                        "SELECT * FROM(SELECT C.*, 7 AS Ordinamento FROM Preferiti P JOIN Contenuto C ON P.ID_Contenuto = C.ID_Contenuto " +
+                        "WHERE P.ID_Utente = " + user.getID() + " ORDER BY RANDOM() LIMIT 7)" +
 
+                        " UNION ALL " +
                         // Other categories (bottom genres)
-                        "SELECT* FROM(SELECT C.*, 8 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
+                        "SELECT * FROM(SELECT C.*, 8 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
                         "WHERE CG.ID_Genere IN (" + bottom_genres + ") ORDER BY RANDOM() LIMIT 7)";
 
         return getPagesContents(user,query);
@@ -133,22 +127,7 @@ public class ContentDao {
 
                         // Recently watched
                         "SELECT* FROM(SELECT C.*, 4 AS Ordinamento FROM Cronologia CR JOIN Contenuto C ON CR.ID_Contenuto = C.ID_Contenuto " +
-                        "WHERE CR.ID_Utente = " + user.getID() + " ORDER BY CR.DataVisione DESC LIMIT 7)" +
-
-                        " UNION ALL " +
-
-                        // Similar to last watched
-                        "SELECT* FROM(SELECT C2.*, 5 AS Ordinamento FROM Contenuti_Generi CG1 " +
-                        "JOIN Contenuti_Generi CG2 ON CG1.ID_Genere = CG2.ID_Genere AND CG1.ID_Contenuto != CG2.ID_Contenuto " +
-                        "JOIN Contenuto C2 ON CG2.ID_Contenuto = C2.ID_Contenuto " +
-                        "WHERE CG1.ID_Contenuto = ( SELECT CR.ID_Contenuto FROM Cronologia CR WHERE CR.ID_Utente = " + user.getID() + " " +
-                        "ORDER BY CR.DataVisione DESC LIMIT 1 ) ORDER BY RANDOM() LIMIT 7)" +
-
-                        " UNION ALL " +
-
-                        // User favorites
-                        "SELECT* FROM(SELECT C.*, 6 AS Ordinamento FROM Preferiti P JOIN Contenuto C ON P.ID_Contenuto = C.ID_Contenuto " +
-                        "WHERE P.ID_Utente = " + user.getID() + " ORDER BY RANDOM() LIMIT 7)"
+                        "WHERE CR.ID_Utente = " + user.getID() + " ORDER BY CR.DataVisione DESC LIMIT 7)"
                 ;
         return getPagesContents(user,query);
     }
@@ -166,7 +145,6 @@ public class ContentDao {
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 while(rs.getInt("Ordinamento")>=list.size()){
-                    System.out.println("a");
                     list.add(new Vector<>());
                 }
                 list.get(rs.getInt("Ordinamento")).add(createContent(rs));

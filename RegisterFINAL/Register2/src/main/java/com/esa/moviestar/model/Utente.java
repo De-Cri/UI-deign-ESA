@@ -106,8 +106,9 @@ public class Utente {
     }
     
     public List<Comment> getCommenti(int limit) {
-        UtenteDao utenteDao = new UtenteDao();
-        return utenteDao.getCommentiUtente(this.codUtente,limit);
+//        UtenteDao utenteDao = new UtenteDao();
+//        return utenteDao.getCommentiUtente(this.codUtente,limit);
+        return null;
     }
     public int getUltimoGuardato() {
         return 5;
