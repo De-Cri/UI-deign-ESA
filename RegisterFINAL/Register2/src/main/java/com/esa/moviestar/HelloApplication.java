@@ -1,5 +1,7 @@
 package com.esa.moviestar;
 
+import com.esa.moviestar.home.MainPagesController;
+import com.esa.moviestar.model.Utente;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,10 +16,10 @@ public class HelloApplication extends Application{
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
-
+//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home/main.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        ((MainPagesController)fxmlLoader.getController()).first_load(new Utente(1,"genoveffo","FFFFFFFFFFFFFFFFFFFFFF",1,""));
         primaryStage.setTitle("Titolo della finestra");
         primaryStage.setMaximized(true);
         primaryStage.setScene(scene);

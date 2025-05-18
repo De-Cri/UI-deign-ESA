@@ -149,15 +149,16 @@ public class UtenteDao {
     public boolean aggiornaUtente(Utente utente){
         String query = "UPDATE Utente SET Nome = ? , Icona = ? WHERE ID_Utente=?;";
         try(PreparedStatement stmt = connection.prepareStatement(query)){
-           stmt.setString(1,utente.getNome());
-           stmt.setInt(2,utente.getIDIcona());
-           stmt.setInt(3,utente.getID());
-           stmt.executeUpdate();
-           return true;
+            stmt.setString(1,utente.getNome());
+            stmt.setInt(2,utente.getIDIcona());
+            stmt.setInt(3,utente.getID());
+            stmt.executeUpdate();
+            return true;
         }catch (SQLException e){
             System.err.println("utenteDao : errore di aggiornamento dell'utente "+e.getMessage());
             return false;
         }
     }
 }
+
 

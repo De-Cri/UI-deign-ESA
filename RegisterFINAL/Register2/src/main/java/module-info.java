@@ -18,4 +18,6 @@ module com.esa.moviestar {
     opens com.esa.moviestar.movie_view to javafx.fxml;
     exports com.esa.moviestar.home;
     opens com.esa.moviestar.home to javafx.fxml;
+    exports com.esa.moviestar.model;
+    opens com.esa.moviestar.model to javafx.fxml;
 }
