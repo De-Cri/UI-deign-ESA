@@ -1,18 +1,15 @@
 package com.esa.moviestar.Profile;
 
 import com.esa.moviestar.Database.UtenteDao;
-import com.esa.moviestar.home.HomeController;
 import com.esa.moviestar.home.MainPagesController;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -70,7 +67,7 @@ public class ProfileView {
                 box.setAlignment(Pos.CENTER);
 
                 Label name = new Label(utente.getNome());
-                name.getStyleClass().addAll("on-primary", "bold-text", "large-text");
+                name.getStyleClass().addAll("on-secondary", "bold-text", "large-text");
 
                 Group icon = new Group(IconSVG.takeElement(utente.getIDIcona()));
                 icon.setScaleY(8);
@@ -78,18 +75,20 @@ public class ProfileView {
 
                 StackPane iconBox = new StackPane(icon);
                 StackPane.setAlignment(icon, Pos.CENTER);
-                iconBox.setMinSize(200, 200);
+                iconBox.setMinSize(185, 185);
 
                 box.setOnMouseEntered(event -> {
                     icon.setScaleX(8.2);
                     icon.setScaleY(8.2);
-                    name.getStyleClass().addAll("bold-text", "large-text");
+                    name.getStyleClass().remove("on-secondary");
+                    name.getStyleClass().addAll("on-white","bold-text", "large-text");
                 });
 
                 box.setOnMouseExited(event -> {
                     icon.setScaleX(8);
                     icon.setScaleY(8);
-                    name.getStyleClass().addAll("on-primary", "bold-text", "large-text");
+                    name.getStyleClass().remove("on-white");
+                    name.getStyleClass().addAll("on-secondary", "bold-text", "large-text");
                 });
 
                 StackPane modifica = new StackPane();
@@ -99,6 +98,17 @@ public class ProfileView {
                 pencilModify.setScaleY(0.5);
                 pencilModify.setScaleX(0.5);
                 pencilModify.setStyle("-fx-fill: #E6E3DC;");
+
+
+                pencilModify.setOnMouseEntered(event -> {
+                    pencilModify.setStyle("-fx-fill: #F0ECFD;");
+                });
+
+                pencilModify.setOnMouseExited(event -> {
+                    pencilModify.setStyle("-fx-fill: #E6E3DC;");
+                });
+
+
                 modifica.getChildren().add(pencilModify);
                 icon.setOnMouseClicked(e -> paginaHome(utente));
                 modifica.setOnMouseClicked(e -> paginaModifica(utente));
@@ -109,8 +119,8 @@ public class ProfileView {
             //creazione e settaggio del bottone aggiungi
             if (utenti.size() < 4) {
                 StackPane creazione = new StackPane();
-                creazione.setPrefHeight(100);
-                creazione.setPrefWidth(100);
+                creazione.setMinSize(100,100);
+                creazione.setTranslateY(-20);
                 creazione.setStyle("-fx-background-color: #333333;" +
                         "-fx-background-radius: 24px;" +
                         "-fx-border-radius: 24px;");
@@ -119,7 +129,8 @@ public class ProfileView {
                 crossAggiungi.setContent(resourceBundle.getString("plusButton"));
                 crossAggiungi.setScaleX(1.8);
                 crossAggiungi.setScaleY(1.8);
-                crossAggiungi.setStyle("-fx-fill: #121212;");
+                crossAggiungi.setStyle("-fx-fill: #F0ECFD;");
+
                 // Aggiungi al pane
                 creazione.getChildren().add(crossAggiungi);
 
@@ -127,9 +138,19 @@ public class ProfileView {
                 VBox creazioneUtente = new VBox();
                 Label plusText = new Label();
                 plusText.setText("Aggiungi");
+                plusText.setTranslateY(-18);
                 plusText.getStyleClass().addAll("on-primary", "bold-text", "large-text");
                 creazioneUtente.getChildren().addAll(creazione,plusText);
                 creazioneUtente.setSpacing(20);
+
+                creazione.setOnMouseEntered(event -> {
+                    crossAggiungi.setStyle("-fx-fill: #121212;");
+                });
+
+                creazione.setOnMouseExited(event -> {
+                    crossAggiungi.setStyle("-fx-fill: #F0ECFD;");
+                });
+
                 griglia.getChildren().add(creazioneUtente);
                 creazioneUtente.setAlignment(Pos.CENTER);
                 creazione.setOnMouseClicked(e -> paginaCreazioneUtente());
