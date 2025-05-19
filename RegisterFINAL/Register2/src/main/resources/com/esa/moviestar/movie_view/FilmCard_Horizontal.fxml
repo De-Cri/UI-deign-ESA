@@ -8,8 +8,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<StackPane fx:id="cardContainer" maxHeight="300.0" maxWidth="450.0" prefHeight="300.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.movie_view.FilmCardController">
-    <ImageView fx:id="imgView" fitHeight="300.0" fitWidth="450.0" pickOnBounds="true">         <clip>
+<StackPane fx:id="cardContainer" maxHeight="250.0" maxWidth="400.0" prefHeight="250.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.movie_view.FilmCardController">
+    <ImageView fx:id="imgView" fitHeight="250.0" fitWidth="400.0" pickOnBounds="true">         <clip>
         <Rectangle arcHeight="48" arcWidth="48" height="${imgView.fitHeight}" width="${imgView.fitWidth}" />
     </clip></ImageView>
     <!-- The background image will be set programmatically -->
