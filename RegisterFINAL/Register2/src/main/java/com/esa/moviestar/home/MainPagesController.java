@@ -1,6 +1,7 @@
 package com.esa.moviestar.home;
 
 import com.esa.moviestar.model.Content;
+import com.esa.moviestar.Database.ContentDao;
 import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.FilmCardController;
 import javafx.fxml.FXML;
@@ -119,7 +120,7 @@ public class MainPagesController {
             Data search = loadDynamicBody("search.fxml");
             if (search != null) {
                 try{
-                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user);
+                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user, resourceBundle);
                     body.getChildren().clear();
                     body.getChildren().add(search.node);}
                 catch (Exception e){
