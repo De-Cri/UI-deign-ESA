@@ -146,7 +146,7 @@ public class MainPagesController {
             PageData search = loadDynamicBody("search.fxml");
             if (search != null) {
                 try{
-                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user);
+                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user,resourceBundle);
                     body.getChildren().clear();
                     body.getChildren().add(search.node);}
                 catch (Exception e){

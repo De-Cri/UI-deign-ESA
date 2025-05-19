@@ -14,10 +14,7 @@ import javafx.scene.layout.*;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Vector;
+import java.util.*;
 
 public class SearchController {
     @FXML
@@ -40,6 +37,8 @@ public class SearchController {
     private Utente p;
 
     private ContentDao dbSearch;
+    public ResourceBundle resourcebundlesearch;
+
 
     private List<Node> trylist;
 
@@ -47,15 +46,20 @@ public class SearchController {
         //prompt da fare come netflix
 
     }
-    public void set_headercontroller(HeaderController h, Utente u) throws IOException {
+    public void set_headercontroller(HeaderController h, Utente u, ResourceBundle bundle) throws IOException {
         this.headerController = h;
         this.p = u;
+        this.resourcebundlesearch = bundle;
         String searchText= headerController.getTbxSearch().getText();
+        if (dbSearch == null) {
+            dbSearch = new ContentDao();
+        }
         reccomendedList();
         List<Content> content = dbSearch.take_film_tvseries(searchText, p);
         trylist = createFilmNodes(content, false);
         raccomendedSeriesFilms();
     }
+
     public void reccomendedList(){
         if (!headerController.getTbxSearch().getText().isEmpty()){
 
@@ -73,22 +77,22 @@ public class SearchController {
         if (!headerController.getTbxSearch().getText().isEmpty()){
 
             for(int i = 0;i<trylist.size() ; i++){
-                Button dynamicButton = new Button("/*prefSet[i]*/");
+                Node dynamicButton = trylist.get(i);
                 dynamicButton.getStyleClass().add("medium-item");
                 raccomendations.getChildren().add(dynamicButton);
             }
         }
     }
     public List<Node> createFilmNodes(List<Content> contentList,boolean isVertical) throws IOException {
-        /*List<Node> nodes= new Vector<>();
+        List<Node> nodes= new Vector<>();
         for (Content content: contentList) {
-            FXMLLoader fxmlLoader= new FXMLLoader(isVertical? Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Vertical.fxml")):Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Horizontal.fxml")),resourceBundle);
+            FXMLLoader fxmlLoader= new FXMLLoader(isVertical? Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Vertical.fxml")):Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/movie_view/FilmCard_Horizontal.fxml")),resourcebundlesearch);
             Node n = fxmlLoader.load();
             FilmCardController filmCardController = fxmlLoader.getController();
             filmCardController.setContent(content);
             //n.setOnMouseClicked(e->cardClicked(filmCardController.getCardId()));
             nodes.add(n);
-        }*/
-        return null; //nodes
+        }
+        return nodes; //nodes
     }
 }

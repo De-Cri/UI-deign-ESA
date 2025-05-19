@@ -50,7 +50,6 @@ public class HeaderController {
         currentActive.getStyleClass().remove("surface-transparent");
         currentActive.getStyleClass().add("primary");
         tbxSearch.setPromptText("Titoli, persone, generi");
-        tbxSearch.setMouseTransparent(true);
         profileImage.setOnMouseClicked(e -> popupMenu.show(profileImage));
         homeButton.setOnMouseReleased(e -> activeButton(homeButton));
         filmButton.setOnMouseReleased(e -> activeButton(filmButton));
