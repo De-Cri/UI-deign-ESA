@@ -18,8 +18,8 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+
 
 public class MainPagesController {
     private static final double FADE_DURATION = 300; // milliseconds
