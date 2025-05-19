@@ -4,6 +4,7 @@ import com.esa.moviestar.Database.ContentDao;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.WindowCardController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -83,6 +84,7 @@ public class HomeController {
                 favouriteScroll.setContent(mainPagesController.createFilmNodes( contentList.get(7), true));
                 scrollViewContainer.getChildren().add(5,favouriteScroll);
             }
+            Platform.runLater(carousel::start);
         }
         catch (IOException e){
             System.err.println("HomeController: Failed to load recommendations \n Error:"+e.getMessage());
