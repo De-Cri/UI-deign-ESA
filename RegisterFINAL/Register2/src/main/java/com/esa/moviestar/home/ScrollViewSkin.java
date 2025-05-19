@@ -88,15 +88,19 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
     private void setupHoverBehavior() {
         // Show buttons when mouse enters the container
         sliderContainer.setOnMouseEntered(e -> {
+            if(!isHovering&& container.getWidth()>scrollPane.getWidth()){
             isHovering = true;
             updateButtonVisibility(scrollPane.getHvalue());
+            }
         });
 
         // Hide buttons when mouse exits the container
         sliderContainer.setOnMouseExited(e -> {
-            isHovering = false;
-            hideButton(leftButton, true);
-            hideButton(rightButton, false);
+            if(isHovering){
+                isHovering = false;
+                hideButton(leftButton, true);
+                hideButton(rightButton, false);
+            }
         });
     }
 

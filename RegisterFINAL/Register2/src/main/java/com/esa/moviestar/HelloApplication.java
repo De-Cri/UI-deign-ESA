@@ -16,10 +16,8 @@ public class HelloApplication extends Application{
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home/main.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        ((MainPagesController)fxmlLoader.getController()).first_load(new Utente(1,"genoveffo","FFFFFFFFFFFFFFFFFFFFFF",1,""));
         primaryStage.setTitle("Titolo della finestra");
         primaryStage.setMaximized(true);
         primaryStage.setScene(scene);
