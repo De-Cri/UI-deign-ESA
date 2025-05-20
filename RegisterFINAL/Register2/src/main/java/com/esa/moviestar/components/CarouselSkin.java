@@ -1,4 +1,4 @@
-package com.esa.moviestar.home;
+package com.esa.moviestar.components;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -29,7 +29,7 @@ public class CarouselSkin extends SkinBase<Carousel> {
     private static final Duration TRANSITION_DURATION = Duration.millis(500);
     private static final double SLIDE_DISTANCE_FACTOR = 0.65;
     private static final double SCREEN_HEIGHT_PERCENTAGE = 0.6;
-    private static final Duration AUTO_ROTATION_INTERVAL = Duration.seconds(5);
+    private static final Duration AUTO_ROTATION_INTERVAL = Duration.seconds(10);
     private static final double DEFAULT_SIZE = 16;
     // --- UI Components ---
     private final VBox mainContainer;

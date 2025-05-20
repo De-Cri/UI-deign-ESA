@@ -1,6 +1,8 @@
 package com.esa.moviestar.home;
 
 import com.esa.moviestar.Database.ContentDao;
+import com.esa.moviestar.components.Carousel;
+import com.esa.moviestar.components.ScrollView;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.WindowCardController;

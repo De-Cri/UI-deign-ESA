@@ -1,4 +1,4 @@
-package com.esa.moviestar.home;
+package com.esa.moviestar.components;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
