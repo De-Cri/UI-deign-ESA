@@ -24,10 +24,10 @@
            </Label>
            <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
                <children>
-         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+         <HBox fx:id="account" alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
             <children>
                  <SVGPath content="%user" fill="white" />
-                 <Label fx:id="account" alignment="CENTER" prefHeight="26.0" prefWidth="73.0" text="Account">
+                 <Label  alignment="CENTER" prefHeight="26.0" prefWidth="73.0" text="Account">
                   <styleClass>
                      <String fx:value="bold-text" />
                      <String fx:value="medium-text" />
@@ -35,10 +35,10 @@
                   </styleClass></Label>
             </children>
          </HBox>
-         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+         <HBox fx:id="cronologia" alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
             <children>
                  <SVGPath content="%history" fill="white" />
-                 <Label fx:id="cronologia" prefHeight="26.0" prefWidth="94.0" text="Cronologia">
+                 <Label  prefHeight="26.0" prefWidth="94.0" text="Cronologia">
                   <styleClass>
                      <String fx:value="bold-text" />
                      <String fx:value="medium-text" />
@@ -46,10 +46,10 @@
                   </styleClass></Label>
             </children>
          </HBox>
-         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+         <HBox fx:id="privacy" alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
             <children>
                 <SVGPath content="%privacy" fill="white" />
-                 <Label fx:id="privacy" prefHeight="26.0" prefWidth="166.0" text="Privacy &amp; Sicurezza">
+                 <Label  prefHeight="26.0" prefWidth="166.0" text="Privacy &amp; Sicurezza">
                   <styleClass>
                      <String fx:value="bold-text" />
                      <String fx:value="medium-text" />
@@ -57,10 +57,10 @@
                   </styleClass></Label>
             </children>
          </HBox>
-         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+         <HBox fx:id="accessibilità" alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
             <children>
                  <SVGPath content="%accessibility" fill="white" />
-                 <Label fx:id="accessibilità" text="Accessibilità">
+                 <Label  text="Accessibilità">
                   <styleClass>
                      <String fx:value="medium-text" />
                      <String fx:value="bold-text" />
@@ -68,10 +68,10 @@
                   </styleClass></Label>
             </children>
          </HBox>
-         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+         <HBox fx:id="about" alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
             <children>
                 <SVGPath content="%about" fill="white" />
-                 <Label fx:id="about" text="About &amp; Supporto ">
+                 <Label  text="About &amp; Supporto ">
                   <styleClass>
                      <String fx:value="medium-text" />
                      <String fx:value="bold-text" />

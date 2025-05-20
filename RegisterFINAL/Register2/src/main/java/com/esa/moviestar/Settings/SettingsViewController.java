@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
@@ -16,15 +17,15 @@ public class SettingsViewController {
     @FXML
     private Label impostazioni;
     @FXML
-    private Label account;
+    private HBox account;
     @FXML
-    private Label cronologia;
+    private HBox cronologia;
     @FXML
-    private Label privacy;
+    private HBox privacy;
     @FXML
-    private Label accessibilità;
+    private HBox accessibilità;
     @FXML
-    private Label about;
+    private HBox about;
 
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
