@@ -37,6 +37,7 @@ public class SearchController {
     private Utente p;
 
     private ContentDao dbSearch;
+
     public ResourceBundle resourcebundlesearch;
 
 
@@ -77,9 +78,9 @@ public class SearchController {
         if (!headerController.getTbxSearch().getText().isEmpty()){
 
             for(int i = 0;i<trylist.size() ; i++){
-                Node dynamicButton = trylist.get(i);
-                dynamicButton.getStyleClass().add("medium-item");
-                raccomendations.getChildren().add(dynamicButton);
+                Node dynamicContent = trylist.get(i);
+                dynamicContent.getStyleClass().add("medium-item");
+                filmseriesRaccomendations.getChildren().add(dynamicContent);
             }
         }
     }

@@ -14,11 +14,10 @@ public class ContentDao {
     private static Connection connection;
 
 
-    public ContentDao(){
-        try{
+    public ContentDao() {
+        try {
             connection = DataBaseManager.getConnection();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println("Errore di connessione al database: " + e.getMessage());
         }
     }
@@ -27,8 +26,8 @@ public class ContentDao {
     public List<List<Content>> getHomePageContents(Utente user) {
         List<Integer> gusti = user.getGustiComeLista();
         String top_genres = IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get)).map(Object::toString).limit(3).collect(java.util.stream.Collectors.joining(","));
-        List<Integer>list=  IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get).reversed()).limit(3).toList();
-        String bottom_genres =  list.stream().map(Object::toString).collect(java.util.stream.Collectors.joining(","));
+        List<Integer> list = IntStream.range(0, gusti.size()).boxed().sorted(Comparator.comparing(gusti::get).reversed()).limit(3).toList();
+        String bottom_genres = list.stream().map(Object::toString).collect(java.util.stream.Collectors.joining(","));
         String query =
                 // Popular content from top genres
                 "SELECT * FROM(SELECT C.*, 0 AS Ordinamento " +
@@ -86,7 +85,7 @@ public class ContentDao {
                         "SELECT * FROM(SELECT C.*, 8 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
                         "WHERE CG.ID_Genere IN (" + bottom_genres + ") ORDER BY RANDOM() LIMIT 7)";
 
-        return getPagesContents(user,query);
+        return getPagesContents(user, query);
     }
 
     public List<List<Content>> getFilterPageContents(Utente user, boolean isFilm) {
@@ -96,16 +95,16 @@ public class ContentDao {
         if (isFilm) {
             // Popular content from top genres
             query = "SELECT * FROM ( SELECT C.*, 0 AS Ordinamento  FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto  " +
-                    "WHERE CG.ID_Genere IN ("+top_genres+") AND C.Stagioni = 0 AND C.N_Episodi = 0 ORDER BY Data_di_pubblicazione DESC LIMIT 10 ) " +
+                    "WHERE CG.ID_Genere IN (" + top_genres + ") AND C.Stagioni = 0 AND C.N_Episodi = 0 ORDER BY Data_di_pubblicazione DESC LIMIT 10 ) " +
                     "UNION ALL  " +
                     "SELECT * FROM ( SELECT C.*, 1 AS Ordinamento  FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto  " +
-                    "WHERE CG.ID_Genere IN ("+top_genres+")  AND C.Stagioni = 0 AND C.N_Episodi = 0 ORDER BY RANDOM() LIMIT 7 ) " +
+                    "WHERE CG.ID_Genere IN (" + top_genres + ")  AND C.Stagioni = 0 AND C.N_Episodi = 0 ORDER BY RANDOM() LIMIT 7 ) " +
                     "UNION ALL " +
                     "SELECT * FROM ( SELECT C.*, 2 AS Ordinamento FROM Contenuto C JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto  " +
-                    "    LEFT JOIN Cronologia CR ON C.ID_Contenuto = CR.ID_Contenuto AND CR.ID_Utente = "+ user.getID() +" WHERE CG.ID_Genere = ( SELECT ID_Genere  " +
+                    "    LEFT JOIN Cronologia CR ON C.ID_Contenuto = CR.ID_Contenuto AND CR.ID_Utente = " + user.getID() + " WHERE CG.ID_Genere = ( SELECT ID_Genere  " +
                     "        FROM Contenuti_Generi  " +
                     "        WHERE ID_Contenuto IN ( SELECT ID_Contenuto FROM Contenuti_Generi " +
-                    "            WHERE ID_Genere IN ("+ top_genres +
+                    "            WHERE ID_Genere IN (" + top_genres +
                     ") LIMIT 1 ) LIMIT 1 ) AND CR.ID_Contenuto IS NULL  AND C.Stagioni = 0 AND C.N_Episodi = 0 ORDER BY RANDOM() LIMIT 8 ) " +
                     "UNION ALL  " +
                     "SELECT * FROM ( " +
@@ -117,7 +116,7 @@ public class ContentDao {
                     "    WHERE C.Stagioni = 0 AND C.N_Episodi = 0 ORDER BY RANDOM() LIMIT 8" +
                     ");";
         } else {
-             query = "SELECT * FROM (" +
+            query = "SELECT * FROM (" +
                     "SELECT C.*, 0 AS Ordinamento " +
                     "FROM Contenuto C " +
                     "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
@@ -141,7 +140,7 @@ public class ContentDao {
                     "SELECT C.*, 2 AS Ordinamento " +
                     "FROM Contenuto C " +
                     "JOIN Contenuti_Generi CG ON C.ID_Contenuto = CG.ID_Contenuto " +
-                    "LEFT JOIN Cronologia CR ON C.ID_Contenuto = CR.ID_Contenuto AND CR.ID_Utente = " +user.getID()+
+                    "LEFT JOIN Cronologia CR ON C.ID_Contenuto = CR.ID_Contenuto AND CR.ID_Utente = " + user.getID() +
                     " WHERE CG.ID_Genere = (" +
                     "SELECT ID_Genere " +
                     "FROM Contenuti_Generi " +
@@ -185,8 +184,8 @@ public class ContentDao {
         List<List<Content>> list = new Vector<>();
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
-                while(rs.getInt("Ordinamento")>=list.size()){
+            while (rs.next()) {
+                while (rs.getInt("Ordinamento") >= list.size()) {
                     list.add(new Vector<>());
                 }
                 list.get(rs.getInt("Ordinamento")).add(createContent(rs));
@@ -197,20 +196,21 @@ public class ContentDao {
         return list;
     }
 
-    public  Content getFiLmDetails(int id) {
+    public Content getFiLmDetails(int id) {
         String query = "SELECT C.* FROM Contenuto C WHERE ID_Contenuto = ?;";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
             Content content = createContent(rs);
-            while(rs.next()){
+            while (rs.next()) {
                 content.addCategory(rs.getInt("ID_Genere"));
             }
             return content;
         } catch (SQLException e) {
-            System.err.println("ContentDao: failed to load content: "+id + "\n Error:"+e.getMessage());
+            System.err.println("ContentDao: failed to load content: " + id + "\n Error:" + e.getMessage());
         }
-        return  null;
+        return null;
     }
+
     public List<Content> take_film_tvseries(String title, Utente u) {
         String gustiU = u.getGusti();
         List<Integer> weights = new ArrayList<>();
@@ -311,12 +311,15 @@ public class ContentDao {
                     }
                 }
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Errore nel recupero dei contenuti: " + e.getMessage(), e);
         }
 
         return resultContents;
+    }
+
+    public List<Content> take_reccomendations(String title, Utente u){
+        return null;
     }
 
     public List<Content> getWatched(int idUser,int limit) {
