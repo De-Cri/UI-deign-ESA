@@ -6,9 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<StackPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.esa.moviestar.Settings.AccountSettingController"
+            fx:controller="com.esa.moviestar.Settings.AboutSettingController"
             prefHeight="400.0" prefWidth="600.0">
-    <Label text = "sei nella pagina delle impostazioni account "/>
-</AnchorPane>
+    <Label text = "sei nella pagina delle impostazioni about "/>
+</StackPane>
