@@ -1,9 +1,9 @@
 package com.esa.moviestar.home;
 
 import com.esa.moviestar.Database.ContentDao;
+import com.esa.moviestar.components.ScrollView;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
-import com.esa.moviestar.movie_view.FilmTagChips;
 import javafx.fxml.FXML;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

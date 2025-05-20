@@ -1,5 +1,6 @@
 package com.esa.moviestar.home;
 
+import com.esa.moviestar.components.BufferAnimation;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.FilmCardController;

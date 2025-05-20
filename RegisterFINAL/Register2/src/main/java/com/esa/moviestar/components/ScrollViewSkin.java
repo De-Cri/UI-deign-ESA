@@ -1,4 +1,4 @@
-package com.esa.moviestar.home;
+package com.esa.moviestar.components;
 
 import javafx.animation.*;
 import javafx.beans.binding.Bindings;
