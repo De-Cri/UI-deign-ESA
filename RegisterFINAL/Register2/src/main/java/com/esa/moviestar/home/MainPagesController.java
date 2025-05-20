@@ -18,8 +18,8 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+
 
 public class MainPagesController {
     private static final double FADE_DURATION = 300; // milliseconds
@@ -146,7 +146,7 @@ public class MainPagesController {
             PageData search = loadDynamicBody("search.fxml");
             if (search != null) {
                 try{
-                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user);
+                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user,resourceBundle);
                     body.getChildren().clear();
                     body.getChildren().add(search.node);}
                 catch (Exception e){
