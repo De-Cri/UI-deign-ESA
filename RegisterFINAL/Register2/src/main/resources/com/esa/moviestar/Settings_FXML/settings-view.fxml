@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.Settings.SettingsViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.Settings.SettingsViewController">
    <left>
-       <VBox alignment="CENTER" prefHeight="400.0" prefWidth="128.0" BorderPane.alignment="CENTER">
-           <Label text="Impostazioni" fx:id="impostazioni" />
-           <Button text="Account"  fx:id="account"/>
-           <Button text="Cronologia" fx:id="cronologia"/>
-           <Button text="Privacy &amp; Sicurezza" fx:id="privacy"/>
-           <Button text="Accessibilità" fx:id="accessibilità"/>
-           <Button text="About" fx:id="about"/>
-           <Button text="Help &amp; Support" fx:id="help"/>
-
-
+       <VBox alignment="CENTER" prefHeight="400.0" prefWidth="128.0" styleClass="surface-dim-border" BorderPane.alignment="CENTER">
+           <Label fx:id="impostazioni" text="Impostazioni" />
+           <Button fx:id="account" text="Account" />
+           <Button fx:id="cronologia" text="Cronologia" />
+           <Button fx:id="privacy" text="Privacy &amp; Sicurezza" />
+           <Button fx:id="accessibilità" text="Accessibilità" />
+           <Button fx:id="about" text="About &amp; Supporto " />
        </VBox>
    </left>
    <center>
-      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" fx:id="contentArea"/>
+      <StackPane fx:id="contentArea" prefHeight="150.0" prefWidth="200.0" styleClass="surface-dim-opaque" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>
