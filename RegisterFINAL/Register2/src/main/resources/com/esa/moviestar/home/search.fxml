@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1920" maxWidth="1080" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="1077.0" styleClass="bg-color" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.home.SearchController">
+<AnchorPane maxHeight="1920" maxWidth="1080" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="1077.0" styleClass="bg-color" stylesheets="@../access.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.home.SearchController">
     <ScrollPane fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="TOP_CENTER">
         <VBox alignment="TOP_CENTER" spacing="16.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
             <Pane fx:id="pnl_separator1" minHeight="100.0" prefWidth="1" />
@@ -18,11 +18,12 @@
                     </styleClass>
                <HBox.margin>
                   <Insets left="10.0" />
+                   <Insets bottom="20.0" />
                </HBox.margin>
                 </Label>
-                <FlowPane fx:id="raccomendations" hgap="8" prefWrapLength="1200" vgap="8" />
+                <FlowPane fx:id="raccomendations" prefWrapLength="1200" vgap="8" />
             </HBox>
-            <FlowPane fx:id="filmseriesRaccomendations" alignment="CENTER" hgap="8" vgap="8" />
+            <FlowPane fx:id="filmseriesRaccomendations" alignment="CENTER" hgap="13" vgap="8" />
         </VBox>
         <padding>
             <Insets bottom="16.0" left="16.0" top="16.0" />

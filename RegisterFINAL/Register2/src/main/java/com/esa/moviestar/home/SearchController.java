@@ -40,7 +40,9 @@ public class SearchController {
 
     public ResourceBundle resourcebundlesearch;
 
-
+    private List<Node> tryraccomendationlist;
+    List<Content> suggestedContent;
+    List<Content> content;
     private List<Node> trylist;
 
     public void initialize(){
@@ -55,21 +57,22 @@ public class SearchController {
         if (dbSearch == null) {
             dbSearch = new ContentDao();
         }
-        reccomendedList();
-        List<Content> content = dbSearch.take_film_tvseries(searchText, p);
+
+        content = dbSearch.take_film_tvseries(searchText, p);
+        suggestedContent = dbSearch.take_reccomendations(searchText, p);
         trylist = createFilmNodes(content, false);
+        tryraccomendationlist = createFilmNodes(suggestedContent, false);
+        reccomendedList();
         raccomendedSeriesFilms();
     }
 
     public void reccomendedList(){
         if (!headerController.getTbxSearch().getText().isEmpty()){
 
-            /*ArrayList<String> prefSet = s.search(searchText).size())*/;
+            for(int i = 0; (i < tryraccomendationlist.size()); i++){
 
-            for(int i = 0; (i < 10 /*prefSet.size()*/); i++){
-                /*prefSet*/
-                Button dynamicButton = new Button("/*prefSet[i]*/");
-                dynamicButton.getStyleClass().add("medium-item");
+                Button dynamicButton = new Button(suggestedContent.get(i).getTitle());
+                dynamicButton.getStyleClass().addAll("register-text");
                 raccomendations.getChildren().add(dynamicButton);
             }
         }
@@ -78,8 +81,8 @@ public class SearchController {
         if (!headerController.getTbxSearch().getText().isEmpty()){
 
             for(int i = 0;i<trylist.size() ; i++){
+
                 Node dynamicContent = trylist.get(i);
-                dynamicContent.getStyleClass().add("medium-item");
                 filmseriesRaccomendations.getChildren().add(dynamicContent);
             }
         }
