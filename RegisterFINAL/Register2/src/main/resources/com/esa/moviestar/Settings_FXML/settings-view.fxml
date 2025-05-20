@@ -1,17 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.Settings.SettingsViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../styles/General.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.Settings.SettingsViewController">
    <left>
-       <VBox alignment="CENTER" prefHeight="400.0" prefWidth="128.0" styleClass="surface-dim-border" BorderPane.alignment="CENTER">
-           <Label fx:id="impostazioni" text="Impostazioni" />
-           <Button fx:id="account" text="Account" />
-           <Button fx:id="cronologia" text="Cronologia" />
-           <Button fx:id="privacy" text="Privacy &amp; Sicurezza" />
-           <Button fx:id="accessibilità" text="Accessibilità" />
-           <Button fx:id="about" text="About &amp; Supporto " />
+       <VBox maxWidth="400.0" prefHeight="400.0" prefWidth="400.0" spacing="10.0" styleClass="surface-opaque" BorderPane.alignment="TOP_LEFT">
+           <Label fx:id="impostazioni" alignment="TOP_CENTER" text="Impostazioni Utente" VBox.vgrow="ALWAYS">
+            <styleClass>
+               <String fx:value="bold-text" />
+               <String fx:value="large-text" />
+               <String fx:value="on-secondary" />
+            </styleClass>
+               <VBox.margin>
+                   <Insets top="30.0" left="20.0" bottom="10.0" />
+               </VBox.margin>
+           </Label>
+           <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+               <children>
+         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+            <children>
+                 <SVGPath content="%user" fill="white" />
+                 <Label fx:id="account" alignment="CENTER" prefHeight="26.0" prefWidth="73.0" text="Account">
+                  <styleClass>
+                     <String fx:value="bold-text" />
+                     <String fx:value="medium-text" />
+                     <String fx:value="on-primary" />
+                  </styleClass></Label>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+            <children>
+                 <SVGPath content="%history" fill="white" />
+                 <Label fx:id="cronologia" prefHeight="26.0" prefWidth="94.0" text="Cronologia">
+                  <styleClass>
+                     <String fx:value="bold-text" />
+                     <String fx:value="medium-text" />
+                     <String fx:value="on-primary" />
+                  </styleClass></Label>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+            <children>
+                <SVGPath content="%privacy" fill="white" />
+                 <Label fx:id="privacy" prefHeight="26.0" prefWidth="166.0" text="Privacy &amp; Sicurezza">
+                  <styleClass>
+                     <String fx:value="bold-text" />
+                     <String fx:value="medium-text" />
+                     <String fx:value="on-primary" />
+                  </styleClass></Label>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+            <children>
+                 <SVGPath content="%accessibility" fill="white" />
+                 <Label fx:id="accessibilità" text="Accessibilità">
+                  <styleClass>
+                     <String fx:value="medium-text" />
+                     <String fx:value="bold-text" />
+                     <String fx:value="on-primary" />
+                  </styleClass></Label>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+            <children>
+                <SVGPath content="%about" fill="white" />
+                 <Label fx:id="about" text="About &amp; Supporto ">
+                  <styleClass>
+                     <String fx:value="medium-text" />
+                     <String fx:value="bold-text" />
+                     <String fx:value="on-primary" />
+                  </styleClass></Label>
+            </children>
+         </HBox>
+               </children>
+               </VBox>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
        </VBox>
    </left>
    <center>
