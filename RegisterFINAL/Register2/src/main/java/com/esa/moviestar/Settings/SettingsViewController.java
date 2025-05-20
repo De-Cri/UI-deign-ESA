@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 public class SettingsViewController {
     @FXML
@@ -15,23 +16,24 @@ public class SettingsViewController {
     @FXML
     private Label impostazioni;
     @FXML
-    private Button account;
+    private Label account;
     @FXML
-    private Button cronologia;
+    private Label cronologia;
     @FXML
-    private Button privacy;
+    private Label privacy;
     @FXML
-    private Button accessibilità;
+    private Label accessibilità;
     @FXML
-    private Button about;
+    private Label about;
 
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
     public void initialize(){
 
         //caricamento della pagina degli account
         account.setOnMouseClicked(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"),resourceBundle);
                 Parent account_view = loader.load();
 
                 contentArea.getChildren().setAll(account_view);
@@ -44,7 +46,7 @@ public class SettingsViewController {
         //caricamento della pagina della cronologia
         cronologia.setOnMouseClicked(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/cronologia-setting-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/cronologia-setting-view.fxml"),resourceBundle);
                 Parent cronologia_view = loader.load();
 
                 contentArea.getChildren().setAll(cronologia_view);
@@ -57,7 +59,7 @@ public class SettingsViewController {
         //caricamento della pagina di privacy
         privacy.setOnMouseClicked(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/privacy-setting-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/privacy-setting-view.fxml"),resourceBundle);
                 Parent privacy_view = loader.load();
 
                 contentArea.getChildren().setAll(privacy_view);
@@ -70,7 +72,7 @@ public class SettingsViewController {
         //caricamento della pagina di accessibilita
         accessibilità.setOnMouseClicked(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/accessibilità-setting-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/accessibilità-setting-view.fxml"),resourceBundle);
                 Parent accessibilita_view = loader.load();
 
                 contentArea.getChildren().setAll(accessibilita_view);
@@ -83,7 +85,7 @@ public class SettingsViewController {
         //caricamento della pagina About
         about.setOnMouseClicked(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/about-setting-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/about-setting-view.fxml"),resourceBundle);
                 Parent about_view = loader.load();
 
                 contentArea.getChildren().setAll(about_view);
@@ -95,7 +97,7 @@ public class SettingsViewController {
 
         //carica di default la pagina account
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"),resourceBundle);
             Parent account_view = loader.load();
             contentArea.getChildren().setAll(account_view);
         } catch (IOException e) {
