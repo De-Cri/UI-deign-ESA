@@ -19,7 +19,6 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Line;
 import javafx.scene.control.SkinBase;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;

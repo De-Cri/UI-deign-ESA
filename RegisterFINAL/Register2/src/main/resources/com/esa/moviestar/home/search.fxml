@@ -16,7 +16,7 @@
                         <Insets bottom="11" />
                     </padding>
                     <HBox.margin>
-                        <Insets bottom="50.0" left="12.0" />
+                        <Insets bottom="60.0" left="12.0" />
                     </HBox.margin>
                 </Button>
                 <FlowPane fx:id="raccomendations" prefWrapLength="1500" />
