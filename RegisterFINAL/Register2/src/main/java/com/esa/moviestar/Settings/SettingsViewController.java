@@ -1,5 +1,6 @@
 package com.esa.moviestar.Settings;
 
+import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,6 +28,11 @@ public class SettingsViewController {
     @FXML
     private HBox about;
 
+    private Utente utente;
+    public void setUtente(Utente utente){
+        this.utente=utente;
+    }
+
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
     public void initialize(){
@@ -36,6 +42,9 @@ public class SettingsViewController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"),resourceBundle);
                 Parent account_view = loader.load();
+
+                AccountSettingController accountSettingController = loader.getController();
+                accountSettingController.setUtente(utente);
 
                 contentArea.getChildren().setAll(account_view);
 

@@ -2,8 +2,12 @@ package com.esa.moviestar.Settings;
 
 import com.esa.moviestar.Database.AccountDao;
 import com.esa.moviestar.Database.UtenteDao;
+import com.esa.moviestar.Profile.IconSVG;
+import com.esa.moviestar.Profile.ModifyProfileController;
+import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,16 +27,29 @@ public class AccountSettingController {
     @FXML
     private Button deleteAccountButton;
 
+    private String email;
+
+    private Utente utente;
+
+    public void setEmail(String email){
+        this.email=email;
+    }
+
+    public void setUtente(Utente utente){
+        this.utente=utente;
+    }
+
+
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
     public void initialize(){
         modifyUser();
-        deleteAccount("prova");
+        deleteAccount();
         updatePassword();
 
     }
 
-    public void deleteAccount(String email){
+    public void deleteAccount(){
         deleteAccountButton.setOnMouseClicked(event -> {
             AccountDao accountDao = new AccountDao();
             boolean deleteSuccess = accountDao.rimuoviAccount(email);
@@ -63,6 +80,8 @@ public class AccountSettingController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/modify-profile-view.fxml"),resourceBundle);
                 Parent modifyContent = loader.load();
+                ModifyProfileController modifyProfileController = loader.getController();
+                modifyProfileController.setUtente(utente);
 
                 Scene currentScene = AccountContentSetting.getScene();
 

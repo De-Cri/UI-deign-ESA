@@ -1,5 +1,6 @@
 package com.esa.moviestar.home;
 
+import com.esa.moviestar.Settings.SettingsViewController;
 import com.esa.moviestar.components.BufferAnimation;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
@@ -11,9 +12,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -429,7 +433,25 @@ public class MainPagesController {
      * @param user The current user
      */
     public void settingsClick(Utente user) {
-        // Implement settings functionality
+    try{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
+        Parent settingContent = loader.load();
+
+        SettingsViewController settingsViewController = loader.getController();
+        settingsViewController.setUtente(user);
+
+        Scene currentScene = body.getScene();
+
+        Scene newScene = new Scene(settingContent, currentScene.getWidth(), currentScene.getHeight());
+
+        Stage stage = (Stage) body.getScene().getWindow();
+        stage.setScene(newScene);
+
+
+    }catch(IOException e){
+        System.err.println("MainPagesController: Errore caricamento pagina dei setting"+e.getMessage());
+    }
+
     }
 
     /**
