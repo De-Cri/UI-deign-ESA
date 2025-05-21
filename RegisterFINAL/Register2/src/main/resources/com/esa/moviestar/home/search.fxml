@@ -16,24 +16,17 @@
                         <Insets bottom="11" />
                     </padding>
                     <HBox.margin>
-                        <Insets bottom="80.0" left="12.0" />
+                        <Insets bottom="50.0" left="12.0" />
                     </HBox.margin>
                 </Button>
                 <FlowPane fx:id="raccomendations" prefWrapLength="1500" />
             </HBox>
 
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <Button fx:id="searchlabel" styleClass="register-text-raccomendations-big" text="Cercati:">
-                    <padding>
-                        <Insets bottom="11" />
-                    </padding>
-                    <HBox.margin>
-                        <Insets left="12.0" />
-                    </HBox.margin>
-                </Button>
+            <HBox spacing="15" alignment="CENTER">
+
                 <Line fx:id="separatorline" startX="0" endX="1400" strokeWidth="1.5">
                     <HBox.margin>
-                        <Insets left="100.0" />
+                        <Insets bottom="50" />
                     </HBox.margin>
                 </Line>
             </HBox>
