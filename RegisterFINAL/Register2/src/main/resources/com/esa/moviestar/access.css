@@ -108,11 +108,23 @@
 .register-text {
     -fx-background-color: transparent;
     -fx-text-fill: white;
-    -fx-font-size: 15px;
+    -fx-font-size: 16px;
     -fx-alignment: center;
+}
+.register-text-raccomendations-mid {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+}
+.register-text-raccomendations-big {
+    -fx-background-color: transparent;
+    -fx-font-size: 24px;
 }
 
 .register-text:hover {
+    -fx-underline: true;
+}
+.register-text-raccomendations-mid:hover {
     -fx-underline: true;
 }
 
