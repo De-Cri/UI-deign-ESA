@@ -46,16 +46,19 @@ public class AccountDao {
     }
 
     //Metodo per eliminare l'account
-    public void rimuoviAccount(String email) {
+    public boolean rimuoviAccount(String email) {
         String query = "DELETE FROM account WHERE email = ?;";
-        try(PreparedStatement stmt = connection.prepareStatement(query)){
-            stmt.setString(1,email);
-            int rowsAffected=stmt.executeUpdate();
-            if (rowsAffected==0) {
-                throw new SQLException("Nessun account trovato con email = " + email);
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, email);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                System.err.println("Nessun account trovato con email = " + email);
+                return false;
             }
-        }catch(SQLException e ){
-            System.err.println("accountDao : errore di rimozione dell'account"+e.getMessage());
+            return true;
+        } catch (SQLException e) {
+            System.err.println("accountDao: errore di rimozione dell'account - " + e.getMessage());
+            return false;
         }
     }
 
@@ -90,6 +93,23 @@ public class AccountDao {
         } catch (SQLException e) {
             System.err.println("accountDao : errore di aggiornamento della password dell'account"+e.getMessage());
 
+        }
+        return false;
+    }
+
+    public boolean checkPassword(String email , String password){
+        String query = "SELECT password FROM Account WHERE email = ?;";
+
+        try(PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setString(1,email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String storedPassword = rs.getString("password");
+                    return storedPassword.equals(password);
+                }
+            }
+        }catch (SQLException e){
+            System.err.println("accountDao : errore di verifica della password dell'account"+e.getMessage());
         }
         return false;
     }
