@@ -3,6 +3,7 @@ import com.esa.moviestar.Database.AccountDao;
 import com.esa.moviestar.Database.ContentDao;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
+import com.esa.moviestar.components.ScrollViewSkin;
 import com.esa.moviestar.movie_view.FilmCardController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,14 +12,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Line;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class SearchController {
     @FXML
-    private Label findout;
+    public Button searchlabel;
+    @FXML
+    public Line separatorline;
+    @FXML
+    private Button findout;
     @FXML
     private Button genre;
     @FXML
@@ -47,7 +55,7 @@ public class SearchController {
 
     public void initialize(){
         //prompt da fare come netflix
-
+        //separatorline.setStroke(getLinearGradient((Color)foreColor));
     }
     public void set_headercontroller(HeaderController h, Utente u, ResourceBundle bundle) throws IOException {
         this.headerController = h;
@@ -72,7 +80,7 @@ public class SearchController {
             for(int i = 0; (i < tryraccomendationlist.size()); i++){
 
                 Button dynamicButton = new Button(suggestedContent.get(i).getTitle());
-                dynamicButton.getStyleClass().addAll("register-text");
+                dynamicButton.getStyleClass().addAll("register-text-raccomendations-mid");
                 raccomendations.getChildren().add(dynamicButton);
             }
         }
