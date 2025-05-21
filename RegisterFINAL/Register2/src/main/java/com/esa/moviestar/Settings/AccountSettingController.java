@@ -39,7 +39,6 @@ public class AccountSettingController {
         this.utente=utente;
     }
 
-
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
     public void initialize(){

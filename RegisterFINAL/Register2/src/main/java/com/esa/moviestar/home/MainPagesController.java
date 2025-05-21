@@ -447,7 +447,6 @@ public class MainPagesController {
         Stage stage = (Stage) body.getScene().getWindow();
         stage.setScene(newScene);
 
-
     }catch(IOException e){
         System.err.println("MainPagesController: Errore caricamento pagina dei setting"+e.getMessage());
     }
