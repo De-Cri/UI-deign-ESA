@@ -1,5 +1,6 @@
 package com.esa.moviestar.Settings;
 
+import com.esa.moviestar.home.MainPagesController;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -20,7 +22,7 @@ public class SettingsViewController {
     @FXML
     private StackPane contentArea;
     @FXML
-    private StackPane contenitore;
+    private AnchorPane contenitore;
     @FXML
     private Label impostazioni;
     @FXML
@@ -56,6 +58,9 @@ public class SettingsViewController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/home/main.fxml"), resourceBundle);
                 Parent backHomeView = loader.load();
 
+                MainPagesController mainPagesController = loader.getController();
+                mainPagesController.first_load(utente);
+
                 Scene currentScene = contenitore.getScene();
                 Scene newScene = new Scene(backHomeView, currentScene.getWidth(), currentScene.getHeight());
 
@@ -84,6 +89,7 @@ public class SettingsViewController {
             // Passa l'utente solo alla vista account
             if (loader.getController() instanceof AccountSettingController controller) {
                 controller.setUtente(utente);
+                controller.setContenitore(contenitore);
             }
 
             contentArea.getChildren().setAll(view);

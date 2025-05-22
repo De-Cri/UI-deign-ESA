@@ -138,7 +138,10 @@ public class HeaderController {
             getStyleClass().addAll("medium-text", "on-primary");
         }};
         settingsItem.getChildren().addAll(profileIcon, text);
-        settingsItem.setOnMouseClicked(e -> father.settingsClick(user));
+        settingsItem.setOnMouseClicked(e -> {
+            father.settingsClick(user);
+        }
+        );
 
         popupMenu.addItem(settingsItem);
         popupMenu.addSeparator();

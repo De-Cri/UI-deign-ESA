@@ -5,6 +5,7 @@ import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.UpdatePasswordController;
 import com.esa.moviestar.Profile.IconSVG;
 import com.esa.moviestar.Profile.ModifyProfileController;
+import com.esa.moviestar.components.PopupMenu;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +14,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,7 +25,7 @@ import java.util.ResourceBundle;
 
 public class AccountSettingController {
     @FXML
-    private StackPane AccountContentSetting;
+    private GridPane accountContentSetting;
     @FXML
     private Button modifyUserButton;
     @FXML
@@ -32,10 +36,13 @@ public class AccountSettingController {
     private Group profileImage;
     @FXML
     private Label userName;
+    @FXML
+    private Button deleteUserButton;
 
     private String email;
 
     private Utente utente;
+    private AnchorPane contenitore;
 
     public void setEmail(String email){
         this.email=email;
@@ -63,18 +70,24 @@ public class AccountSettingController {
 
     public void deleteAccount(){
         deleteAccountButton.setOnMouseClicked(event -> {
+            DeleteAccountPopUp popUp = new DeleteAccountPopUp();
+            AnchorPane.setBottomAnchor(popUp, 0.0);
+            AnchorPane.setTopAnchor(popUp, 0.0);
+            AnchorPane.setLeftAnchor(popUp, 0.0);
+            AnchorPane.setRightAnchor(popUp, 0.0);
+            contenitore.getChildren().add(popUp);
             AccountDao accountDao = new AccountDao();
-            boolean deleteSuccess = accountDao.rimuoviAccount(email);
+            boolean deleteSuccess = accountDao.rimuoviAccount("email");
             if(deleteSuccess){
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/hello-view.fxml"), resourceBundle);
                     Parent accessContent = loader.load();
 
-                    Scene currentScene = AccountContentSetting.getScene();
+                    Scene currentScene = accountContentSetting.getScene();
 
                     Scene newScene = new Scene(accessContent, currentScene.getWidth(), currentScene.getHeight());
 
-                    Stage stage = (Stage) AccountContentSetting.getScene().getWindow();
+                    Stage stage = (Stage) accountContentSetting.getScene().getWindow();
                     stage.setScene(newScene);
 
                 }catch (IOException e){
@@ -96,11 +109,11 @@ public class AccountSettingController {
                 modifyProfileController.setUtente(utente);
                 modifyProfileController.setOrigine(ModifyProfileController.Origine.SETTINGS);
 
-                Scene currentScene = AccountContentSetting.getScene();
+                Scene currentScene = accountContentSetting.getScene();
 
                 Scene newScene = new Scene(modifyContent, currentScene.getWidth(), currentScene.getHeight());
 
-                Stage stage = (Stage) AccountContentSetting.getScene().getWindow();
+                Stage stage = (Stage) accountContentSetting.getScene().getWindow();
                 stage.setScene(newScene);
 
             } catch (IOException e) {
@@ -118,17 +131,30 @@ public class AccountSettingController {
                 UpdatePasswordController updatePasswordController = loader.getController();
                 updatePasswordController.setUtente(utente);
 
-                Scene currentScene = AccountContentSetting.getScene();
+                Scene currentScene = accountContentSetting.getScene();
 
                 Scene newScene = new Scene(updateContent, currentScene.getWidth(), currentScene.getHeight());
 
-                Stage stage = (Stage) AccountContentSetting.getScene().getWindow();
+                Stage stage = (Stage) accountContentSetting.getScene().getWindow();
                 stage.setScene(newScene);
 
             } catch (IOException e) {
                 System.err.println("AccountSettingController: Errore caricamento pagina di aggiornamento della password"+e.getMessage());
             }
         });
+    }
+
+    public void deleteUser(){
+        deleteUserButton.setOnMouseClicked(event -> {
+
+            UtenteDao dao = new UtenteDao();
+            dao.rimuoviUtente(utente.getID());
+
+        });
+    };
+
+    public void setContenitore(AnchorPane contenitore) {
+        this.contenitore = contenitore;
     }
 
 }
