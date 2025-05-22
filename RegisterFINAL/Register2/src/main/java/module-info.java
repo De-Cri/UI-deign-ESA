@@ -5,7 +5,6 @@ module com.esa.moviestar {
     requires java.sql;
     requires java.desktop;
 
-
     opens com.esa.moviestar to javafx.fxml;
     exports com.esa.moviestar.Database;
     opens com.esa.moviestar.Database to javafx.fxml;
@@ -22,4 +21,6 @@ module com.esa.moviestar {
     opens com.esa.moviestar.model to javafx.fxml;
     exports com.esa.moviestar.components;
     opens com.esa.moviestar.components to javafx.fxml;
+    opens com.esa.moviestar.Settings to javafx.fxml;
+    exports com.esa.moviestar.Settings;
 }

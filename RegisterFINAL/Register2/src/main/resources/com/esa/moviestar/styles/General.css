@@ -127,3 +127,12 @@
 .bold-text{
     -fx-font-weight: bold;
 }
+
+.back-button {
+    -fx-text-fill: #F0ECFD;
+    -fx-font-size: 14px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+}

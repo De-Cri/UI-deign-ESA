@@ -1,6 +1,8 @@
 package com.esa.moviestar.Login;
 
 import com.esa.moviestar.Database.AccountDao;
+import com.esa.moviestar.Settings.SettingsViewController;
+import com.esa.moviestar.model.Utente;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,6 +50,12 @@ public class UpdatePasswordController {
     private StackPane parentContainer;
 
     private String userEmail;
+
+    private Utente utente;
+    public void setUtente(Utente utente){
+        this.utente=utente;
+    }
+
 
     private final double REFERENCE_WIDTH = 1720.0;
     private final double REFERENCE_HEIGHT = 980.0;
@@ -248,6 +256,8 @@ public class UpdatePasswordController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
             Parent accountSettingContent = loader.load();
             Scene currentScene = parentContainer.getScene();
+            SettingsViewController settingsViewController = loader.getController();
+            settingsViewController.setUtente(utente);
 
             Scene newScene = new Scene(accountSettingContent, currentScene.getWidth(), currentScene.getHeight());
 
