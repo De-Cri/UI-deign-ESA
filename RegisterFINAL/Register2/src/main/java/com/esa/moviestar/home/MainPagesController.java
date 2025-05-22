@@ -6,6 +6,7 @@ import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.FilmCardController;
 
+import com.esa.moviestar.movie_view.FilmSceneController;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -14,8 +15,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -49,6 +52,7 @@ public class MainPagesController {
     // Instance variables
     private Utente user;
     private PageData header;
+    private Node savedSceneNode;
     private PageData home;
     private PageData filter_film;
     private PageData filter_series;
@@ -151,11 +155,12 @@ public class MainPagesController {
             PageData search = loadDynamicBody("search.fxml");
             if (search != null) {
                 try{
-                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user,resourceBundle);
+                    ((SearchController) search.controller).set_paramcontroller((HeaderController)header.controller,user,resourceBundle,this);
                     body.getChildren().clear();
                     body.getChildren().add(search.node);}
                 catch (Exception e){
                     System.err.println("MainPagesController: tbxSearchListener error \n Error:"+e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });
@@ -297,7 +302,108 @@ public class MainPagesController {
         }
         return null;
     }
+    private ImageView deletedynamicbody() {
+        // Store the current scene node for later restoration
+        Node savedNode = null;
+        if (currentScene != null) {
+            savedNode = currentScene.node;
+        }
+        if (home != null) {
+            home = null;
+        }
+        if (filter_film != null) {
+            filter_film = null;
+        }
+        if (filter_series != null) {
+            filter_series = null;
+        }
 
+
+        // Add a new field to the class to store this for later
+        this.savedSceneNode = savedNode;
+
+        // Create a screenshot of the current scene
+        Stage stage = (Stage)currentScene.node.getScene().getWindow();
+
+        Scene scene = stage.getScene();
+
+        double width = scene.getWidth();
+        double height = scene.getHeight();
+        WritableImage screenshot = new WritableImage((int)width, (int)height);
+        scene.snapshot(screenshot);
+        ImageView screenshotView = new ImageView(screenshot);
+
+        // Clear current contents to prepare for the new overlay
+        body.getChildren().clear();
+
+        return screenshotView;
+    }
+
+    /**
+     * Restores the previously saved scene
+     */
+    public void restorePreviousScene() {
+        if (savedSceneNode != null) {
+            // Apply fade-out transition
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(FADE_DURATION), body);
+
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(e -> {
+
+                body.getChildren().clear();
+                body.getChildren().add(savedSceneNode);
+
+                // Add the loading overlay back to the body
+                body.getChildren().add(loadingOverlay);
+
+                // Apply fade-in transition
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(FADE_DURATION), body);
+
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+
+            });
+            fadeOut.play();
+        }
+    }
+
+    public void openFilmScene(String filmFxmlPath) {
+        // Cattura lo screenshot e pulisce la scena
+        ImageView screenshotView = deletedynamicbody();
+
+        // Carica il dettaglio del film
+        PageData filmDetail = loadDynamicBody(filmFxmlPath);
+
+        if (filmDetail != null) {
+            FilmSceneController filmController= ((FilmSceneController) filmDetail.controller());
+
+            BackgroundImage bgImage = getBackgroundImage(screenshotView);
+
+            Background background = new Background(bgImage);
+            filmController.background.setBackground(background);
+        }
+    }
+
+    private BackgroundImage getBackgroundImage(ImageView screenshotView) {
+        Image screenshotImage = screenshotView.getImage();
+        // cover - per riempire tutto lo spazio
+        return new BackgroundImage(
+                screenshotImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(
+                        BackgroundSize.AUTO,
+                        BackgroundSize.AUTO,
+                        false,
+                        false,
+                        false,
+                        true  // cover - per riempire tutto lo spazio
+                )
+        );
+    }
     /**
      * Transitions to a new page with a fade effect
      * @param newPage The page to transition to
