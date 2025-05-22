@@ -136,3 +136,19 @@
     -fx-cursor: hand;
     -fx-alignment: CENTER_LEFT;
 }
+
+.back-button:hover {
+    -fx-underline: true;
+    -fx-text-fill: white;
+}
+
+.surface-danger{
+    -fx-background-color:  #9E3536 ;
+}
+
+.surface-danger:hover{
+    -fx-background-color: #802a2b;
+}
+.surface-danger:pressed{
+    -fx-background-color: #731718;
+}

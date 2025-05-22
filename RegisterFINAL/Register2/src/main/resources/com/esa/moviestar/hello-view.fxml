@@ -19,11 +19,11 @@
     </HBox>
     <VBox fx:id="loginBox" alignment="CENTER" fillWidth="false" StackPane.alignment="CENTER">
         <Label fx:id="welcomeText" alignment="CENTER" styleClass="welcome-text" text="BENVENUTO" />
-        <TextField fx:id="emailField" styleClass="small-item"/>
+        <TextField fx:id="emailField" styleClass="small-item" text="prova2@gmail.com" />
 
-        <PasswordField fx:id="passwordField"/>
+        <PasswordField fx:id="passwordField" text="Eugenio04." />
 
-        <Button fx:id="access" alignment="CENTER" styleClass="button-text" text="Accedi"/>
+        <Button fx:id="access" alignment="CENTER" styleClass="button-text" text="Accedi" />
 
         <Button fx:id="register" alignment="CENTER" styleClass="register-text" text="Non hai un account? Registrati">
             <font>

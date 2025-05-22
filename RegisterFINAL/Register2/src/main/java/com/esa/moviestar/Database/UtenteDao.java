@@ -136,13 +136,13 @@ public class UtenteDao {
                         rs.getString("Nome"),
                         rs.getString("Gusti"),
                         rs.getInt("Icona"),
-                        rs.getString("Email")
+                        email
                 );
                 utenti.add(utente);  // Aggiungi l'utente alla lista
             }
             System.out.println("Numero di utenti recuperati: " + utenti.size());
         } catch (SQLException e) {
-            System.err.println("utenteDao : errore di recupero lista utenti in base l'email dell'utente "+e.getMessage());        }
+            System.err.println("utenteDao : errore di recupero lista utenti in base l'email dell'utente "+e.getMessage());}
         return utenti;  // Restituisci la lista di utenti
     }
 

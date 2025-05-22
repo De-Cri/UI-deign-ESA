@@ -218,6 +218,8 @@ TextField, PasswordField {
     -fx-alignment: CENTER_LEFT;
 }
 
+
+
 /* Back button hover effect - only underline */
 .back-button:hover {
     -fx-underline: true;
