@@ -2,6 +2,7 @@ package com.esa.moviestar.Settings;
 
 import com.esa.moviestar.Database.AccountDao;
 import com.esa.moviestar.Database.UtenteDao;
+import com.esa.moviestar.Login.UpdatePasswordController;
 import com.esa.moviestar.Profile.IconSVG;
 import com.esa.moviestar.Profile.ModifyProfileController;
 import com.esa.moviestar.model.Utente;
@@ -11,6 +12,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -26,6 +28,10 @@ public class AccountSettingController {
     private Button modifyPasswordButton;
     @FXML
     private Button deleteAccountButton;
+    @FXML
+    private Group profileImage;
+    @FXML
+    private Label userName;
 
     private String email;
 
@@ -37,9 +43,16 @@ public class AccountSettingController {
 
     public void setUtente(Utente utente){
         this.utente=utente;
+        if(utente!=null){
+        int codImmagineCorrente = utente.getIDIcona();
+        profileImage.getChildren().clear();
+        Group g = new Group(IconSVG.takeElement(codImmagineCorrente));
+        profileImage.getChildren().add(g);
+        userName.setText(utente.getNome());
+        }
     }
 
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+    public final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
     public void initialize(){
         modifyUser();
@@ -81,6 +94,7 @@ public class AccountSettingController {
                 Parent modifyContent = loader.load();
                 ModifyProfileController modifyProfileController = loader.getController();
                 modifyProfileController.setUtente(utente);
+                modifyProfileController.setOrigine(ModifyProfileController.Origine.SETTINGS);
 
                 Scene currentScene = AccountContentSetting.getScene();
 
@@ -101,6 +115,9 @@ public class AccountSettingController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/update-password-view.fxml"),resourceBundle);
                 Parent updateContent = loader.load();
 
+                UpdatePasswordController updatePasswordController = loader.getController();
+                updatePasswordController.setUtente(utente);
+
                 Scene currentScene = AccountContentSetting.getScene();
 
                 Scene newScene = new Scene(updateContent, currentScene.getWidth(), currentScene.getHeight());
@@ -113,4 +130,5 @@ public class AccountSettingController {
             }
         });
     }
+
 }

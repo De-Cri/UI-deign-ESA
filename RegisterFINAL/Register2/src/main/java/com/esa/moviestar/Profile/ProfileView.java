@@ -189,6 +189,7 @@ public class ProfileView {
                 ModifyProfileController modifyProfileController = loader.getController();
                 modifyProfileController.setEmail(email);
                 modifyProfileController.setUtente(user);
+                modifyProfileController.setOrigine(ModifyProfileController.Origine.PROFILI);
 
                 //Ottieni la scena corrente
                 Scene currentScene = ContenitorePadre.getScene();
