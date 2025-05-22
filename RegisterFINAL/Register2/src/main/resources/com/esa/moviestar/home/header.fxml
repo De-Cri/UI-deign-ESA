@@ -28,7 +28,7 @@
             <!-- Film Button -->
             <HBox fx:id="filmButton" alignment="CENTER" prefWidth="128.0" spacing="12.0">
                 <SVGPath fx:id="filmIcon" content="%film" styleClass="on-primary" />
-                <Text text="Film">
+                <Text text="Films">
                     <styleClass>
                         <String fx:value="medium-text" />
                         <String fx:value="on-primary" />
@@ -44,7 +44,7 @@
             <!-- Series Button -->
             <HBox fx:id="seriesButton" alignment="CENTER" prefWidth="128.0" spacing="8.0">
                 <SVGPath fx:id="tvIcon" content="%series" styleClass="on-primary" />
-                <Text text="Serie">
+                <Text text="Series">
                     <styleClass>
                         <String fx:value="medium-text" />
                         <String fx:value="on-primary" />

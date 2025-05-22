@@ -6,7 +6,7 @@
    <AnchorPane fx:id="body" layoutX="228.0" layoutY="251.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
    </AnchorPane>
 
-    <StackPane fx:id="headerContainer" prefHeight="80.0" prefWidth="200.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="0.0">
+    <StackPane fx:id="headerContainer" prefHeight="80.0" prefWidth="200.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="8.0">
 
     </StackPane>
 </AnchorPane>
