@@ -1,9 +1,12 @@
 package com.esa.moviestar.Profile;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
+import com.esa.moviestar.Settings.AccountSettingController;
+import com.esa.moviestar.Settings.SettingsViewController;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -75,6 +78,18 @@ public class ModifyProfileController {
         }
     }
 
+    public enum Origine {
+        SETTINGS,
+        PROFILI,
+    }
+
+    private Origine origine;
+
+    public void setOrigine(Origine origine) {
+        this.origine = origine;
+    }
+    public final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+
     public void initialize() {
 
 // DA MODIFICARE IN MODO CHE FACCIA LE MODIFICHE
@@ -97,12 +112,43 @@ public class ModifyProfileController {
 
         cancelButton.setText("Annulla"); //setting del bottone di annullamento
 
-        cancelButton.setOnMouseClicked(e -> {//Se cliccato è un evento irreversibile
-            textName.setText(""); //elimina la stringa che scrivo da input se non mi piace
-            // elementContainer.getChildren().set(0, originalProfileImage); // ripristina  l'immagine originale
+        cancelButton.setOnMouseClicked(eventCancel -> {
+            textName.setText("");
+            try {
+                FXMLLoader loader2;
+                FXMLLoader loader3;
+                if (origine == Origine.PROFILI) {
+                    loader2 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
+                    Parent profile = loader2.load();
 
+                    ProfileView profileView = loader2.getController();
+                    profileView.setEmail(email);
+
+                    Scene currentScene = ContenitorePaginaModifica.getScene();
+                    Scene newScene = new Scene(profile, currentScene.getWidth(), currentScene.getHeight());
+                    Stage stage = (Stage) currentScene.getWindow();
+                    stage.setScene(newScene);
+                }else if (origine == Origine.SETTINGS) {
+                loader3 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
+                Parent settings = loader3.load();
+
+                SettingsViewController settingsViewController = loader3.getController();
+                settingsViewController.setUtente(utente);
+
+                Scene currentScene = ContenitorePaginaModifica.getScene();
+                Scene newScene = new Scene(settings, currentScene.getWidth(), currentScene.getHeight());
+                Stage stage = (Stage) currentScene.getWindow();
+                stage.setScene(newScene);
+            }
+                else {
+                    System.err.println("Origine non riconosciuta: " + origine);
+                }
+
+            } catch (IOException e) {
+                System.err.println("ModifyController: non è possibile caricare la pagina " + e.getMessage());
+            }
         });
-        saveButton.setOnMouseClicked(event -> {  //Se clicco sul bottone di salvataggio / dovrà poi ritornare alla pagina di scelta dei profili con il profilo creato
+        saveButton.setOnMouseClicked(eventSave -> {  //Se clicco sul bottone di salvataggio / dovrà poi ritornare alla pagina di scelta dei profili con il profilo creato
             String name = textName.getText();
             String gusto = "0";
             int immagine=codImmagineCorrente;
@@ -125,33 +171,43 @@ public class ModifyProfileController {
             if (!textName.getText().isEmpty()) {  //se ho messo un nome nel textfield e l'ho salvato allora ritorno alla pagina principale dei profili / oppure potrei far direttamente loggare / (modifiche da fare : controllare che abbia scelto anche un immagine, oppure se non l'ha scelta dare quella di default)
                 //questo metodo cosi fa ritornare alla pagina dei profili, aggiungere poi il fatto che io abbia creato il panel nuovo con tutte le modifiche
                 try {
+                    FXMLLoader loader2;
+                    FXMLLoader loader3;
+                    if (origine == Origine.PROFILI) {
+                        loader2 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
+                        Parent profile = loader2.load();
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
-                    Parent profileContent = loader.load();
+                        ProfileView profileView = loader2.getController();
+                        profileView.setEmail(email);
 
-                    ProfileView profileController = loader.getController();
-                    profileController.setEmail(email);
+                        Scene currentScene = ContenitorePaginaModifica.getScene();
+                        Scene newScene = new Scene(profile, currentScene.getWidth(), currentScene.getHeight());
+                        Stage stage = (Stage) currentScene.getWindow();
+                        stage.setScene(newScene);
+                    }else if (origine == Origine.SETTINGS) {
+                        loader3 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
+                        Parent settings = loader3.load();
 
-                    // Ottieni la scena corrente
-                    Scene currentScene = ContenitorePaginaModifica.getScene();
+                        SettingsViewController settingsViewController = loader3.getController();
+                        settingsViewController.setUtente(utente);
 
-                    // Crea una nuova scena con il nuovo contenuto
-                    Scene newScene = new Scene(profileContent, currentScene.getWidth(), currentScene.getHeight());
-
-                    // Ottieni lo Stage corrente e imposta la nuova scena
-                    Stage stage = (Stage) ContenitorePaginaModifica.getScene().getWindow();
-                    stage.setScene(newScene);
+                        Scene currentScene = ContenitorePaginaModifica.getScene();
+                        Scene newScene = new Scene(settings, currentScene.getWidth(), currentScene.getHeight());
+                        Stage stage = (Stage) currentScene.getWindow();
+                        stage.setScene(newScene);
+                    }
+                    else {
+                        System.err.println("Origine non riconosciuta: " + origine);
+                    }
 
                 } catch (IOException e) {
-                    warningText.setText("Errore durante il caricamento della pagina di visualizzazione dei profili: " + e.getMessage());
-                    System.err.println("ModifyProfileController : Errore caricamento pagina di visualizzazione dei profili"+e.getMessage());
+                    System.err.println("ModifyController: non è possibile caricare la pagina " + e.getMessage());
                 }
                 System.out.println("Ritorni alla pagina dei profili");
             } else {
                 errorText.setText("Nessun nome inserito"); //se non ho inserito nessun nome mi da errore perchè per forza va settato un nome , oppure potrei dare il nome di default tipo utente 1
                 AnimationUtils.shake(errorText);
             }
-
 
 
         });

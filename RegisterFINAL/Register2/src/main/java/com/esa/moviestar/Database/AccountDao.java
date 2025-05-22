@@ -53,14 +53,15 @@ public class AccountDao {
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {
                 System.err.println("Nessun account trovato con email = " + email);
-                return false;
+
             }
-            return true;
         } catch (SQLException e) {
             System.err.println("accountDao: errore di rimozione dell'account - " + e.getMessage());
-            return false;
+
         }
+        return false;
     }
+
 
     //Metodo per cercare l'account dall'email
     public  Account cercaAccount(String email) {
