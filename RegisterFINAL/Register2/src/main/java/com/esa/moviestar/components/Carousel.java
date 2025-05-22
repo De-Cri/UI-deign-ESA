@@ -9,7 +9,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.util.Duration;
 
-public class Carousel extends Control {
+public class  Carousel extends Control {
 
     private static final String DEFAULT_STYLE_CLASS = "carousel";
 
