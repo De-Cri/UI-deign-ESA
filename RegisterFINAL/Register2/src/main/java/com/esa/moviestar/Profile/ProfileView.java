@@ -1,7 +1,9 @@
 package com.esa.moviestar.Profile;
 
+import com.esa.moviestar.Database.AccountDao;
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.home.MainPagesController;
+import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -40,10 +42,10 @@ public class ProfileView {
     private final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
 
-    private String email;
-    public void setEmail(String email) {
-        this.email = email;
-        System.out.println("Email passata alla schermata creazione profilo: " + email);
+    private Account account;
+    public void setAccount(Account account) {
+        this.account = account;
+        System.out.println("Email passata alla schermata creazione profilo: " + account.getEmail());
         caricaUtenti();
     }
 
@@ -58,7 +60,7 @@ public class ProfileView {
     private void caricaUtenti() {
             griglia.getChildren().clear(); // Pulisci sempre la griglia prima di ricaricare
             UtenteDao dao = new UtenteDao();
-            List<Utente> utenti = dao.recuperaTuttiGliUtenti(email);
+            List<Utente> utenti = dao.recuperaTuttiGliUtenti(account.getEmail());
 
             for (Utente utente : utenti) {
                 VBox box = new VBox();
@@ -165,7 +167,7 @@ public class ProfileView {
             Parent homeContent = loader.load();
 
             MainPagesController mainPagesController = loader.getController();
-            mainPagesController.first_load(user);
+            mainPagesController.first_load(user,account);
 
             Scene currentScene = ContenitorePadre.getScene();
             Scene newScene = new Scene(homeContent, currentScene.getWidth(), currentScene.getHeight());
@@ -187,7 +189,7 @@ public class ProfileView {
                 Parent modifyContent = loader.load();  // Carica la vista della pagina
 
                 ModifyProfileController modifyProfileController = loader.getController();
-                modifyProfileController.setEmail(email);
+                modifyProfileController.setAccount(account);
                 modifyProfileController.setUtente(user);
                 modifyProfileController.setOrigine(ModifyProfileController.Origine.PROFILI);
 
@@ -216,7 +218,7 @@ public class ProfileView {
             Parent createContent = loader.load();  // Carica la vista della pagina
 
             CreateProfileController createProfileController = loader.getController();
-            createProfileController.setEmail(email);
+            createProfileController.setAccount(account);
 
             //Ottieni la scena corrente
             Scene currentScene = ContenitorePadre.getScene();

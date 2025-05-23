@@ -7,6 +7,7 @@ import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
 import com.esa.moviestar.Settings.AccountSettingController;
 import com.esa.moviestar.Settings.SettingsViewController;
+import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -59,11 +60,15 @@ public class ModifyProfileController {
 
     private Group originalProfileImage;
     private int codImmagineCorrente;
-    private String email;
+    private Account account;
     private Utente utente;
-    public void setEmail(String email) {
-        this.email = email;
-        System.out.println("Email passata alla schermata creazione profilo: " + email);
+    public void setAccount(Account account) {
+        if (account == null) {
+            System.err.println("⚠️ account è NULL in setAccount() di ModifyProfileController");
+        } else {
+            System.out.println("✅ Email passata alla schermata creazione profilo: " + account.getEmail());
+        }
+        this.account = account;
     }
     public void setUtente(Utente utente){
         this.utente=utente;
@@ -122,7 +127,7 @@ public class ModifyProfileController {
                     Parent profile = loader2.load();
 
                     ProfileView profileView = loader2.getController();
-                    profileView.setEmail(email);
+                    profileView.setAccount(account);
 
                     Scene currentScene = ContenitorePaginaModifica.getScene();
                     Scene newScene = new Scene(profile, currentScene.getWidth(), currentScene.getHeight());
@@ -134,6 +139,7 @@ public class ModifyProfileController {
 
                 SettingsViewController settingsViewController = loader3.getController();
                 settingsViewController.setUtente(utente);
+                settingsViewController.setAccount(account);
 
                 Scene currentScene = ContenitorePaginaModifica.getScene();
                 Scene newScene = new Scene(settings, currentScene.getWidth(), currentScene.getHeight());
@@ -148,6 +154,8 @@ public class ModifyProfileController {
                 System.err.println("ModifyController: non è possibile caricare la pagina " + e.getMessage());
             }
         });
+
+
         saveButton.setOnMouseClicked(eventSave -> {  //Se clicco sul bottone di salvataggio / dovrà poi ritornare alla pagina di scelta dei profili con il profilo creato
             String name = textName.getText();
             String gusto = "0";
@@ -178,18 +186,20 @@ public class ModifyProfileController {
                         Parent profile = loader2.load();
 
                         ProfileView profileView = loader2.getController();
-                        profileView.setEmail(email);
+                        profileView.setAccount(account);
 
                         Scene currentScene = ContenitorePaginaModifica.getScene();
                         Scene newScene = new Scene(profile, currentScene.getWidth(), currentScene.getHeight());
                         Stage stage = (Stage) currentScene.getWindow();
                         stage.setScene(newScene);
-                    }else if (origine == Origine.SETTINGS) {
+                    }
+                    else if (origine == Origine.SETTINGS) {
                         loader3 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
                         Parent settings = loader3.load();
 
                         SettingsViewController settingsViewController = loader3.getController();
                         settingsViewController.setUtente(utente);
+                        settingsViewController.setAccount(account);
 
                         Scene currentScene = ContenitorePaginaModifica.getScene();
                         Scene newScene = new Scene(settings, currentScene.getWidth(), currentScene.getHeight());

@@ -24,7 +24,7 @@
                     </Label>
                     <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
                         <children>
-                            <HBox fx:id="account" alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
+                            <HBox fx:id="accountContent" alignment="CENTER_LEFT" maxHeight="70.0" styleClass="chips" VBox.vgrow="ALWAYS">
                                 <children>
                                     <SVGPath content="%user" fill="white" />
                                     <Label alignment="CENTER" prefHeight="26.0" prefWidth="73.0" text="Account">

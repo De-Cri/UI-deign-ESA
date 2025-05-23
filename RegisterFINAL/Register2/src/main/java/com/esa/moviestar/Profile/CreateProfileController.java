@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
+import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -57,11 +58,11 @@ public class CreateProfileController {
 
     private Group originalProfileImage;
     private int codImmagineCorrente;
-    private String email;
+    private Account account;
 
-    public void setEmail(String email) {
-        this.email = email;
-        System.out.println("Email passata alla schermata creazione profilo: " + email);
+    public void setAccount(Account account) {
+        this.account = account;
+        System.out.println("Email passata alla schermata creazione profilo: " + account.getEmail());
     }
 
 
@@ -103,9 +104,9 @@ public class CreateProfileController {
                     UtenteDao utentedao = new UtenteDao();
 
 
-                    int count = utentedao.contaProfiliPerEmail(email);
+                    int count = utentedao.contaProfiliPerEmail(account.getEmail());
 
-                    Utente ut = new Utente(name, immagine, gusto, email);
+                    Utente ut = new Utente(name, immagine, gusto, account.getEmail());
 
                     if (count >= 4) {
                         errorText.setText("Puoi creare al massimo 4 profili.");
@@ -118,7 +119,7 @@ public class CreateProfileController {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
                     Parent profileContent = loader.load();
                     ProfileView profileView = loader.getController();
-                    profileView.setEmail(email);
+                    profileView.setAccount(account);
 
 
                     // Ottieni la scena corrente

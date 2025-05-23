@@ -2,6 +2,7 @@ package com.esa.moviestar.home;
 
 import com.esa.moviestar.Settings.SettingsViewController;
 import com.esa.moviestar.components.BufferAnimation;
+import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.FilmCardController;
@@ -56,6 +57,12 @@ public class MainPagesController {
     private boolean transitionInProgress = false;
     private BufferAnimation loadingSpinner;
     private StackPane loadingOverlay;
+
+    //aggiunta eugenio :
+    private Account account;
+    public void setAccount(Account account){
+        this.account=account;
+    }
     public void initialize(){
         createLoadingOverlay();
         showLoadingSpinner();
@@ -65,8 +72,9 @@ public class MainPagesController {
      * Initializes the main page with the user's data
      * @param user The current user
      */
-    public void first_load(Utente user) {
+    public void first_load(Utente user, Account account) {
         this.user = user;
+        this.account=account;
         if(loadingOverlay==null)
             createLoadingOverlay();
         // Load header if not already loaded
@@ -130,7 +138,7 @@ public class MainPagesController {
         HeaderController headerController = (HeaderController) header.controller;
 
         if (user != null) {
-            headerController.setUpPopUpMenu(this, user);
+            headerController.setUpPopUpMenu(this, user , account);
         }
 
         // Configure navigation buttons
@@ -430,15 +438,18 @@ public class MainPagesController {
 
     /**
      * Opens user settings
-     * @param user The current user
+     *
+     * @param user    The current user
+     * @param account
      */
-    public void settingsClick(Utente user) {
+    public void settingsClick(Utente user, Account account) {
     try{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
         Parent settingContent = loader.load();
 
         SettingsViewController settingsViewController = loader.getController();
         settingsViewController.setUtente(user);
+        settingsViewController.setAccount(account);
 
         Scene currentScene = body.getScene();
 
@@ -458,6 +469,7 @@ public class MainPagesController {
      */
     public void emailClick() {
         // Implement email functionality
+
     }
 
     /**

@@ -291,7 +291,7 @@ public class Register {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"), resourceBundle);
                 Parent homeContent = loader.load();
                 CreateProfileController createProfileController = loader.getController();
-                createProfileController.setEmail(email);
+                createProfileController.setAccount(account);
 
                 // Ottieni la scena corrente
                 Scene currentScene = ContenitorePadre.getScene();
