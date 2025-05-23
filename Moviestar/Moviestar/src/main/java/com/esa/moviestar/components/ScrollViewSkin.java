@@ -586,7 +586,18 @@ public class ScrollViewSkin extends SkinBase<ScrollView> {
                 new Stop(1.0, Color.TRANSPARENT)
         );
     }
-
+    //The same but for vertical, used in the search.fxml
+    public LinearGradient getVerticalLinearGradient (Color color) {
+        return new LinearGradient(
+                0, 0,      // start X,Y (left edge)
+                0, 1,      // end X,Y (right edge)
+                true,      // proportional
+                CycleMethod.NO_CYCLE,
+                new Stop(0.0, Color.TRANSPARENT),
+                new Stop(0.5, color),
+                new Stop(1.0, Color.TRANSPARENT)
+        );
+    }
     /**
      * Return the color of the overlays
      * @param color the edge color, if null the background color
