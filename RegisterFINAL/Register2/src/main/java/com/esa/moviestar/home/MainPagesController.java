@@ -287,7 +287,20 @@ public class MainPagesController {
      */
     private PageData loadDynamicBody(String bodySource) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(bodySource), resourceBundle);
+            // Add more detailed logging
+            System.out.println("MainPagesController: Attempting to load: " + bodySource);
+
+            // Check if resource exists
+            var resource = getClass().getResource(bodySource);
+            if (resource == null) {
+                System.err.println("MainPagesController: Resource not found: " + bodySource);
+                System.err.println("MainPagesController: Looking in package: " + getClass().getPackageName());
+                return null;
+            }
+
+            System.out.println("MainPagesController: Resource found at: " + resource.toString());
+
+            FXMLLoader loader = new FXMLLoader(resource, resourceBundle);
             Node pageNode = loader.load();
 
             // Set anchors for proper layout
@@ -296,11 +309,18 @@ public class MainPagesController {
             AnchorPane.setLeftAnchor(pageNode, 0.0);
             AnchorPane.setRightAnchor(pageNode, 0.0);
 
+            System.out.println("MainPagesController: Successfully loaded: " + bodySource);
             return new PageData(pageNode, loader.getController());
+
         } catch (IOException e) {
-            System.err.println("MainPagesController: Failed to load "+bodySource+" page");
+            System.err.println("MainPagesController: IOException while loading " + bodySource);
+            System.err.println("MainPagesController: Error details: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            System.err.println("MainPagesController: Unexpected error while loading " + bodySource);
+            System.err.println("MainPagesController: Error details: " + e.getMessage());
+            return null;
         }
-        return null;
     }
     private ImageView deletedynamicbody() {
         // Store the current scene node for later restoration

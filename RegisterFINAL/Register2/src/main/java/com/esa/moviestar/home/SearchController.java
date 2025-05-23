@@ -58,6 +58,7 @@ public class SearchController {
     private List<Node> trylist;
 
     public void initialize(){
+        useless = new ScrollView();
         separator = new ScrollViewSkin(useless);
         setupController = new MainPagesController();
         if (separatorline != null) {
