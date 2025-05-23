@@ -2,6 +2,7 @@ package com.esa.moviestar.home;
 
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.components.PopupMenu;
+import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -69,10 +70,10 @@ public class HeaderController {
         });
 
     }
-    public void setUpPopUpMenu(MainPagesController father,Utente user){
+    public void setUpPopUpMenu(MainPagesController father, Utente user, Account account){
         UtenteDao utenteDao = new UtenteDao();
         List<Utente> users = utenteDao.recuperaTuttiGliUtenti(user.getEmail());
-        setupPopupMenu(father,user,users);
+        setupPopupMenu(father,account,user,users);
     }
     public TextField getTbxSearch(){
         return tbxSearch;
@@ -120,7 +121,7 @@ public class HeaderController {
     }
 
 
-    private void setupPopupMenu(MainPagesController father,Utente user,List<Utente> users) {
+    private void setupPopupMenu(MainPagesController father,Account account, Utente user, List<Utente> users) {
         // Create the popup menu - no stage needed
         popupMenu = new PopupMenu();
 
@@ -139,7 +140,7 @@ public class HeaderController {
         }};
         settingsItem.getChildren().addAll(profileIcon, text);
         settingsItem.setOnMouseClicked(e -> {
-            father.settingsClick(user);
+            father.settingsClick(user,account);
         }
         );
 

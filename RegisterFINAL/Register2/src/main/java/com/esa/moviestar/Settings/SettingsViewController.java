@@ -1,6 +1,7 @@
 package com.esa.moviestar.Settings;
 
 import com.esa.moviestar.home.MainPagesController;
+import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +27,7 @@ public class SettingsViewController {
     @FXML
     private Label impostazioni;
     @FXML
-    private HBox account;
+    private HBox accountContent;
     @FXML
     private HBox cronologia;
     @FXML
@@ -43,10 +44,17 @@ public class SettingsViewController {
     private Group profileImage;
 
     private Utente utente;
+    private Account account;
+
+
+    public void setAccount(Account account){
+        this.account=account;
+        caricaVista("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml");
+        System.out.println(account.getEmail());
+    }
 
     public void setUtente(Utente utente){
         this.utente=utente;
-        caricaVista("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml");
     }
 
     public final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
@@ -54,12 +62,18 @@ public class SettingsViewController {
     public void initialize() {
         // Gestione ritorno alla home
         backToHomeButton.setOnMouseClicked(event -> {
+            // Controllo sicurezza per dati NULL
+            if (account == null) {
+                System.err.println("Account è NULL, impossibile navigare alla home");
+                return;
+            }
+
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/home/main.fxml"), resourceBundle);
                 Parent backHomeView = loader.load();
 
                 MainPagesController mainPagesController = loader.getController();
-                mainPagesController.first_load(utente);
+                mainPagesController.first_load(utente, account);
 
                 Scene currentScene = contenitore.getScene();
                 Scene newScene = new Scene(backHomeView, currentScene.getWidth(), currentScene.getHeight());
@@ -72,7 +86,7 @@ public class SettingsViewController {
         });
 
         // Collegamenti ai pulsanti
-        account.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"));
+        accountContent.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"));
         cronologia.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/cronologia-setting-view.fxml"));
         privacy.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/privacy-setting-view.fxml"));
         accessibilità.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/accessibilità-setting-view.fxml"));
@@ -88,6 +102,7 @@ public class SettingsViewController {
 
             // Passa l'utente solo alla vista account
             if (loader.getController() instanceof AccountSettingController controller) {
+                controller.setAccount(account);
                 controller.setUtente(utente);
                 controller.setContenitore(contenitore);
             }

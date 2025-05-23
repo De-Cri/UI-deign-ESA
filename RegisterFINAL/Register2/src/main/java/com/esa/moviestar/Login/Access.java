@@ -51,6 +51,7 @@ public class Access {
     private HBox ContenitoreImmagine;
 
     private EmailService emailService;
+    private Account account;
     private ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
 
@@ -286,11 +287,12 @@ public class Access {
             }
 
             if (Objects.equals(temp_acc.getPassword(), password)) {
+                this.account = temp_acc;
                 // Carica il nuovo FXML
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"), resourceBundle);
                 Parent homeContent = loader.load();
                 ProfileView profileView = loader.getController();
-                profileView.setEmail(email);
+                profileView.setAccount(account);
 
                 // Ottieni la scena corrente
                 Scene currentScene = ContenitorePadre.getScene();

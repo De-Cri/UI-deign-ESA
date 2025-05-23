@@ -33,7 +33,7 @@ public class UtenteDao {
     }
 
     // Rimozione utente tramite codice
-    public void rimuoviUtente(int idUtente){
+    public boolean rimuoviUtente(int idUtente){
         String sql = "DELETE FROM Utente WHERE ID_Utente = ?;";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -45,6 +45,7 @@ public class UtenteDao {
         } catch (SQLException e) {
             System.err.println("utenteDao : errore di rimozione dell'utente "+e.getMessage());
         }
+        return false;
     }
 
     // Ricerca utente tramite codice

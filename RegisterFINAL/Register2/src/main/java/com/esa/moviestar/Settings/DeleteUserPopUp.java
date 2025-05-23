@@ -5,7 +5,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -13,13 +12,12 @@ import javafx.scene.text.Text;
 
 import java.util.Objects;
 
-public class DeleteAccountPopUp extends StackPane {
-
+public class DeleteUserPopUp extends StackPane {
     private Button deleteButton;
     private Button cancelButton;
     private TextField passwordField;
 
-    public DeleteAccountPopUp() {
+    public DeleteUserPopUp() {
         StackPane mainPane = new StackPane();
 
         // StackPane per l'UI principale
@@ -28,7 +26,7 @@ public class DeleteAccountPopUp extends StackPane {
         mainPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/General.css")).toExternalForm());
         mainPane.getStyleClass().addAll("surface-dim-opaque", "very-large-item");
         mainPane.setPadding(new Insets(24.0));
-        StackPane.setAlignment(mainPane,Pos.CENTER);
+        StackPane.setAlignment(mainPane, Pos.CENTER);
 
         // VBox principale
         VBox mainVBox = new VBox();
@@ -37,13 +35,13 @@ public class DeleteAccountPopUp extends StackPane {
         mainVBox.setSpacing(24.0);
 
         // Label titolo
-        Label titleLabel = new Label("Elimina account");
+        Label titleLabel = new Label("Elimina utente");
         titleLabel.setPrefHeight(35.0);
         titleLabel.setPrefWidth(406.0);
         titleLabel.getStyleClass().addAll("large-text", "bold-text", "on-primary");
 
         // Testo descrittivo
-        Text descriptionText = new Text("Sei sicuro di voler eliminare il tuo account ? Procedendo con l'eliminazione verrai disconesso e non potrai accedere");
+        Text descriptionText = new Text("Sei sicuro di voler eliminare il tuo profilo utente ? L'eliminazione del tuo profilo è un'azione irreversibile e perderai tutti i dati associato ad esso . ");
         descriptionText.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         descriptionText.setStrokeWidth(0.0);
         descriptionText.setWrappingWidth(400.0);
@@ -79,7 +77,7 @@ public class DeleteAccountPopUp extends StackPane {
         cancelButton.getStyleClass().addAll("medium-item", "back-button");
 
         // Pulsante Elimina account
-        deleteButton = new Button("Elimina account");
+        deleteButton = new Button("Elimina utente");
         deleteButton.setMnemonicParsing(false);
         deleteButton.setPrefHeight(35.0);
         deleteButton.setPrefWidth(110.0);
@@ -118,3 +116,4 @@ public class DeleteAccountPopUp extends StackPane {
         return passwordField;
     }
 }
+
