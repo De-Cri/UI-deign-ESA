@@ -6,6 +6,7 @@ import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Content;
 import com.esa.moviestar.model.Utente;
 import com.esa.moviestar.movie_view.FilmCardController;
+import com.esa.moviestar.movie_view.FilmSceneController;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -15,8 +16,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -24,8 +27,6 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-
-
 
 public class MainPagesController {
     private static final double FADE_DURATION = 300; // milliseconds
@@ -49,7 +50,9 @@ public class MainPagesController {
 
     // Instance variables
     private Utente user;
+    private Account account;
     private PageData header;
+    private Node savedSceneNode; // Missing in first file
     private PageData home;
     private PageData filter_film;
     private PageData filter_series;
@@ -58,32 +61,34 @@ public class MainPagesController {
     private BufferAnimation loadingSpinner;
     private StackPane loadingOverlay;
 
-    //aggiunta eugenio :
-    private Account account;
-    public void setAccount(Account account){
-        this.account=account;
+    // Account setter - present in first file
+    public void setAccount(Account account) {
+        this.account = account;
     }
-    public void initialize(){
+
+    public void initialize() {
         createLoadingOverlay();
         showLoadingSpinner();
-
     }
+
     /**
      * Initializes the main page with the user's data
      * @param user The current user
+     * @param account The current account
      */
     public void first_load(Utente user, Account account) {
         this.user = user;
-        this.account=account;
-        if(loadingOverlay==null)
+        this.account = account;
+        if (loadingOverlay == null)
             createLoadingOverlay();
+
         // Load header if not already loaded
         if (header == null) {
             loadHeader();
         }
 
         // Set profile icon
-        ((HeaderController)header.controller).setProfileIcon(user.getIcona());
+        ((HeaderController) header.controller).setProfileIcon(user.getIcona());
 
         // Load home page asynchronously
         CompletableFuture.runAsync(() -> {
@@ -130,7 +135,7 @@ public class MainPagesController {
     private void loadHeader() {
         header = loadDynamicBody("header.fxml");
         if (header == null) {
-           System.err.println("MainPagesController: Error to load header");
+            System.err.println("MainPagesController: Error to load header");
             return;
         }
 
@@ -138,32 +143,34 @@ public class MainPagesController {
         HeaderController headerController = (HeaderController) header.controller;
 
         if (user != null) {
-            headerController.setUpPopUpMenu(this, user , account);
+            // Updated to include account parameter
+            headerController.setUpPopUpMenu(this, user, account);
         }
 
         // Configure navigation buttons
         setupNavigationButtons(headerController);
 
-        // Configure search functionality
-        headerController.getTbxSearch().textProperty().addListener((observableValue, oldV, newV)
-                -> {
+        // Configure search functionality - Updated method name
+        headerController.getTbxSearch().textProperty().addListener((observableValue, oldV, newV) -> {
             if (newV.isEmpty()) {
                 try {
                     body.getChildren().clear();
                     body.getChildren().add(currentScene.node);
                 } catch (Exception e) {
-                    System.err.println("MainPagesController: tbxSearchListener error \n Error:"+e.getMessage());
+                    System.err.println("MainPagesController: tbxSearchListener error \n Error:" + e.getMessage());
                 }
                 return;
             }
             PageData search = loadDynamicBody("search.fxml");
             if (search != null) {
-                try{
-                    ((SearchController) search.controller).set_headercontroller((HeaderController)header.controller,user,resourceBundle);
+                try {
+                    // Updated method name from second file
+                    ((SearchController) search.controller).set_paramcontroller((HeaderController) header.controller, user, resourceBundle, this);
                     body.getChildren().clear();
-                    body.getChildren().add(search.node);}
-                catch (Exception e){
-                    System.err.println("MainPagesController: tbxSearchListener error \n Error:"+e.getMessage());
+                    body.getChildren().add(search.node);
+                } catch (Exception e) {
+                    System.err.println("MainPagesController: tbxSearchListener error \n Error:" + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });
@@ -229,18 +236,17 @@ public class MainPagesController {
         });
     }
 
-
     /**
      * Shows the loading spinner with a fade-in effect
      */
     private void showLoadingSpinner() {
         Platform.runLater(() -> {
-        loadingSpinner.startAnimation();
-        loadingOverlay.setVisible(true);
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(200), loadingOverlay);
-        fadeIn.setFromValue(0.0);
-        fadeIn.setToValue(1.0);
-        fadeIn.play();
+            loadingSpinner.startAnimation();
+            loadingOverlay.setVisible(true);
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(200), loadingOverlay);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
         });
     }
 
@@ -274,23 +280,36 @@ public class MainPagesController {
                     Platform.runLater(() -> transitionToPage(page));
                 } else {
                     hideLoadingSpinner();
-                    System.err.println("MainPagesController: Failed to load "+pageName+" page");
+                    System.err.println("MainPagesController: Failed to load " + pageName + " page");
                 }
             } catch (Exception e) {
                 hideLoadingSpinner();
-                System.err.println("MainPagesController: Error to load "+pageName+" page");
+                System.err.println("MainPagesController: Error to load " + pageName + " page");
             }
         });
     }
 
     /**
-     * Dynamically loads FXML content
+     * Dynamically loads FXML content - Enhanced version from second file
      * @param bodySource The FXML file to load
      * @return A PageData object containing the node and controller
      */
     private PageData loadDynamicBody(String bodySource) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(bodySource), resourceBundle);
+            // Add more detailed logging
+            System.out.println("MainPagesController: Attempting to load: " + bodySource);
+
+            // Check if resource exists
+            var resource = getClass().getResource(bodySource);
+            if (resource == null) {
+                System.err.println("MainPagesController: Resource not found: " + bodySource);
+                System.err.println("MainPagesController: Looking in package: " + getClass().getPackageName());
+                return null;
+            }
+
+            System.out.println("MainPagesController: Resource found at: " + resource.toString());
+
+            FXMLLoader loader = new FXMLLoader(resource, resourceBundle);
             Node pageNode = loader.load();
 
             // Set anchors for proper layout
@@ -299,11 +318,125 @@ public class MainPagesController {
             AnchorPane.setLeftAnchor(pageNode, 0.0);
             AnchorPane.setRightAnchor(pageNode, 0.0);
 
+            System.out.println("MainPagesController: Successfully loaded: " + bodySource);
             return new PageData(pageNode, loader.getController());
+
         } catch (IOException e) {
-            System.err.println("MainPagesController: Failed to load "+bodySource+" page");
+            System.err.println("MainPagesController: IOException while loading " + bodySource);
+            System.err.println("MainPagesController: Error details: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            System.err.println("MainPagesController: Unexpected error while loading " + bodySource);
+            System.err.println("MainPagesController: Error details: " + e.getMessage());
+            return null;
         }
-        return null;
+    }
+
+    /**
+     * MISSING FUNCTION: Captures screenshot and prepares for film scene overlay
+     * @return ImageView containing the screenshot
+     */
+    private ImageView deletedynamicbody() {
+        // Store the current scene node for later restoration
+        Node savedNode = null;
+        if (currentScene != null) {
+            savedNode = currentScene.node;
+        }
+        if (home != null) {
+            home = null;
+        }
+        if (filter_film != null) {
+            filter_film = null;
+        }
+        if (filter_series != null) {
+            filter_series = null;
+        }
+
+        // Add a new field to the class to store this for later
+        this.savedSceneNode = savedNode;
+
+        // Create a screenshot of the current scene
+        Stage stage = (Stage) currentScene.node.getScene().getWindow();
+        Scene scene = stage.getScene();
+        double width = scene.getWidth();
+        double height = scene.getHeight();
+        WritableImage screenshot = new WritableImage((int) width, (int) height);
+        scene.snapshot(screenshot);
+        ImageView screenshotView = new ImageView(screenshot);
+
+        // Clear current contents to prepare for the new overlay
+        body.getChildren().clear();
+
+        return screenshotView;
+    }
+
+    /**
+     * MISSING FUNCTION: Restores the previously saved scene
+     */
+    public void restorePreviousScene() {
+        if (savedSceneNode != null) {
+            // Apply fade-out transition
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(FADE_DURATION), body);
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(e -> {
+                body.getChildren().clear();
+                body.getChildren().add(savedSceneNode);
+
+                // Add the loading overlay back to the body
+                body.getChildren().add(loadingOverlay);
+
+                // Apply fade-in transition
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(FADE_DURATION), body);
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+            });
+            fadeOut.play();
+        }
+    }
+
+    /**
+     * MISSING FUNCTION: Opens film scene with background screenshot
+     * @param filmFxmlPath Path to the film FXML file
+     */
+    public void openFilmScene(String filmFxmlPath) {
+        // Capture screenshot and clean scene
+        ImageView screenshotView = deletedynamicbody();
+
+        // Load film detail
+        PageData filmDetail = loadDynamicBody(filmFxmlPath);
+
+        if (filmDetail != null) {
+            FilmSceneController filmController = ((FilmSceneController) filmDetail.controller());
+            BackgroundImage bgImage = getBackgroundImage(screenshotView);
+            Background background = new Background(bgImage);
+            filmController.background.setBackground(background);
+        }
+    }
+
+    /**
+     * MISSING FUNCTION: Creates background image from screenshot
+     * @param screenshotView ImageView containing the screenshot
+     * @return BackgroundImage for use in film scene
+     */
+    private BackgroundImage getBackgroundImage(ImageView screenshotView) {
+        Image screenshotImage = screenshotView.getImage();
+        // cover - to fill all space
+        return new BackgroundImage(
+                screenshotImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(
+                        BackgroundSize.AUTO,
+                        BackgroundSize.AUTO,
+                        false,
+                        false,
+                        false,
+                        true  // cover - to fill all space
+                )
+        );
     }
 
     /**
@@ -423,7 +556,7 @@ public class MainPagesController {
                 Platform.runLater(() -> transitionToPage(filmPage));
             } catch (IOException e) {
                 hideLoadingSpinner();
-               System.err.println("Failed to load film interface for card ID: " + cardId +"\n"+e.getMessage());
+                System.err.println("Failed to load film interface for card ID: " + cardId + "\n" + e.getMessage());
             }
         });
     }
@@ -437,31 +570,28 @@ public class MainPagesController {
     }
 
     /**
-     * Opens user settings
-     *
-     * @param user    The current user
-     * @param account
+     * Opens user settings - Updated to include account parameter
+     * @param user The current user
+     * @param account The current account
      */
     public void settingsClick(Utente user, Account account) {
-    try{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
-        Parent settingContent = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"), resourceBundle);
+            Parent settingContent = loader.load();
 
-        SettingsViewController settingsViewController = loader.getController();
-        settingsViewController.setUtente(user);
-        settingsViewController.setAccount(account);
+            SettingsViewController settingsViewController = loader.getController();
+            settingsViewController.setUtente(user);
+            settingsViewController.setAccount(account);
 
-        Scene currentScene = body.getScene();
+            Scene currentScene = body.getScene();
+            Scene newScene = new Scene(settingContent, currentScene.getWidth(), currentScene.getHeight());
 
-        Scene newScene = new Scene(settingContent, currentScene.getWidth(), currentScene.getHeight());
+            Stage stage = (Stage) body.getScene().getWindow();
+            stage.setScene(newScene);
 
-        Stage stage = (Stage) body.getScene().getWindow();
-        stage.setScene(newScene);
-
-    }catch(IOException e){
-        System.err.println("MainPagesController: Errore caricamento pagina dei setting"+e.getMessage());
-    }
-
+        } catch (IOException e) {
+            System.err.println("MainPagesController: Errore caricamento pagina dei setting" + e.getMessage());
+        }
     }
 
     /**
@@ -469,7 +599,6 @@ public class MainPagesController {
      */
     public void emailClick() {
         // Implement email functionality
-
     }
 
     /**
