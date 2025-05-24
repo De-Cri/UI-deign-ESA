@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="ContenitorePadre" prefHeight="980"  stylesheets="@access.css" prefWidth="1720" styleClass="MainPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.Login.Register">
+    <children>
+        <VBox fx:id="ContenitoreImmagine" alignment="TOP_CENTER" spacing="20.0" >
+            <!-- Immagine in alto -->
+            <ImageView fx:id="titleImage" fitHeight="194.0" fitWidth="700.0" nodeOrientation="INHERIT" preserveRatio="true">
+                <Image url="@TITLE2.png" />
+                <VBox.margin>
+                    <Insets top="60.0" />
+                </VBox.margin>
+            </ImageView>
+
+            <!-- VBox Centrale -->
+            <VBox fx:id="registerBox" alignment="TOP_CENTER" maxHeight="459.0" maxWidth="433.0" minHeight="300.0" minWidth="280.0" prefHeight="459.0" prefWidth="433.0" spacing="10.0">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                </padding>
+                <children>
+                    <Label fx:id="welcomeText" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="welcome-text" text="REGISTRAZIONE" textOverrun="CLIP">
+                        <VBox.margin>
+                            <Insets bottom="20.0" />
+                        </VBox.margin>
+                    </Label>
+                    <TextField fx:id="emailField" maxWidth="1.7976931348623157E308" styleClass="small-item">
+                        <VBox.margin>
+                            <Insets bottom="20.0" />
+                        </VBox.margin>
+                    </TextField>
+                    <PasswordField fx:id="passwordField" maxWidth="1.7976931348623157E308" styleClass="small-item">
+                        <VBox.margin>
+                            <Insets bottom="20.0" />
+                        </VBox.margin>
+                    </PasswordField>
+                    <Label fx:id="warning1" maxWidth="1.7976931348623157E308" styleClass="warnings-text1" text="Password con almeno :" textAlignment="CENTER" />
+                    <Label fx:id="warningSpecial" maxWidth="1.7976931348623157E308" styleClass="warnings-text2" text="1 carattere speciale e 1 numero" />
+                    <Label fx:id="warning2" maxWidth="1.7976931348623157E308" styleClass="warnings-text2" text="8 caratteri">
+                        <VBox.margin>
+                            <Insets bottom="20.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Button fx:id="register" alignment="CENTER" prefHeight="40.0" text="Registrati">
+                        <VBox.margin>
+                            <Insets bottom="10.0" />
+                        </VBox.margin>
+                  <styleClass>
+                     <String fx:value="button-text" />
+                     <String fx:value="small-item" />
+                  </styleClass>
+                    </Button>
+                    <Button fx:id="backToLogin" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Hai già un account? Accedi" wrapText="true">
+                        <VBox.margin>
+                            <Insets top="10.0" />
+                        </VBox.margin>
+                        <font>
+                            <Font size="12.0" />
+                        </font>
+                  <styleClass>
+                     <String fx:value="register-text" />
+                     <String fx:value="small-item" />
+                  </styleClass>
+                    </Button>
+                </children>
+                <VBox.margin>
+                    <Insets top="30.0" />
+                </VBox.margin>
+            <styleClass>
+               <String fx:value="register-box" />
+               <String fx:value="large-item" />
+            </styleClass>
+            </VBox>
+        </VBox>
+    </children>
+</StackPane>
