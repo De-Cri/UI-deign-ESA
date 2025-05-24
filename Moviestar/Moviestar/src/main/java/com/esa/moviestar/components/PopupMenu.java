@@ -42,7 +42,7 @@ public class PopupMenu {
         }
 
         columnsContainer.setPadding(new Insets(8));
-        columnsContainer.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/General.css")).toExternalForm());
+        columnsContainer.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/general.css")).toExternalForm());
 
         DropShadow shadow = new DropShadow(){{
             setRadius(10.0);

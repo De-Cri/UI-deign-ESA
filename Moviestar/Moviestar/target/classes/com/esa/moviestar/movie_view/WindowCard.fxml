@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="windowCardRoot" maxHeight="445.0" maxWidth="766.0" prefHeight="407.0" prefWidth="653.0" stylesheets="@../styles/FilmCard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.movie_view.WindowCardController">
+<AnchorPane fx:id="windowCardRoot" maxHeight="445.0" maxWidth="766.0" prefHeight="407.0" prefWidth="653.0" stylesheets="@../styles/filmCard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esa.moviestar.movie_view.WindowCardController">
     <StackPane fx:id="imgContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <ImageView fx:id="imgView" fitHeight="${imgContainer.height}" fitWidth="${imgContainer.width}" StackPane.alignment="CENTER">
             <clip>
@@ -82,8 +82,8 @@
         </padding>
     </HBox>
     <stylesheets>
-        <URL value="@../styles/FilmCard.css" />
-        <URL value="@../styles/General.css" />
+        <URL value="@../styles/filmCard.css" />
+        <URL value="@../styles/general.css" />
     </stylesheets>
     <styleClass>
         <String fx:value="medium-item" />

@@ -1,6 +1,5 @@
 package com.esa.moviestar.Database;  // Dichiara il package in cui risiede questa classe
 
-import java.io.File;
 import java.net.URL;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -10,7 +9,7 @@ import java.sql.SQLException;
 
 public class DataBaseManager {
 
-    private static final String DB_NAME = "DatabaseProjectUID.db";  //nome del file che contiente il database
+    private static final String DB_NAME = "com/esa/moviestar/DatabaseProjectUID.db";  //nome del file che contiente il database
 
     //Metodo vero e proprio di connessione
     public static Connection getConnection() throws SQLException {

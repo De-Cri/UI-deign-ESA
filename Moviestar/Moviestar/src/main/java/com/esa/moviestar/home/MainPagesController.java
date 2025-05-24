@@ -576,7 +576,7 @@ public class MainPagesController {
      */
     public void settingsClick(Utente user, Account account) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"), resourceBundle);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/settings/settings-view.fxml"), resourceBundle);
             Parent settingContent = loader.load();
 
             SettingsViewController settingsViewController = loader.getController();

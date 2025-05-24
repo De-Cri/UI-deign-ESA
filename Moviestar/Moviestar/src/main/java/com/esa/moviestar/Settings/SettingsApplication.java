@@ -14,7 +14,7 @@ public class SettingsApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/settings/settings-view.fxml"),resourceBundle);
         Scene scene = new Scene(fxmlLoader.load());
         primaryStage.setTitle("Titolo della finestra");
         primaryStage.setMaximized(true);

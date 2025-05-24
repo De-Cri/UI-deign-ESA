@@ -7,7 +7,6 @@ import com.esa.moviestar.Profile.CreateProfileController;
 import com.esa.moviestar.Profile.IconSVG;
 import com.esa.moviestar.Profile.ModifyProfileController;
 import com.esa.moviestar.Profile.ProfileView;
-import com.esa.moviestar.components.PopupMenu;
 import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Utente;
 import javafx.fxml.FXML;
@@ -19,8 +18,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -78,7 +75,7 @@ public class AccountSettingController {
 
     public void deleteUser(){
         deleteUserButton.setOnMouseClicked(event -> {
-            DeleteUserPopUp userPopUp = new DeleteUserPopUp();
+            DeletePopUp userPopUp = new DeletePopUp(false);
 
             AnchorPane.setBottomAnchor(userPopUp, 0.0);
             AnchorPane.setTopAnchor(userPopUp, 0.0);
@@ -95,7 +92,7 @@ public class AccountSettingController {
                     if(utenteDao.contaProfiliPerEmail(account.getEmail())>0){
                         System.out.println("hai eliminato un profilo , te ne restano "+utenteDao.contaProfiliPerEmail(account.getEmail()));
                         try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/profile-view.fxml"));
                             Parent profileView = loader.load();
                             ProfileView profileView1 = loader.getController();
                             profileView1.setAccount(account);
@@ -113,7 +110,7 @@ public class AccountSettingController {
                     }else if ((utenteDao.contaProfiliPerEmail(account.getEmail())==0)){
                         System.out.println("sei rimasto con 0 profili per questo account , la prova : "+utenteDao.contaProfiliPerEmail(account.getEmail()));
                         try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"),resourceBundle);
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/create-profile-view.fxml"),resourceBundle);
                             Parent createView = loader.load();
                             CreateProfileController createProfileController = loader.getController();
                             createProfileController.setAccount(account);
@@ -140,7 +137,7 @@ public class AccountSettingController {
 
     public void deleteAccount() {
         deleteAccountButton.setOnMouseClicked(event -> {
-            DeleteAccountPopUp accountPopUp = new DeleteAccountPopUp();
+            DeletePopUp accountPopUp = new DeletePopUp(true);
 
             AnchorPane.setBottomAnchor(accountPopUp, 0.0);
             AnchorPane.setTopAnchor(accountPopUp, 0.0);
@@ -156,7 +153,7 @@ public class AccountSettingController {
 
                     if (deleteSuccess) {
                         try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/hello-view.fxml"), resourceBundle);
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/login/access.fxml"), resourceBundle);
                             Parent accessContent = loader.load();
 
                             Scene currentScene = accountContentSetting.getScene();
@@ -186,7 +183,7 @@ public class AccountSettingController {
         modifyUserButton.setOnMouseClicked(event -> {
 
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/modify-profile-view.fxml"),resourceBundle);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/modify-profile-view.fxml"),resourceBundle);
                 Parent modifyContent = loader.load();
                 ModifyProfileController modifyProfileController = loader.getController();
                 modifyProfileController.setUtente(utente);
@@ -210,7 +207,7 @@ public class AccountSettingController {
     public void updatePassword(){
         modifyPasswordButton.setOnMouseClicked(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/update-password-view.fxml"),resourceBundle);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/settings/update-password-view.fxml"),resourceBundle);
                 Parent updateContent = loader.load();
 
                 UpdatePasswordController updatePasswordController = loader.getController();

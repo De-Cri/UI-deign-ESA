@@ -1,9 +1,11 @@
 package com.esa.moviestar.Login;
 
 import com.esa.moviestar.Database.AccountDao;
+import com.esa.moviestar.Main;
 import com.esa.moviestar.Profile.ProfileView;
 import com.esa.moviestar.model.Account;
 import jakarta.mail.MessagingException;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -16,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -41,18 +45,17 @@ public class Access {
     private PasswordField passwordField;
     @FXML
     private StackPane ContenitorePadre;
-    @FXML
-    private ImageView titleImage;
+
     @FXML
     private VBox loginBox;
     @FXML
     private Button recuperoPassword;
     @FXML
-    private HBox ContenitoreImmagine;
+    private StackPane ContenitoreImmagine;
 
     private EmailService emailService;
     private Account account;
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+
 
 
     // Valori di riferimento
@@ -96,7 +99,23 @@ public class Access {
 
         // Configura il layout responsivo
         setupResponsiveLayout();
+        ContenitorePadre.setOnKeyPressed( event -> {
+            if( event.getCode() == KeyCode.ENTER ) {
+                access.fire();
+            }
+        } );
+        emailField.setOnKeyTyped( event -> {
+            if( event.getCode() == KeyCode.TAB ) {
+                access.fire();
+            }
+        } );
+        passwordField.setOnKeyTyped( event -> {
+            if( event.getCode() == KeyCode.TAB ) {
+                access.fire();
+            }
+        } );
     }
+
 
     private void setupResponsiveLayout() {
         ContenitorePadre.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -113,13 +132,17 @@ public class Access {
         double rawScale = Math.min(width / REFERENCE_WIDTH, height / REFERENCE_HEIGHT);
         double scale = 1 - (1 - rawScale) * 0.5; // Applica smorzamento del 50%
         // Gestione dell'immagine
-        if (titleImage != null) {
+        if (ContenitoreImmagine != null) {
             boolean showImage = width > IMAGE_VISIBILITY_THRESHOLD;
-            titleImage.setVisible(showImage);
-            titleImage.setManaged(showImage);
+            ContenitoreImmagine.setVisible(showImage);
+            ContenitoreImmagine.setManaged(showImage);
             if (showImage) {
-                titleImage.setFitWidth(REFERENCE_IMAGE_WIDTH * scale);
-                titleImage.setFitHeight(REFERENCE_IMAGE_HEIGHT * scale);
+                ContenitoreImmagine.setMinWidth(REFERENCE_IMAGE_WIDTH * scale);
+                ContenitoreImmagine.setMinHeight(REFERENCE_IMAGE_HEIGHT * scale);
+                ContenitoreImmagine.setPrefWidth(REFERENCE_IMAGE_WIDTH * scale);
+                ContenitoreImmagine.setPrefHeight(REFERENCE_IMAGE_HEIGHT * scale);
+                ContenitoreImmagine.setMaxWidth(REFERENCE_IMAGE_WIDTH * scale);
+                ContenitoreImmagine.setMaxHeight(REFERENCE_IMAGE_HEIGHT * scale);
             }
         }
 
@@ -181,7 +204,7 @@ public class Access {
 
     private void switchToRegistrationPage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/registrazione.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/login/register.fxml"),Main.resourceBundle);
             Parent registerContent = loader.load();
 
             Scene currentScene = ContenitorePadre.getScene();
@@ -243,7 +266,7 @@ public class Access {
             //emailService.sendEmail(email, subject, body.replace("123456", verificationCode));
 
             // Carica la vista di reset password
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/reset-password-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/login/reset-password-view.fxml"),Main.resourceBundle);
             Parent resetContent = loader.load();
 
             // Animazione per la transizione
@@ -289,7 +312,7 @@ public class Access {
             if (Objects.equals(temp_acc.getPassword(), password)) {
                 this.account = temp_acc;
                 // Carica il nuovo FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"), resourceBundle);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/profile-view.fxml"), Main.resourceBundle);
                 Parent homeContent = loader.load();
                 ProfileView profileView = loader.getController();
                 profileView.setAccount(account);

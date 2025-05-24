@@ -44,7 +44,7 @@ public class HomeController {
             }
             Carousel carousel = new Carousel();
             carousel.getItems().addAll(carouselList);
-            carousel.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/Carousel.css")).toExternalForm());
+            carousel.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/esa/moviestar/styles/carousel.css")).toExternalForm());
             body.getChildren().add(1, carousel);
 
             ScrollView top10Scroll = new ScrollView("Chosen for you:", Color.TRANSPARENT, mainPagesController.FORE_COLOR, mainPagesController.BACKGROUND_COLOR);

@@ -20,6 +20,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class ResetController {
@@ -283,11 +284,12 @@ public class ResetController {
             System.out.println("Status message label not found: " + message);
         }
     }
+    public final ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
 
     private void navigateToLogin() {
         try {
             // Carica la schermata di login
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/hello-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/login/access.fxml"),resourceBundle);
             Parent loginContent = loader.load();
             Scene currentScene = parentContainer.getScene();
 

@@ -253,7 +253,7 @@ public class UpdatePasswordController {
 
     private void navigateToSetting() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/settings/settings-view.fxml"),resourceBundle);
             Parent accountSettingContent = loader.load();
             Scene currentScene = parentContainer.getScene();
             SettingsViewController settingsViewController = loader.getController();

@@ -1,6 +1,7 @@
 package com.esa.moviestar.Login;
 
 import com.esa.moviestar.Database.AccountDao;
+import com.esa.moviestar.Main;
 import com.esa.moviestar.Profile.CreateProfileController;
 import com.esa.moviestar.model.Account;
 import javafx.fxml.FXML;
@@ -56,7 +57,7 @@ public class Register {
     // Regex patterns for email and password validation
     private String email_regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private String password_regex = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\-])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+{}\\[\\]:;<>,.?~\\-]{8,}$";
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle("com.esa.moviestar.images.svg-paths.general-svg");
+
 
 
     // Valori di riferimento per il layout responsivo
@@ -223,14 +224,18 @@ public class Register {
      */
     private void switchToLoginPage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/hello-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/login/access.fxml"), Main.resourceBundle);
             Parent loginContent = loader.load();
 
-            ContenitorePadre.getChildren().clear();
-            ContenitorePadre.getChildren().add(loginContent);
+            Scene currentScene = ContenitorePadre.getScene();
+            Scene newScene = new Scene(loginContent, currentScene.getWidth(), currentScene.getHeight());
+
+            Stage stage = (Stage) ContenitorePadre.getScene().getWindow();
+            stage.setScene(newScene);
         } catch (IOException e) {
-            e.printStackTrace();
-            welcomeText.setText("Errore di caricamento: " + e.getMessage());
+
+            System.err.println("Register: Access page error to load" + e.getMessage());
+
         }
     }
 
@@ -288,7 +293,7 @@ public class Register {
                 AnimationUtils.pulse(welcomeText);
 
                 //Subito dopo la registrazione carica la pagina con la creazione del profilo
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"), resourceBundle);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/create-profile-view.fxml"), Main.resourceBundle);
                 Parent homeContent = loader.load();
                 CreateProfileController createProfileController = loader.getController();
                 createProfileController.setAccount(account);

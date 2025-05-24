@@ -71,8 +71,8 @@
             </styleClass></Label>
     </VBox>
     <stylesheets>
-        <URL value="@../styles/FilmCard.css" />
-        <URL value="@../styles/General.css" />
+        <URL value="@../styles/filmCard.css" />
+        <URL value="@../styles/general.css" />
     </stylesheets>
     <styleClass>
         <String fx:value="medium-item" />

@@ -141,6 +141,7 @@ public class HeaderController {
         settingsItem.getChildren().addAll(profileIcon, text);
         settingsItem.setOnMouseClicked(e -> {
             father.settingsClick(user,account);
+            popupMenu.close();
         }
         );
 
@@ -162,7 +163,7 @@ public class HeaderController {
         Text emailText = new Text("Change Email") {{
             getStyleClass().addAll("medium-text", "on-primary");
         }};
-        emailButton.setOnMouseClicked(e -> father.emailClick());
+        emailButton.setOnMouseClicked(e -> {father.emailClick();popupMenu.close();});
         emailButton.getChildren().addAll(emailIcon, emailText);
         popupMenu.addItem(emailButton);
 
@@ -181,7 +182,7 @@ public class HeaderController {
         }};
         item.getChildren().addAll(profileIcon, text);
         // Item click handling moved to controller via callback
-        item.setOnMouseClicked(e -> father.profileClick(user));
+        item.setOnMouseClicked(e -> {father.profileClick(user);popupMenu.close();});
         popupMenu.addItem(item);
 
     }

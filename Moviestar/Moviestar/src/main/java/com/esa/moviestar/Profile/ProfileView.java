@@ -1,6 +1,5 @@
 package com.esa.moviestar.Profile;
 
-import com.esa.moviestar.Database.AccountDao;
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.home.MainPagesController;
 import com.esa.moviestar.model.Account;
@@ -69,7 +68,7 @@ public class ProfileView {
                 box.setAlignment(Pos.CENTER);
 
                 Label name = new Label(utente.getNome());
-                name.getStyleClass().addAll("on-secondary", "bold-text", "large-text");
+                name.getStyleClass().addAll("on-primary", "bold-text", "large-text");
 
                 Group icon = new Group(IconSVG.takeElement(utente.getIDIcona()));
                 icon.setScaleY(8);
@@ -77,20 +76,20 @@ public class ProfileView {
 
                 StackPane iconBox = new StackPane(icon);
                 StackPane.setAlignment(icon, Pos.CENTER);
-                iconBox.setMinSize(185, 185);
+                iconBox.setMinSize(204, 204);
 
                 box.setOnMouseEntered(event -> {
                     icon.setScaleX(8.2);
                     icon.setScaleY(8.2);
-                    name.getStyleClass().remove("on-secondary");
-                    name.getStyleClass().addAll("on-white","bold-text", "large-text");
+                    name.getStyleClass().remove("on-primary");
+                    name.getStyleClass().addAll("on-primary","bold-text", "large-text");
                 });
 
                 box.setOnMouseExited(event -> {
                     icon.setScaleX(8);
                     icon.setScaleY(8);
-                    name.getStyleClass().remove("on-white");
-                    name.getStyleClass().addAll("on-secondary", "bold-text", "large-text");
+                    name.getStyleClass().remove("on-primary");
+                    name.getStyleClass().addAll("on-primary", "bold-text", "large-text");
                 });
 
                 StackPane modifica = new StackPane();
@@ -121,11 +120,11 @@ public class ProfileView {
             //creazione e settaggio del bottone aggiungi
             if (utenti.size() < 4) {
                 StackPane creazione = new StackPane();
-                creazione.setMinSize(100,100);
+                creazione.setMinSize(190,190);
                 creazione.setTranslateY(-20);
                 creazione.setStyle("-fx-background-color: #333333;" +
-                        "-fx-background-radius: 24px;" +
-                        "-fx-border-radius: 24px;");
+                        "-fx-background-radius: 48px;" +
+                        "-fx-border-radius: 48px;");
 
                 SVGPath crossAggiungi = new SVGPath();
                 crossAggiungi.setContent(resourceBundle.getString("plusButton"));
@@ -185,7 +184,7 @@ public class ProfileView {
     private void paginaModifica(Utente user) {
         if (griglia.getChildren().size() > 1) {  // Verifica che ci sia almeno un utente nella griglia
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/modify-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/modify-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
                 Parent modifyContent = loader.load();  // Carica la vista della pagina
 
                 ModifyProfileController modifyProfileController = loader.getController();
@@ -214,7 +213,7 @@ public class ProfileView {
     //  passaggio alla pagina di creazione utente
     private void paginaCreazioneUtente() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/create-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/create-profile-view.fxml"),resourceBundle);  // Carica il FXML per la modifica
             Parent createContent = loader.load();  // Carica la vista della pagina
 
             CreateProfileController createProfileController = loader.getController();

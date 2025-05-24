@@ -49,7 +49,7 @@ public class SettingsViewController {
 
     public void setAccount(Account account){
         this.account=account;
-        caricaVista("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml");
+        caricaVista("/com/esa/moviestar/settings/account-setting-view.fxml");
         System.out.println(account.getEmail());
     }
 
@@ -86,11 +86,11 @@ public class SettingsViewController {
         });
 
         // Collegamenti ai pulsanti
-        accountContent.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/account-setting-view.fxml"));
-        cronologia.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/cronologia-setting-view.fxml"));
-        privacy.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/privacy-setting-view.fxml"));
-        accessibilità.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/accessibilità-setting-view.fxml"));
-        about.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/Settings_FXML/about-setting-view.fxml"));
+        accountContent.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/settings/account-setting-view.fxml"));
+        cronologia.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/settings/cronologia-setting-view.fxml"));
+        privacy.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/settings/privacy-setting-view.fxml"));
+        accessibilità.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/settings/accessibilità-setting-view.fxml"));
+        about.setOnMouseClicked(event -> caricaVista("/com/esa/moviestar/settings/about-setting-view.fxml"));
 
         // Caricamento iniziale
     }

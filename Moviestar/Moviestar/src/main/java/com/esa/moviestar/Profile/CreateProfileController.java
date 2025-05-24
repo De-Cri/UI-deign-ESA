@@ -95,7 +95,7 @@ public class CreateProfileController {
         });
         saveButton.setOnMouseClicked(event -> {  //Se clicco sul bottone di salvataggio / dovrà poi ritornare alla pagina di scelta dei profili con il profilo creato
             String name = textName.getText();
-            String gusto = "0";
+            String gusto = "505050505050505050505050505050505050";
             int immagine = codImmagineCorrente;
 
             if (!textName.getText().isEmpty()) {  //se ho messo un nome nel textfield e l'ho salvato allora ritorno alla pagina principale dei profili / oppure potrei far direttamente loggare / (modifiche da fare : controllare che abbia scelto anche un immagine, oppure se non l'ha scelta dare quella di default)
@@ -116,7 +116,7 @@ public class CreateProfileController {
                     utentedao.inserisciUtente(ut);
 
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/profile-view.fxml"));
                     Parent profileContent = loader.load();
                     ProfileView profileView = loader.getController();
                     profileView.setAccount(account);

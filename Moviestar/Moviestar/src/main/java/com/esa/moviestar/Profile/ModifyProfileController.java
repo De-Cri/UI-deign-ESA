@@ -5,7 +5,6 @@ import java.util.ResourceBundle;
 
 import com.esa.moviestar.Database.UtenteDao;
 import com.esa.moviestar.Login.AnimationUtils;
-import com.esa.moviestar.Settings.AccountSettingController;
 import com.esa.moviestar.Settings.SettingsViewController;
 import com.esa.moviestar.model.Account;
 import com.esa.moviestar.model.Utente;
@@ -123,7 +122,7 @@ public class ModifyProfileController {
                 FXMLLoader loader2;
                 FXMLLoader loader3;
                 if (origine == Origine.PROFILI) {
-                    loader2 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
+                    loader2 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/profile-view.fxml"));
                     Parent profile = loader2.load();
 
                     ProfileView profileView = loader2.getController();
@@ -134,7 +133,7 @@ public class ModifyProfileController {
                     Stage stage = (Stage) currentScene.getWindow();
                     stage.setScene(newScene);
                 }else if (origine == Origine.SETTINGS) {
-                loader3 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
+                loader3 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/settings/settings-view.fxml"),resourceBundle);
                 Parent settings = loader3.load();
 
                 SettingsViewController settingsViewController = loader3.getController();
@@ -182,7 +181,7 @@ public class ModifyProfileController {
                     FXMLLoader loader2;
                     FXMLLoader loader3;
                     if (origine == Origine.PROFILI) {
-                        loader2 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile-view.fxml"));
+                        loader2 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/profile/profile-view.fxml"));
                         Parent profile = loader2.load();
 
                         ProfileView profileView = loader2.getController();
@@ -194,7 +193,7 @@ public class ModifyProfileController {
                         stage.setScene(newScene);
                     }
                     else if (origine == Origine.SETTINGS) {
-                        loader3 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/Settings_FXML/settings-view.fxml"),resourceBundle);
+                        loader3 = new FXMLLoader(getClass().getResource("/com/esa/moviestar/settings/settings-view.fxml"),resourceBundle);
                         Parent settings = loader3.load();
 
                         SettingsViewController settingsViewController = loader3.getController();

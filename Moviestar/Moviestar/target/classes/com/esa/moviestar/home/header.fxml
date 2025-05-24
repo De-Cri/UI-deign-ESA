@@ -97,7 +97,7 @@
         <String fx:value="surface-opaque" />
     </styleClass>
     <stylesheets>
-        <URL value="@../styles/Header.css" />
-        <URL value="@../styles/General.css" />
+        <URL value="@../styles/header.css" />
+        <URL value="@../styles/general.css" />
     </stylesheets>
 </StackPane>
